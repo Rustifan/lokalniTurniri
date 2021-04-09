@@ -3,25 +3,41 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
     public class Seed
     {
-        private List<string> Sports = new() { "balote", "šah", "potezanje konopa", "nogomet", "briškula", "bela", "guranje kamena"};
-        private List<string> Locations = new(){"Zaton", "Prvić Šepurine", "Prvić Luka", "Tribunj"};
+        private readonly List<string> Sports = new() { "balote", "šah", "potezanje konopa", "nogomet", "briškula", "bela", "guranje kamena"};
+        private readonly List<string> Locations = new(){"Zaton", "Prvić Šepurine", "Prvić Luka", "Tribunj"};
 
         private readonly DataContext _context;
-        public Seed(DataContext context)
+        private readonly UserManager<AppUser> _userManager;
+        public Seed(DataContext context, UserManager<AppUser> usermanager)
         {
                _context = context;
+               _userManager = usermanager;
         }
 
         public async Task Reseed(int num = 20)
         {
             if(await _context.Tournaments.AnyAsync()) return;
             
+            var users = new List<AppUser> 
+            {
+                new AppUser{UserName = "Beki", Email="beki@test.com"},
+                new AppUser{UserName = "Miki", Email="miki@test.com"},
+                new AppUser{UserName = "Franka", Email="franka@test.com"},
+                new AppUser{UserName = "Milka", Email="milka@test.com"}
+            };
+
+            foreach(var user in users)
+            {
+                string password = "Asdf1234";
+                await _userManager.CreateAsync(user, password);
+            }           
 
             List<Tournament> tournaments = new();
             var rand = new Random();

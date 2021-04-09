@@ -8,6 +8,7 @@ namespace Application.Core
         public MappingProfile()
         {
             CreateMap<Tournament, Tournament>();
+            CreateMap<AppUser, Profiles.Profile>();
         }
     }
 }

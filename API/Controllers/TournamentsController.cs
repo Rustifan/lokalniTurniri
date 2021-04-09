@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Application.Tournaments;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     public class TournamentsController: BaseAPIController
     {
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> ListTournaments()
         {
