@@ -30,7 +30,6 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             
-            services.AddControllers();
             services.AddApplicationServices(_config);
         }
 

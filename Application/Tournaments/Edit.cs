@@ -1,0 +1,57 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Application.Core;
+using Application.Validation;
+using Domain;
+using FluentValidation;
+using MediatR;
+using Persistence;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+
+namespace Application.Tournaments
+{
+    public class Edit
+    {
+        public class Command: IRequest<Result<Unit>>
+        {
+            public Tournament Tournament { get; set; }
+            public Guid Id { get; set; }
+        }
+
+        public class CommandValidator: AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x=>x.Tournament).SetValidator(new TournamentValidator());
+            }
+        }
+
+        public class Handler : IRequestHandler<Command, Result<Unit>>
+        {
+            private readonly DataContext _context;
+            private readonly IMapper _mapper;
+            public Handler(DataContext context, IMapper mapper)
+            {
+                _context = context;
+                _mapper = mapper;
+            }
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            {
+                var tournament = await _context.Tournaments.FindAsync(request.Id); 
+                if(tournament == null) return null;
+                
+                request.Tournament.Id = request.Id;
+                _mapper.Map(request.Tournament, tournament);
+                
+
+                var result = await _context.SaveChangesAsync(cancellationToken) > 0;
+                if(result) return Result<Unit>.Success(Unit.Value);
+
+
+                return Result<Unit>.Failed("Error updating tournament");
+            }
+        }
+    }
+}

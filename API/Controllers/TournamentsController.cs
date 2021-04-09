@@ -20,6 +20,18 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new Details.Query{Id=id}));    
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTournament(Tournament tournament)
+        {
+            return HandleResult(await Mediator.Send(new Create.Command{Tournament = tournament}));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditTournament(Guid id, Tournament tournament)
+        {
+            return HandleResult(await Mediator.Send(new Edit.Command{Tournament = tournament, Id = id}));
+        }
     }
 
 
