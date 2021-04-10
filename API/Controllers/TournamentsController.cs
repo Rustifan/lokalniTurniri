@@ -34,6 +34,29 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new Edit.Command{Tournament = tournament, Id = id}));
         }
+
+        [Authorize(Policy = "IsHostRequirement")]
+        [HttpDelete("{id}")]
+
+        public async Task<IActionResult> DeleteTournament(Guid id)
+        {
+            return HandleResult(await Mediator.Send(new Delete.Command{Id = id}));
+        }
+
+        [Authorize(Policy = "IsHostRequirement")]
+        [HttpPut("{id}/addAdmin")]
+        public async Task<IActionResult> AddAdmin(Guid id, [FromQuery] string adminName)
+        {
+            return HandleResult(await Mediator.Send(new AddAdmin.Command{Id = id, AdminName= adminName}));
+        }
+
+        [Authorize(Policy = "IsHostRequirement")]
+        [HttpPut("{id}/removeAdmin")]
+
+        public async Task<IActionResult> RemoveAdmin(Guid id, [FromQuery] string adminName)
+        {
+            return HandleResult(await Mediator.Send(new RemoveAdmin.Command{Id=id, AdminName=adminName}));
+        }        
     }
 
 
