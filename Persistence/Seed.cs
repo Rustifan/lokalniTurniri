@@ -47,13 +47,19 @@ namespace Persistence
                 string sport = Sports[rand.Next(Sports.Count)];
                 string location = Locations[rand.Next(Locations.Count)];
                 DateTime date = DateTime.Now.AddDays(rand.Next(60));
+                var host = users[rand.Next(users.Count)];
+                
+                
 
                 var tournament = new Tournament
                 {
                     Sport = sport,
                     Location = location,
-                    Date = date
+                    Date = date,
+                    Host = host,
+                    
                 };
+                tournament.Admins = new List<Admin>{new Admin{Tournament=tournament, User=host}};
                 tournaments.Add(tournament);
             }
 

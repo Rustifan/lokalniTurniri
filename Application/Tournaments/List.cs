@@ -6,28 +6,35 @@ using MediatR;
 using Persistence;
 using Microsoft.EntityFrameworkCore;
 using Application.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Application.Tournaments
 {
     public class List
     {
-        public class Query: IRequest<Result<List<Tournament>>>
+        public class Query: IRequest<Result<List<TournamentDto>>>
         {
             
         }
 
-        public class Handler : IRequestHandler<Query, Result<List<Tournament>>>
+        public class Handler : IRequestHandler<Query, Result<List<TournamentDto>>>
         {
             private readonly DataContext _context;
-            public Handler(DataContext context)
+            private readonly IMapper _mapper;
+            public Handler(DataContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
-            public async Task<Result<List<Tournament>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<TournamentDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var tournaments = await _context.Tournaments.ToListAsync();
+                var tournaments = await _context.Tournaments
+                 .ProjectTo<TournamentDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+
                 if(tournaments == null) return null;
-                return Result<List<Tournament>>.Success(tournaments);
+                return Result<List<TournamentDto>>.Success(tournaments);
             }
         }
 

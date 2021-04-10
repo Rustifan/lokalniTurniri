@@ -9,6 +9,8 @@ using Application.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
+using Infrastructure.Security;
 
 namespace API.Extension
 {
@@ -16,7 +18,6 @@ namespace API.Extension
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
-            services.AddAuthentication();
             services.AddScoped<ITokenService, TokenService>();
 
             services.AddIdentityCore<AppUser>(opt=>
@@ -47,6 +48,19 @@ namespace API.Extension
 
                     };
                 });
+            
+            services.AddAuthorization(opt=>
+            {
+                opt.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                opt.AddPolicy("IsHostRequirement", policy=>
+                {
+                    policy.Requirements.Add(new IsHostRequirement());
+                });
+            });
+
+            services.AddScoped<IAuthorizationHandler, IsTournamentHost>();
 
             return services;
         }

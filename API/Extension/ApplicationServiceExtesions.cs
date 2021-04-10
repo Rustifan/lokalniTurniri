@@ -7,6 +7,8 @@ using MediatR;
 using FluentValidation.AspNetCore;
 using AutoMapper;
 using Application.Core;
+using Application.Interfaces;
+using Infrastructure.Security;
 
 namespace API.Extension
 {
@@ -17,7 +19,7 @@ namespace API.Extension
         {
             services.AddControllers()
                 .AddFluentValidation(x=>x.RegisterValidatorsFromAssemblyContaining<Application.Tournaments.Create>());
-
+            services.AddHttpContextAccessor();
             services.AddDbContext<DataContext>(opt=>
             {
                 
@@ -28,10 +30,10 @@ namespace API.Extension
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             });
-
+            services.AddTransient<IUserAccessor, UserAccessor>();
             services.AddMediatR(typeof(Application.Tournaments.List).Assembly);
             services.AddAutoMapper(typeof(MappingProfile));           
-
+            
             return services;
         }
     }

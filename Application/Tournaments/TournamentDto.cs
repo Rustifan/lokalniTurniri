@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace Domain
+namespace Application.Tournaments
 {
-    public class Tournament
+    public class TournamentDto
     {
         public Guid Id { get; set; }
         public string Sport { get; set; }
         public string Location { get; set; }
         public DateTime Date { get; set; }
-        public AppUser Host { get; set; }
-        public ICollection<Admin> Admins {get; set;} = new List<Admin>();
-        
+        public string HostUsername { get; set; }
+        public List<string> Admins {get; set;}
     }
 }

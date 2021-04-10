@@ -10,7 +10,6 @@ namespace API.Controllers
 {
     public class TournamentsController: BaseAPIController
     {
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> ListTournaments()
         {
@@ -29,8 +28,9 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Create.Command{Tournament = tournament}));
         }
 
+        [Authorize(Policy = "IsHostRequirement")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditTournament(Guid id, Tournament tournament)
+        public async Task<IActionResult> EditTournament(Guid id, TournamentEditDto tournament)
         {
             return HandleResult(await Mediator.Send(new Edit.Command{Tournament = tournament, Id = id}));
         }

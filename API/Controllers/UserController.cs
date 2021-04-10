@@ -7,10 +7,10 @@ using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Persistence;
 
 namespace API.Controllers
 {
+    
     [ApiController]
     [Route("api/[controller]")]
     public class UserController: ControllerBase
@@ -28,7 +28,8 @@ namespace API.Controllers
             _signInManager = signInManager;
             _mapper = mapper;
         }
-
+        
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterUserDto userDto)
         {
@@ -50,7 +51,7 @@ namespace API.Controllers
 
             return Ok(CreateUserDto(newUser));
         }
-
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(RegisterUserDto userDto)
         {

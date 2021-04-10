@@ -16,7 +16,7 @@ namespace Application.Tournaments
     {
         public class Command: IRequest<Result<Unit>>
         {
-            public Tournament Tournament { get; set; }
+            public TournamentEditDto Tournament { get; set; }
             public Guid Id { get; set; }
         }
 
@@ -24,7 +24,7 @@ namespace Application.Tournaments
         {
             public CommandValidator()
             {
-                RuleFor(x=>x.Tournament).SetValidator(new TournamentValidator());
+                RuleFor(x=>x.Tournament).SetValidator(new TournamentEditDtoValidator());
             }
         }
 
@@ -42,7 +42,7 @@ namespace Application.Tournaments
                 var tournament = await _context.Tournaments.FindAsync(request.Id); 
                 if(tournament == null) return null;
                 
-                request.Tournament.Id = request.Id;
+                
                 _mapper.Map(request.Tournament, tournament);
                 
 
