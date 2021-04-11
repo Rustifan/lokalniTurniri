@@ -16,8 +16,10 @@ namespace Persistence
         public DbSet<Tournament> Tournaments { get; set; }
         public DbSet<Admin> Admins {get; set;}
 
+        public DbSet<Contestor> Contestors {get; set;}
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // Admin many to many setup
             builder.Entity<Admin>()
                 .HasKey(a=>new {a.AppUserId, a.TournamentId});
             builder.Entity<Admin>()
@@ -30,6 +32,19 @@ namespace Persistence
                 .WithMany(x=>x.Admins)
                 .HasForeignKey(x=>x.TournamentId);
             
+            //Contestor many to many relationship setup
+            
+                
+            builder.Entity<Contestor>()
+                .HasOne(x=>x.AppUser)
+                .WithMany(x=>x.TournamentContestor)
+                .HasForeignKey(x=>x.AppUserId);
+
+            builder.Entity<Contestor>()
+                .HasOne(x=>x.Tournament)
+                .WithMany(x=>x.Contestors)
+                .HasForeignKey(x=>x.TournamentId);
+
             base.OnModelCreating(builder);
         }
     }

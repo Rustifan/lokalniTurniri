@@ -11,5 +11,11 @@ namespace Application.Tournaments
         public DateTime Date { get; set; }
         public string HostUsername { get; set; }
         public List<string> Admins {get; set;}
+        public int ContestorNum { get; set; }
+        public bool ApplicationsClosed { get; set; }
+        public List<ContestorDto> Contestors { get; set; }
+
+
+
     }
 }

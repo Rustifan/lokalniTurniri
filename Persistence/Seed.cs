@@ -30,7 +30,8 @@ namespace Persistence
                 new AppUser{UserName = "Beki", Email="beki@test.com"},
                 new AppUser{UserName = "Miki", Email="miki@test.com"},
                 new AppUser{UserName = "Franka", Email="franka@test.com"},
-                new AppUser{UserName = "Milka", Email="milka@test.com"}
+                new AppUser{UserName = "Milka", Email="milka@test.com"},
+                new AppUser{UserName = "Bojan", Email="bojan@test.com"}
             };
 
             foreach(var user in users)
@@ -60,12 +61,54 @@ namespace Persistence
                     
                 };
                 tournament.Admins = new List<Admin>{new Admin{Tournament=tournament, User=host}};
+
+                //contestors generate
+
+                AddContestors(tournament, users);
+
                 tournaments.Add(tournament);
             }
+
 
             _context.Tournaments.AddRange(tournaments);
             await _context.SaveChangesAsync();
 
+        }
+
+        private static void AddContestors(Tournament tournament, List<AppUser> users)
+        {
+            var rand = new Random();
+            var numOfUserContestors = rand.Next(users.Count+1);
+            var usersCopy = new List<AppUser>(users);
+            
+            for(int i = 0; i < numOfUserContestors; i++)
+            {
+                var user = usersCopy[rand.Next(usersCopy.Count)];
+                var contestor = new Contestor
+                {
+                    AppUser = user,
+                    DisplayName = user.UserName,
+                    Tournament = tournament
+                };
+                usersCopy.Remove(user);
+                tournament.Contestors.Add(contestor);
+            }
+
+            var names = new List<string>{"Berislav", "Dinkec", "Ante Zanze", "Marelja", "Don Božo", "Pere"};
+            var numOfGuests = rand.Next(names.Count+1);
+
+            for(int i = 0; i < numOfGuests; i++)
+            {
+                var name = names[rand.Next(names.Count)];
+                var contestor = new Contestor
+                {
+                    AppUser = null,
+                    DisplayName = name,
+                    Tournament = tournament
+                };
+                tournament.Contestors.Add(contestor);
+                names.Remove(name);    
+            }
         }
     }
 }

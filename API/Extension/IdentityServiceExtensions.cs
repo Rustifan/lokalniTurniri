@@ -58,9 +58,14 @@ namespace API.Extension
                 {
                     policy.Requirements.Add(new IsHostRequirement());
                 });
+                opt.AddPolicy("IsAdminRequirement", policy=>
+                {
+                    policy.Requirements.Add(new IsTournamentAdminReqirement());
+                });
             });
 
             services.AddScoped<IAuthorizationHandler, IsTournamentHost>();
+            services.AddScoped<IAuthorizationHandler, IsTournamentAdminHandler>();
 
             return services;
         }

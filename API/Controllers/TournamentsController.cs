@@ -57,6 +57,27 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new RemoveAdmin.Command{Id=id, AdminName=adminName}));
         }        
+
+        [HttpPut("{id}/participate")]
+        public async Task<IActionResult> Participate(Guid id)
+        {
+            return HandleResult(await Mediator.Send(new Participate.Command{Id=id}));
+        }
+
+        [Authorize(Policy="IsAdminRequirement")]
+        [HttpPut("{id}/addContestor")]
+        public async Task<IActionResult> AddContestor(Guid id,[FromQuery] string name, [FromQuery]bool isGuest)
+        {
+            return HandleResult(await Mediator.Send(new AddContestor.Command{Id = id, Name=name, IsGuest=isGuest}));
+        }
+
+        [Authorize(Policy="IsAdminRequirement")]
+        [HttpPut("{id}/closeApplications")]
+        public async Task<IActionResult> CloseApplications(Guid id)
+        {
+            return HandleResult(await Mediator.Send(new CloseApplications.Command{Id=id}));
+        }
+
     }
 
 
