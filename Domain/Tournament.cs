@@ -13,5 +13,8 @@ namespace Domain
         public bool ApplicationsClosed { get; set; } = false;
         public ICollection<Admin> Admins {get; set;} = new List<Admin>();
         public ICollection<Contestor> Contestors { get; set; } = new List<Contestor>();
+        public ICollection<Game> Games { get; set; }
+        public int NumberOfRounds { get; set; }
+        public int CurrentRound { get; set; } = 0;
     }
 }

@@ -51,14 +51,14 @@ namespace Persistence
                 var host = users[rand.Next(users.Count)];
                 
                 
-
+                var numOfRounds = rand.Next(1,11);
                 var tournament = new Tournament
                 {
                     Sport = sport,
                     Location = location,
                     Date = date,
                     Host = host,
-                    
+                    NumberOfRounds = numOfRounds
                 };
                 tournament.Admins = new List<Admin>{new Admin{Tournament=tournament, User=host}};
 
@@ -68,6 +68,7 @@ namespace Persistence
 
                 tournaments.Add(tournament);
             }
+            
 
 
             _context.Tournaments.AddRange(tournaments);

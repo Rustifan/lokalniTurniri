@@ -17,6 +17,7 @@ namespace Persistence
         public DbSet<Admin> Admins {get; set;}
 
         public DbSet<Contestor> Contestors {get; set;}
+        public DbSet<Game> Games { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // Admin many to many setup
@@ -26,7 +27,8 @@ namespace Persistence
                 .HasOne(a=>a.User)
                 .WithMany(x=>x.TournamentsAdmin)
                 .HasForeignKey(x=>x.AppUserId);
-            
+
+
             builder.Entity<Admin>()
                 .HasOne(x=>x.Tournament)
                 .WithMany(x=>x.Admins)
@@ -45,7 +47,28 @@ namespace Persistence
                 .WithMany(x=>x.Contestors)
                 .HasForeignKey(x=>x.TournamentId);
 
+            //Games setup
+            builder.Entity<Game>()
+                .HasOne(x=>x.Tournament)
+                .WithMany(x=>x.Games)
+                .HasForeignKey(x=>x.TournamentId);
+                
+            builder.Entity<Game>()
+                .HasOne(x=>x.Contestor1)
+                .WithMany(x=>x.GamesAsContstor1)
+                .HasForeignKey(x=>x.Contestor1Id);
+            
+            builder.Entity<Game>()
+                .HasOne(x=>x.Contestor2)
+                .WithMany(x=>x.GamesAsContestor2)
+                .HasForeignKey(x=>x.Contestor2Id);
+            
+
+            // pass builder to parent class
             base.OnModelCreating(builder);
         }
+
+        
+        
     }
 }

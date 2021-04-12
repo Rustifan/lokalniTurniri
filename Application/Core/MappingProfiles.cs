@@ -17,6 +17,9 @@ namespace Application.Core
                 .ForMember(x=>x.ContestorNum, o=>o.MapFrom(x=>x.Contestors.Count));
             CreateMap<Contestor, ContestorDto>()
                 .ForMember(x=>x.Username, o=>o.MapFrom(x=>x.AppUser!=null? x.AppUser.UserName:null));
+            CreateMap<Game, GameDto>()
+                .ForMember(x=>x.Contestor1, o=>o.MapFrom(x=>x.Contestor1.DisplayName))
+                .ForMember(x=>x.Contestor2, o=>o.MapFrom(x=>x.Contestor2.DisplayName));
         }      
     }
 }

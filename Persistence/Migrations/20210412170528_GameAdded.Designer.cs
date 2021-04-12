@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistence;
@@ -9,9 +10,10 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210412170528_GameAdded")]
+    partial class GameAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,12 +118,6 @@ namespace Persistence.Migrations
                     b.Property<int>("Loses")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Rating")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("RoundPaused")
-                        .HasColumnType("boolean");
-
                     b.Property<Guid>("TournamentId")
                         .HasColumnType("uuid");
 
@@ -175,9 +171,6 @@ namespace Persistence.Migrations
                     b.Property<bool>("ApplicationsClosed")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("CurrentRound")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp without time zone");
 
@@ -186,9 +179,6 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Location")
                         .HasColumnType("text");
-
-                    b.Property<int>("NumberOfRounds")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Sport")
                         .HasColumnType("text");
