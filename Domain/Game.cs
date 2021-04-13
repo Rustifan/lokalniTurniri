@@ -11,6 +11,7 @@ namespace Domain
         public Contestor Contestor2 { get; set; }
         public Guid TournamentId { get; set; }
         public Tournament Tournament { get; set; }
+        public int Round { get; set; }
         public int Result { get; set; }
     }
 }

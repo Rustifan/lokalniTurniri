@@ -145,6 +145,8 @@ namespace Application.Tournaments
 
             private static void AddActiveGames(List<Contestor> contestors, Tournament tournament)
             {
+                tournament.CurrentRound++;
+
                 for(int i = 0; i < contestors.Count/2; i++)
                 {
                     var contestor1 = contestors[i];
@@ -154,11 +156,11 @@ namespace Application.Tournaments
                         Contestor1 = contestor1,
                         Contestor2 = contestor2,
                         Tournament = tournament,
-                        Result = -1
+                        Result = -1,
+                        Round = tournament.CurrentRound
                     };
                     tournament.Games.Add(game);
                 }
-                tournament.CurrentRound++;
             }
         }
 
