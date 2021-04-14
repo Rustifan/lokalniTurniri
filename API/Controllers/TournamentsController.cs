@@ -91,7 +91,7 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new GetActiveGames.Query{Id=id}));
         }
 
-        //PRotect route for admin only TODO
+        [Authorize(Policy="IsGameAdminRequirement")]
         [HttpPut("setGameResult/{gameId}")]
         public async Task<IActionResult> SetGameResult(Guid gameId, [FromQuery] int result)
         {

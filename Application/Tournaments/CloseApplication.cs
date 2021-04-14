@@ -28,6 +28,8 @@ namespace Application.Tournaments
                 var tournament = await _context.Tournaments.FirstOrDefaultAsync(x=>x.Id == request.Id, cancellationToken);
                 if(tournament == null) return null;
 
+                if(tournament.CurrentRound > 0) return Result<Unit>.Failed("Tournament already started");
+
                 tournament.ApplicationsClosed = !tournament.ApplicationsClosed;
                 var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 
