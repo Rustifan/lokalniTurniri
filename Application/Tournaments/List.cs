@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Application.Core;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using System;
 
 namespace Application.Tournaments
 {
@@ -33,6 +34,7 @@ namespace Application.Tournaments
                  .ProjectTo<TournamentDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
+                
                 if(tournaments == null) return null;
                 return Result<List<TournamentDto>>.Success(tournaments);
             }
