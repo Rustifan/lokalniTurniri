@@ -25,6 +25,7 @@ namespace Application.Tournaments
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
+            private readonly List<Game> _games = new(); 
             private readonly DataContext _context;
             public Handler(DataContext context)
             {
@@ -65,35 +66,39 @@ namespace Application.Tournaments
                     AssignAndRemovePausingContestor(contestorMap, scores);
                 }
 
+
                 //calculate Pairs
-                Contestor loner = null;
+                tournament.CurrentRound++;
+                var loners = new List<Contestor>();
+                
+
                 foreach(float score in scores)
                 {
-                    var contestorList = loner == null ? new List<Contestor>() : new List<Contestor>{loner}; 
                     var contestorsWithSameScore = contestorMap[score].OrderBy(x=>x.Rating).ToList();
+                    //create list vith loners first and new contestors
+                    var contestorList = new List<Contestor>(loners);
                     contestorList.AddRange(contestorsWithSameScore);
+                    loners = new List<Contestor>();
 
-                    if(contestorList.Count % 2 != 0)
-                    {
-                        loner = contestorList[^1];
-                        contestorList.Remove(loner);
-
-                    }
-                    else
-                    {
-                        loner = null;
-                    }
-
-                    AddActiveGames(contestorList, tournament);
                     
+
+                    AddActiveGames(contestorList, tournament, loners);
+                    
+                }
+
+                if(loners.Count > 0)
+                {
+                    //TODO
+                    return Result<Unit>.Failed("Loners Error ");
                 }
                 
 
 
 
-                
+                ////////////////////disable for testing////////////////////////////////////////
                 var result = await _context.SaveChangesAsync(cancellationToken) > 0;
                 if(!result) return Result<Unit>.Failed("Something went wrong while saving to database");
+                
                 return Result<Unit>.Success(Unit.Value);
                     
             }
@@ -112,7 +117,8 @@ namespace Application.Tournaments
                         {
                             contestor.RoundPaused = true;
                             contestor.Wins++;
-                            contestorList.Remove(contestor);
+                            
+                            contestorMap[scores[i]].Remove(contestor);
                             found = true;
                             break;
                         } 
@@ -143,24 +149,133 @@ namespace Application.Tournaments
                 }
             }
 
-            private static void AddActiveGames(List<Contestor> contestors, Tournament tournament)
+            private void AddActiveGames(List<Contestor> contestors, Tournament tournament, List<Contestor> loners)
             {
-                tournament.CurrentRound++;
-
-                for(int i = 0; i < contestors.Count/2; i++)
+                
+                if(contestors.Count == 1)
                 {
-                    var contestor1 = contestors[i];
-                    var contestor2 = contestors[i+contestors.Count/2];
-                    var game = new Game
+                    loners.Add(contestors[0]);
+                    return;
+                }
+                if(contestors.Count == 0) return;
+                SplitListInTwo(contestors, out List<Contestor> list1, out List<Contestor> list2);
+                
+                for(int i = 0; i < list1.Count && i < list2.Count; i++)
+                {
+                    for(int j = 0; j < list2.Count; j++)
                     {
-                        Contestor1 = contestor1,
+                        var contestor1 = list1[i];
+                        var contestor2 = list2[j];
+                        if(HasPlayedTogether(contestor1, contestor2))
+                        {
+                            if(ChangeWithPreviousGames(contestor1, contestor2, tournament))
+                            {
+                                list1.Remove(contestor1);
+                                list2.Remove(contestor2);
+                                i--;
+                                break;
+                            }
+                            continue;
+                        }
+
+                        var game = new Game
+                        {
+                            Contestor1 = contestor1,
+                            Contestor2 = contestor2,
+                            Tournament = tournament,
+                            Round = tournament.CurrentRound,
+                            Result = -1
+                        };
+                        _games.Add(game);
+
+                        contestor1.PlayedContestors.Add(contestor2.DisplayName);
+                        contestor2.PlayedContestors.Add(contestor1.DisplayName);
+
+                        tournament.Games.Add(game);
+                        list1.Remove(contestor1);
+                        list2.Remove(contestor2);
+                        i--;
+                        break;
+                    }
+                }
+                AddActiveGames(list1, tournament, loners);
+                AddActiveGames(list2, tournament, loners);
+
+            }
+
+            public static void SplitListInTwo(List<Contestor> list, out List<Contestor> list1, out List<Contestor> list2)
+            {
+                list1 = new List<Contestor>();
+                list2 = new List<Contestor>();
+                var halfOfList = (int)Math.Ceiling(list.Count/2.0f);
+
+                for(int i = 0; i < list.Count; i++)
+                {
+                    if(i < halfOfList) list1.Add(list[i]);
+                    else list2.Add(list[i]);    
+                }
+            }
+
+            public static bool HasPlayedTogether(Contestor contestor1, Contestor contestor2)
+            {
+                foreach(var playedName in contestor1.PlayedContestors)
+                {
+                    if(playedName == contestor2.DisplayName)
+                    {
+                        return true;
+                    }
+                }
+                
+                return false;
+
+            }
+
+            private bool ChangeWithPreviousGames(Contestor contestor1, Contestor contestor2, Tournament tournament)
+            {
+                
+                void SwapWithGame(Contestor contestor1, Contestor contestor2, Game game)
+                {
+                    game.Contestor1.PlayedContestors.RemoveAt(game.Contestor1.PlayedContestors.Count-1);
+                    game.Contestor2.PlayedContestors.RemoveAt(game.Contestor2.PlayedContestors.Count-1);
+
+                    var swapGame = new Game
+                    {
+                        Contestor1 = game.Contestor2,
                         Contestor2 = contestor2,
                         Tournament = tournament,
                         Result = -1,
                         Round = tournament.CurrentRound
                     };
-                    tournament.Games.Add(game);
+                    game.Contestor2 = contestor1;
+
+                    game.Contestor1.PlayedContestors.Add(game.Contestor2.DisplayName);
+                    game.Contestor2.PlayedContestors.Add(game.Contestor1.DisplayName);
+                    
+                    swapGame.Contestor1.PlayedContestors.Add(swapGame.Contestor2.DisplayName);
+                    swapGame.Contestor2.PlayedContestors.Add(swapGame.Contestor1.DisplayName);
+
+                    _games.Add(swapGame);
+                    tournament.Games.Add(swapGame);
                 }
+
+
+                for(int i = _games.Count-1; i >= 0; i--)
+                {
+                    var game = _games[i];
+                    if(!HasPlayedTogether(contestor1, game.Contestor1) && !HasPlayedTogether(contestor2, game.Contestor2))
+                    {
+                        SwapWithGame(contestor1, contestor2, game);
+                        return true;
+                    }
+
+                    if(!HasPlayedTogether(contestor1, game.Contestor2) && !HasPlayedTogether(contestor2, game.Contestor1))
+                    {
+                        SwapWithGame(contestor2, contestor1, game);
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
 

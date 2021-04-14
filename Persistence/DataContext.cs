@@ -1,8 +1,7 @@
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
-
+using System;
 
 namespace Persistence
 {
@@ -35,7 +34,6 @@ namespace Persistence
                 .HasForeignKey(x=>x.TournamentId);
             
             //Contestor many to many relationship setup
-            
                 
             builder.Entity<Contestor>()
                 .HasOne(x=>x.AppUser)

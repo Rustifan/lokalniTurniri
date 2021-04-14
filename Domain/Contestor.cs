@@ -18,6 +18,7 @@ namespace Domain
         public int Draws { get; set; } = 0;
         public float Score => Wins * 1 + Draws * 0.5f;
         public bool RoundPaused { get; set; } = false;
+        public List<string> PlayedContestors { get; set; } = new List<string>();
         public ICollection<Game> GamesAsContstor1 { get; set; }
         public ICollection<Game> GamesAsContestor2 {get; set; }
     }
