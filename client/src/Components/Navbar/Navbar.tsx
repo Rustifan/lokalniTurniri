@@ -6,9 +6,9 @@ import { Button, Container, Icon, Menu } from "semantic-ui-react"
 export default () => {
     return (
     <>
-    
+
         <Menu inverted className="navbar">
-            
+        <Container>    
                 <Menu.Item>
                     <Icon name="home"/>
                     <Link to="/">Home</Link>
@@ -16,7 +16,11 @@ export default () => {
                 <Menu.Item>
                     <Link to="tournaments">Tournaments</Link>
                 </Menu.Item>
-                 
+                <Menu.Item>
+                    <Link to="login">Login</Link>
+                </Menu.Item>
+                
+        </Container>
         </Menu>
     
     </>

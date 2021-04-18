@@ -19,6 +19,16 @@ namespace API.Extension
         {
             services.AddControllers()
                 .AddFluentValidation(x=>x.RegisterValidatorsFromAssemblyContaining<Application.Tournaments.Create>());
+            services.AddCors(options=>
+            {
+                options.AddPolicy("AllowLocalClient", builder=>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             services.AddHttpContextAccessor();
             services.AddDbContext<DataContext>(opt=>
             {

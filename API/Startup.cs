@@ -39,6 +39,7 @@ namespace API
             
 
             app.UseRouting();
+            app.UseCors("AllowLocalClient");
             app.UseAuthentication();
             app.UseAuthorization();
             

@@ -10,6 +10,7 @@ namespace API.Controllers
 {
     public class TournamentsController: BaseAPIController
     {
+        
         [HttpGet]
         public async Task<IActionResult> ListTournaments()
         {

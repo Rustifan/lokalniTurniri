@@ -1,17 +1,25 @@
-import React from 'react';
-import { Link, BrowserRouter as Router, Route, useHistory } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import {  Route,  Switch } from 'react-router-dom';
+import { Container } from 'semantic-ui-react';
 import './App.css';
 import Navbar from './Components/Navbar/Navbar';
-import {history} from "./index"
+import TournamentList from './Components/Tournaments/TournamentList';
+import Login from './Components/Users/Login';
 function App() {
-  
-  
 
-  return(
+  
+  return (
       <>
-        <Navbar/>
+      <Navbar />
+      <Container style={{ marginTop: 0 }}>
+        <Switch>
+          <Route path="/tournaments" component={TournamentList}/>
+          <Route path="/login" component={Login}></Route>
+          <Route path="/">Homer</Route>
+        </Switch>
+      </Container>
       </>
-  )
+)
 }
 
 export default App;
