@@ -3,6 +3,7 @@ import { Contestor } from "./Contestor";
 export interface Tournament
 {
     id: string;
+    name: string;
     sport: string;
     location: string;
     date: Date;

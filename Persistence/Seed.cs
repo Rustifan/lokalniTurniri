@@ -11,6 +11,9 @@ namespace Persistence
     public class Seed
     {
         private readonly List<string> Sports = new() { "balote", "šah", "potezanje konopa", "nogomet", "briškula", "bela", "guranje kamena"};
+        private readonly List<string> Names = new(){"nasmijani", "dobri", "sahranjeni", "kakovi", "postojani", "moderni", "domaći", "zastupljeni",
+        "kunkunski", "gospodnji", "lokalni", "gradski", "veliki", "mali", "koliki", "moj", "zub", "konkurentski",
+        "šepurinski", "anemični", "ajme", "najbolji", "mrki", "golemi", "sportski", "udri"};
         private readonly List<string> Locations = new(){"Zaton", "Prvić Šepurine", "Prvić Luka", "Tribunj"};
 
         private readonly DataContext _context;
@@ -50,10 +53,11 @@ namespace Persistence
                 DateTime date = DateTime.Now.AddDays(rand.Next(60));
                 var host = users[rand.Next(users.Count)];
                 
-                
+                var name = GetName();
                 var numOfRounds = rand.Next(1,11);
                 var tournament = new Tournament
                 {
+                    Name = name,
                     Sport = sport,
                     Location = location,
                     Date = date,
@@ -75,7 +79,27 @@ namespace Persistence
             await _context.SaveChangesAsync();
 
         }
+        private string GetName()
+        {
+            var rand = new Random();
+            var wordCount = rand.Next(1,4);
+            string name = "";
+            
+            var names = new List<string>(Names);
 
+            for(int i = 0; i < wordCount; i++)
+            {
+                int nameIndex = rand.Next(names.Count);
+
+                string word = i == 0 ? 
+                    char.ToUpper(names[nameIndex][0]) + names[nameIndex][1..] :
+                    names[nameIndex];  
+                name += i == wordCount-1 ? word : word + " ";
+                names.RemoveAt(nameIndex);
+            }
+            name += " turnir";
+            return name;
+        }
         private static void AddContestors(Tournament tournament, List<AppUser> users)
         {
             var rand = new Random();

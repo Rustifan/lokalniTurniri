@@ -4,6 +4,7 @@ import { Tournament } from "../App/Interfaces/Tournament";
 
 export class TournamentStore
 {
+    tournamentLoading = false;
     tournamentMap = new Map<string, Tournament>();    
     
     
@@ -14,6 +15,7 @@ export class TournamentStore
 
     loadTournaments = async ()=>
     {
+        this.tournamentLoading = true;
         try
         {
             const tournaments = await agent.Tournaments.get();
@@ -27,6 +29,10 @@ export class TournamentStore
         catch(err)
         {
             console.log(err);
+        }
+        finally
+        {
+            this.tournamentLoading = false;
         }
     }
 

@@ -1,35 +1,43 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react"
-import { Divider, Header } from "semantic-ui-react"
-import { User } from "../../App/Interfaces/User";
+import { Container, Grid, Header, Item } from "semantic-ui-react"
 import { store } from "../../Stores/store";
+import TournamentCard from "./TournamentCard";
 
 
-export default observer( ()=>
-{
-    const {tournamentStore} = store;
-    const {loadTournaments, tournamentList, tournamentMap} = tournamentStore;
-    const [user, setUser] = useState<User | null>(null);
+export default observer(() => {
+    const { tournamentStore } = store;
+    const { loadTournaments, tournamentList, tournamentMap } = tournamentStore;
 
-    store.userStore.getUser().then(value=>{setUser(value)});
 
-    useEffect(()=>
-    {
-        if(!tournamentMap.keys.length)
-        {
+
+
+    useEffect(() => {
+        if (!tournamentMap.keys.length) {
 
             loadTournaments();
         }
-        
-    },[loadTournaments])
 
-    return(
+    }, [loadTournaments])
+
+    return (
         <>
-            <Header as="h1">Tournaments</Header>
-            {tournamentList.map(tournament=>(
-                <div key={tournament.id}>{tournament.sport}</div>
-            ))}
-            {user && <div>{user.username}</div>}
+            <Grid>
+            <Grid.Column width="10">
+            <Header as="h1" textAlign="center">Turniri</Header>
+                
+                <Item.Group divided>
+                    {tournamentList.map(tournament => (
+                        <TournamentCard key={tournament.id} tournament={tournament} />
+                    ))}
+                </Item.Group>
+                
+            </Grid.Column>
+                <Header textAlign="center" as="h2">Filteri</Header>
+            <Grid.Column>
+            </Grid.Column>
+            
+            </Grid>
         </>
     )
 });
