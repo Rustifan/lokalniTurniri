@@ -22,7 +22,7 @@ export default () => {
                     
                 </Menu.Item>
                 <Menu.Item>
-                    <Link style={style} to="tournaments">Tournaments</Link>
+                    <Link style={style} to="/tournaments">Tournaments</Link>
                 </Menu.Item>
             
                 <Menu.Item color="teal" position="right">

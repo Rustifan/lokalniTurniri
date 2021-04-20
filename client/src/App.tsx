@@ -3,6 +3,7 @@ import {  Route,  Switch } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import './App.css';
 import Navbar from './Components/Navbar/Navbar';
+import TournamentDetails from './Components/Tournaments/TournamentDetails';
 import TournamentList from './Components/Tournaments/TournamentList';
 import Login from './Components/Users/Login';
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <Navbar />
       <Container style={{ marginTop: 0 }}>
         <Switch>
+          <Route path="/tournaments/:id" component={TournamentDetails} key="asd"/>
           <Route path="/tournaments" component={TournamentList}/>
           <Route path="/login" component={Login}></Route>
           <Route path="/">Homer</Route>

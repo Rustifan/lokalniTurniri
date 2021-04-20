@@ -24,7 +24,8 @@ const Users =
 
 const Tournaments = 
 {
-    get: ()=>{return instance.get<Tournament[]>("/tournaments").then((value)=>value.data)}
+    get: ()=>{return instance.get<Tournament[]>("/tournaments").then((value)=>value.data)},
+    details: (id:string)=>instance.get<Tournament>("/tournaments/"+id).then(value=>value.data)
 }
 
 export const agent = 

@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom";
 import { Button, Icon, Image, Item, Label, List, Message } from "semantic-ui-react";
 import { Tournament } from "../../App/Interfaces/Tournament";
 import UserAvatar from "../Users/UserAvatar";
@@ -53,17 +54,18 @@ export default function TournamentCard({tournament}: Props)
     
         <List horizontal>
             
-                {tournament.admins.map((admin=>(
+                {tournament.admins.map(((admin, i)=>(
                   
-                    <List.Item>
+                    <List.Item key={i}>
                     
                         <UserAvatar user={admin} highlited={tournament.hostUsername === admin}/>
-                     </List.Item>)
+                    </List.Item>)
 
                 ))}
                 
         </List>
-         <Button floated="right" primary content="Prijavi se"/>
+        <Button as={Link} to={`/tournaments/${tournament.id}`} floated="right" color="green" content="Pogledaj"/>
+        <Button floated="right" primary content="Prijavi se"/>
         </Item.Extra>
       </Item.Content>
     </Item>

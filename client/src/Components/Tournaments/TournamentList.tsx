@@ -33,8 +33,8 @@ export default observer(() => {
                 </Item.Group>
                 
             </Grid.Column>
-                <Header textAlign="center" as="h2">Filteri</Header>
             <Grid.Column>
+                <Header textAlign="center" as="h2">Filteri</Header>
             </Grid.Column>
             
             </Grid>

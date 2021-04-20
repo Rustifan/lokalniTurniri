@@ -1,4 +1,4 @@
-import {makeAutoObservable} from "mobx";
+import {makeAutoObservable, runInAction} from "mobx";
 import { agent } from "../App/agent";
 import { Tournament } from "../App/Interfaces/Tournament";
 
@@ -6,6 +6,7 @@ export class TournamentStore
 {
     tournamentLoading = false;
     tournamentMap = new Map<string, Tournament>();    
+    selectedTournament: Tournament | undefined = undefined;
     
     
     constructor()
@@ -45,5 +46,36 @@ export class TournamentStore
     get tournamentList()
     {
         return Array.from(this.tournamentMap.values());
+    }
+
+    selectTornament = async (id: string)=>
+    {
+        this.tournamentLoading = true;
+        let tournament = this.tournamentMap.get(id);
+        if(!tournament)
+        {
+            try
+            {
+                tournament = await agent.Tournaments.details(id);
+            }
+            catch(err)
+            {
+                console.log(err);
+            }
+            
+        }              
+        
+        runInAction(()=>
+        {
+                this.selectedTournament = tournament; 
+
+                this.tournamentLoading = false;
+        });
+        
+    }
+
+    deselectTournament = ()=>
+    {
+        this.selectedTournament = undefined;
     }
 }
