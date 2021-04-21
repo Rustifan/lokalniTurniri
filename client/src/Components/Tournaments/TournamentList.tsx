@@ -23,8 +23,8 @@ export default observer(() => {
     return (
         <>
             <Grid>
-            <Grid.Column width="10">
-            <Header as="h1" textAlign="center">Turniri</Header>
+            <Grid.Column width="12">
+            <Header as="h1" style={{padding: 20}} textAlign="center">Turniri</Header>
                 
                 <Item.Group divided>
                     {tournamentList.map(tournament => (

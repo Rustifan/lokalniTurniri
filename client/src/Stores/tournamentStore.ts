@@ -57,6 +57,7 @@ export class TournamentStore
             try
             {
                 tournament = await agent.Tournaments.details(id);
+                tournament.date = new Date(tournament.date);
             }
             catch(err)
             {
