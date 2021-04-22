@@ -5,6 +5,7 @@ import { Image, Header, Segment, Dimmer, Grid, Label, Container, GridColumn } fr
 import PictureFromSport from "../../App/Tools/pictureFromSoprt";
 import { store } from "../../Stores/store";
 import TournamentCard from "./TournamentCard";
+import TournamentDetailsContestors from "./TournamentDetailsContestors";
 import TournamentDetailsHeader from "./TournamentDetailsHeader";
 
 interface Params {
@@ -31,9 +32,12 @@ export default observer(function TournamentDetails() {
         <>
             {selectedTournament &&
 
-                <Grid>
+                <Grid style={{marginTop: 50}}>
                     <Grid.Column width="10">
                         <TournamentDetailsHeader tournament={selectedTournament}/>
+                    </Grid.Column>
+                    <Grid.Column width="5">
+                        <TournamentDetailsContestors contestors={selectedTournament.contestors}/>
                     </Grid.Column>
                 </Grid>
                 

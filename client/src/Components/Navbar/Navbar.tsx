@@ -27,7 +27,7 @@ export default () => {
             
                 <Menu.Item color="teal" position="right">
                     <Icon name="user"/>
-                    <Link style={style} to="login">Login</Link>
+                    <Link style={style} to="/login">Login</Link>
                 </Menu.Item>
         </Container>
         </Menu>
