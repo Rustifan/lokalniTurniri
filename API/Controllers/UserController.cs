@@ -45,6 +45,7 @@ namespace API.Controllers
             if(await _userManager.FindByEmailAsync(newUser.Email) != null) return BadRequest("Email already taken");
 
             var result = await _userManager.CreateAsync(newUser, userDto.Password);
+            
             if(!result.Succeeded) return BadRequest("Failed to create new user");
 
 

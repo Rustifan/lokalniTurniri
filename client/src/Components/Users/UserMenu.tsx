@@ -1,6 +1,5 @@
 import { observer } from "mobx-react-lite"
 import React from "react"
-import { Link } from "react-router-dom"
 import { Button, Dropdown } from "semantic-ui-react"
 import { store } from "../../Stores/store"
 
@@ -30,7 +29,7 @@ export default observer(() => {
                     <Dropdown.Item as={Button} onClick={()=>userStore.setLoginModalOpen(true)}>
                         Login
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/login">
+                    <Dropdown.Item as={Button} onClick={()=>userStore.setRegisterModalOpen(true)}>
                         Register
                     </Dropdown.Item>
                     

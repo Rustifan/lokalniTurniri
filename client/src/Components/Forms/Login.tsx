@@ -1,4 +1,4 @@
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 
 import { observer } from "mobx-react-lite"
 import React from "react"
@@ -31,7 +31,7 @@ export default observer(()=>
            
         <Modal centered style={{width: "50%", maxWidth: "400px"}} open={userStore.loginModalOpen}>
             <Modal.Header>
-                <Header textAlign="center">Login</Header>
+                <Header textAlign="center">Ulogiraj se</Header>
             </Modal.Header>
             <Modal.Content>
             <Formik  validationSchema={validationSchema} initialValues={initialValues} onSubmit={async (values)=>userStore.login(values)}>

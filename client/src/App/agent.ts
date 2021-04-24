@@ -1,6 +1,6 @@
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { Tournament } from "./Interfaces/Tournament";
-import { LoginForm, User } from "./Interfaces/User";
+import { LoginForm, RegisterDto, User } from "./Interfaces/User";
 
 const instance = axios.create({baseURL: "http://localhost:5000/api"});
 
@@ -11,8 +11,11 @@ function sleep(ms: number) {
 instance.interceptors.response.use(async (config)=>
 {
     await sleep(2000);
-
+    
     return config;
+},(error: AxiosError)=>
+{
+    console.dir(error);
 })
 
 instance.interceptors.request.use(config=>
@@ -28,6 +31,7 @@ instance.interceptors.request.use(config=>
 
 const Users = 
 {
+    register: (registerDto: RegisterDto)=>instance.post<User>("/user/register", registerDto).then(value=>value.data),
     login: (loginForm: LoginForm)=>instance.post<User>("/user/login", loginForm).then(value=>value.data),
     getCurrentUser: () => instance.get<User>("/user").then(value=>value.data)
 }

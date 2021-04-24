@@ -7,6 +7,7 @@ import TournamentDetails from './Components/Tournaments/TournamentDetails';
 import TournamentList from './Components/Tournaments/TournamentList';
 import Login from './Components/Forms/Login';
 import { store } from './Stores/store';
+import Register from './Components/Forms/Register';
 function App() {
 
   const {userStore} = store;
@@ -20,6 +21,7 @@ function App() {
       <>
       <Navbar />
       <Login/>
+      <Register/>
       <Container style={{ marginTop: 0 }}>
         <Switch>
           <Route path="/tournaments/:id" component={TournamentDetails} key="asd"/>

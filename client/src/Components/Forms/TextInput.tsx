@@ -16,7 +16,7 @@ export default function TextInput(props: Props)
     const [field, meta] = useField(props.name)
     
     return(
-        <Form.Field error={meta.error && meta.error}>
+        <Form.Field error={meta.error && meta.touched}>
         
             <input {...field} {...props}/>
             {meta.error && meta.touched &&

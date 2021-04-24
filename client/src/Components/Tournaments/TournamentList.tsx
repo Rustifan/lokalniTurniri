@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react"
 import { Grid, Header, Item } from "semantic-ui-react"
 import { store } from "../../Stores/store";
-import { UserStore } from "../../Stores/userStore";
 import TournamentCard from "./TournamentCard";
 
 

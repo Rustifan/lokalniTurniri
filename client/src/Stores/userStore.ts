@@ -1,17 +1,45 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { agent } from "../App/agent";
-import { LoginForm, User } from "../App/Interfaces/User";
+import { LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
 
 export class UserStore
 {
     user: User | null = null;
     loadingUser = false;
     loginModalOpen = false;
+    registerModalOpen = false;
     
 
     constructor()
     {
         makeAutoObservable(this);
+    }
+
+    register = async (registerForm: RegisterForm)=>
+    {
+        this.loadingUser = true;
+        try
+        {
+            const user = await agent.Users.register(new RegisterDto(registerForm));
+            localStorage.setItem("jwt", user.token);
+            runInAction(()=>
+            {
+                this.user= user;
+                this.registerModalOpen = false;
+            });
+            
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>
+            {
+                this.loadingUser = false;
+            })
+        }
     }
 
     login = async (loginForm: LoginForm) =>
@@ -21,7 +49,11 @@ export class UserStore
         {
             const user = await agent.Users.login(loginForm);
             localStorage.setItem("jwt", user.token);
-            this.user = user;
+            runInAction(()=>
+            {
+                this.user = user;
+            });
+
             this.setLoginModalOpen(false);
         }
         catch(err)
@@ -76,6 +108,11 @@ export class UserStore
     setLoginModalOpen = (open: boolean)=>
     {
         this.loginModalOpen = open;
+    }
+
+    setRegisterModalOpen = (open: boolean)=>
+    {
+        this.registerModalOpen = open;
     }
     
 }
