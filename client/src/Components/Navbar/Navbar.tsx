@@ -1,10 +1,14 @@
 
 import React from "react"
 import { Link } from "react-router-dom"
-import {  Button, Container, Icon, Label, Menu } from "semantic-ui-react"
+import { Container, Icon, Menu } from "semantic-ui-react"
+import UserMenu from "../Users/UserMenu"
 
-export default () => {
+export default function Navbar()
+{
     
+
+
     const style = 
     {
         fontSize: 20
@@ -18,16 +22,15 @@ export default () => {
                 <Menu.Item>
                     
                     <Icon name="home"/>
-                    <Link style={style} to="/">Home</Link>
+                    <Link style={style} to="/">Lokalni Turniri</Link>
                     
                 </Menu.Item>
                 <Menu.Item>
-                    <Link style={style} to="/tournaments">Tournaments</Link>
+                    <Link style={style} to="/tournaments">Turniri</Link>
                 </Menu.Item>
             
                 <Menu.Item color="teal" position="right">
-                    <Icon name="user"/>
-                    <Link style={style} to="/login">Login</Link>
+                    <UserMenu/>
                 </Menu.Item>
         </Container>
         </Menu>

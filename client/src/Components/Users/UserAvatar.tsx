@@ -1,7 +1,6 @@
 import React from "react"
 import { Popup, Image } from "semantic-ui-react"
 import { userIcon } from "../../App/Core/Constants"
-import { User } from "../../App/Interfaces/User"
 
 interface Props
 {
@@ -10,7 +9,7 @@ interface Props
 
 }
 
-export default function({user, highlited=false}: Props)
+export default function UserAvatar({user, highlited=false}: Props)
 {
     return (
         

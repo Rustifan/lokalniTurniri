@@ -1,12 +1,13 @@
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react"
-import { Container, Grid, Header, Item } from "semantic-ui-react"
+import React, { useEffect } from "react"
+import { Grid, Header, Item } from "semantic-ui-react"
 import { store } from "../../Stores/store";
+import { UserStore } from "../../Stores/userStore";
 import TournamentCard from "./TournamentCard";
 
 
 export default observer(() => {
-    const { tournamentStore } = store;
+    const { tournamentStore, userStore } = store;
     const { loadTournaments, tournamentList, tournamentMap } = tournamentStore;
 
 
@@ -18,7 +19,7 @@ export default observer(() => {
             loadTournaments();
         }
 
-    }, [loadTournaments])
+    }, [loadTournaments, tournamentMap.keys.length, userStore.user])
 
     return (
         <>

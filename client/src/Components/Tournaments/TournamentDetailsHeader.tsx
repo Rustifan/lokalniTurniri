@@ -1,7 +1,6 @@
 import { format } from "date-fns"
 import React from "react"
-import { Segment, Image, Button, Item, Header } from "semantic-ui-react"
-import { textSpanContainsTextSpan } from "typescript"
+import { Segment, Image, Button, Item} from "semantic-ui-react"
 import { Tournament } from "../../App/Interfaces/Tournament"
 import PictureFromSport from "../../App/Tools/pictureFromSoprt"
 

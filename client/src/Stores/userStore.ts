@@ -4,8 +4,9 @@ import { LoginForm, User } from "../App/Interfaces/User";
 
 export class UserStore
 {
-    private user: User | null = null;
+    user: User | null = null;
     loadingUser = false;
+    loginModalOpen = false;
     
 
     constructor()
@@ -20,6 +21,8 @@ export class UserStore
         {
             const user = await agent.Users.login(loginForm);
             localStorage.setItem("jwt", user.token);
+            this.user = user;
+            this.setLoginModalOpen(false);
         }
         catch(err)
         {
@@ -37,14 +40,17 @@ export class UserStore
     logout = ()=>
     {
         localStorage.removeItem("jwt");
+        this.user= null;
     }
 
     getUser = async ()=>
     {
         if(this.user) return this.user;
-
+        
+        if(!localStorage.getItem("jwt")) return null;
+        
         this.loadingUser = true;
-
+        
         try
         {
             const user = await agent.Users.getCurrentUser();
@@ -65,6 +71,11 @@ export class UserStore
             });
             return this.user;
         }
+    }
+
+    setLoginModalOpen = (open: boolean)=>
+    {
+        this.loginModalOpen = open;
     }
     
 }

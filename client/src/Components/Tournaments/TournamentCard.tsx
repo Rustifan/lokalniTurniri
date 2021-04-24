@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import React from "react"
 import { Link } from "react-router-dom";
-import { Button, Icon, Image, Item, Label, List, Message, Segment } from "semantic-ui-react";
+import { Button, Icon,  Item, Label, List, Message } from "semantic-ui-react";
 import { Tournament } from "../../App/Interfaces/Tournament";
 import PictureFromSport from "../../App/Tools/pictureFromSoprt";
 import UserAvatar from "../Users/UserAvatar";

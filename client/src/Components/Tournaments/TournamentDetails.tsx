@@ -1,10 +1,9 @@
+import React from "react"
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { useParams } from "react-router"
-import { Image, Header, Segment, Dimmer, Grid, Label, Container, GridColumn } from "semantic-ui-react";
-import PictureFromSport from "../../App/Tools/pictureFromSoprt";
+import { Grid } from "semantic-ui-react";
 import { store } from "../../Stores/store";
-import TournamentCard from "./TournamentCard";
 import TournamentDetailsContestors from "./TournamentDetailsContestors";
 import TournamentDetailsHeader from "./TournamentDetailsHeader";
 
@@ -19,12 +18,8 @@ export default observer(function TournamentDetails() {
         selectTornament(id);
 
         return deselectTournament;
-    }, [selectTornament])
+    }, [selectTornament, deselectTournament, id])
 
-    const marginBottom=
-    {
-        marginBottom: 10
-    }
 
 
     if (tournamentLoading) return (<div>load</div>)
