@@ -28,7 +28,12 @@ export default function Navbar()
                 <Menu.Item>
                     <Link style={style} to="/tournaments">Turniri</Link>
                 </Menu.Item>
-            
+                 {process.env.NODE_ENV === "development" &&
+                <Menu.Item>
+                    <Link style={style} to="/errorTesting">Error Testing</Link>
+                </Menu.Item>
+                 }
+
                 <Menu.Item color="teal" position="right">
                     <UserMenu/>
                 </Menu.Item>

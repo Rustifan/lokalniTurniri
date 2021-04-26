@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik"
 import React from "react"
-import { Button, Header, Modal } from "semantic-ui-react"
+import { Button, Header, Message, Modal } from "semantic-ui-react"
 import { RegisterForm } from "../../App/Interfaces/User"
 import * as Yup from "yup"
 import TextInput from "./TextInput"
@@ -62,6 +62,14 @@ export default observer(function Register()
                         </Form>
                     )}            
                 </Formik>
+                {
+                    store.errorStore.loginRegisterError &&
+                    <Message 
+                        error
+                        onDismiss={store.errorStore.removeLoginRegisterError}>
+                            {store.errorStore.loginRegisterError}
+                    </Message>
+                }
             </Modal.Content>
         </Modal>
     )

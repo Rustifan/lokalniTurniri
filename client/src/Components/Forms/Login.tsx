@@ -5,7 +5,7 @@ import React from "react"
 import { LoginForm } from "../../App/Interfaces/User";
 import {store} from "../../Stores/store"
 import * as Yup from "yup"
-import { Button,  Header, Modal } from "semantic-ui-react";
+import { Button,  Header, Message, Modal } from "semantic-ui-react";
 import TextInput from "./TextInput";
 
 export default observer(()=>
@@ -29,7 +29,10 @@ export default observer(()=>
 
     return(
            
-        <Modal centered style={{width: "50%", maxWidth: "400px"}} open={userStore.loginModalOpen}>
+        <Modal 
+            centered 
+            style={{width: "50%", maxWidth: "400px"}} 
+            open={userStore.loginModalOpen}>
             <Modal.Header>
                 <Header textAlign="center">Ulogiraj se</Header>
             </Modal.Header>
@@ -52,6 +55,14 @@ export default observer(()=>
             }
 
         </Formik>
+            {
+                store.errorStore.loginRegisterError &&
+                <Message 
+                    error
+                    onDismiss={store.errorStore.removeLoginRegisterError}>
+                        {store.errorStore.loginRegisterError}
+                </Message>
+            }
             </Modal.Content>
         </Modal>
        

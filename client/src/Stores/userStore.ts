@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { agent } from "../App/agent";
 import { LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
+import { store } from "./store";
 
 export class UserStore
 {
@@ -107,12 +108,15 @@ export class UserStore
 
     setLoginModalOpen = (open: boolean)=>
     {
+        store.errorStore.removeLoginRegisterError();
         this.loginModalOpen = open;
     }
 
     setRegisterModalOpen = (open: boolean)=>
     {
+        store.errorStore.removeLoginRegisterError();
         this.registerModalOpen = open;
+
     }
     
 }

@@ -40,9 +40,9 @@ namespace API.Controllers
             };
 
             
-            if(await _userManager.FindByNameAsync(newUser.UserName) != null) return BadRequest("Username already exist");
+            if(await _userManager.FindByNameAsync(newUser.UserName) != null) return BadRequest(new{userError=true, message = "Ime je već zauzeto"});
 
-            if(await _userManager.FindByEmailAsync(newUser.Email) != null) return BadRequest("Email already taken");
+            if(await _userManager.FindByEmailAsync(newUser.Email) != null) return BadRequest(new{userError=true, message = "Email je već zauzet"});
 
             var result = await _userManager.CreateAsync(newUser, userDto.Password);
             
@@ -54,13 +54,13 @@ namespace API.Controllers
         }
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login(RegisterUserDto userDto)
+        public async Task<IActionResult> Login(LoginUserDto userDto)
         {
             var user = await _userManager.FindByEmailAsync(userDto.Email);
-            if(user == null) return Unauthorized("Wrong Email or Password");
+            if(user == null) return BadRequest(new{userError=true, message = "Pogrešan email ili zaporka!"});
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, userDto.Password, false);
-            if(!result.Succeeded) return Unauthorized("Wrong Email or Password");
+            if(!result.Succeeded) return BadRequest(new{userError=true, message = "Pogrešan email ili zaporka!"});
 
             return Ok(CreateUserDto(user));
         }

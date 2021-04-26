@@ -7,10 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace API.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     [Route("api/[controller]")]
-    public class BaseAPIController: Controller
+    public class BaseAPIController: ControllerBase
     {
         private IMediator _mediator;
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<IMediator>();

@@ -8,3 +8,9 @@ body
     background: rgb(33,117,255) !important;
     background: linear-gradient(58deg, rgba(33,117,255,1) 11%, rgba(131,255,0,1) 100%) !important;
 }
+
+.serverError
+{
+    white-space: pre-line;
+    font-size: 15px;
+}
