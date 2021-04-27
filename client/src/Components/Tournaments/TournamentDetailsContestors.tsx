@@ -1,5 +1,4 @@
 import React from "react"
-import { Link } from "react-router-dom"
 import { Header, Item, Segment } from "semantic-ui-react"
 import { userIcon } from "../../App/Core/Constants"
 import { Contestor } from "../../App/Interfaces/Contestor"
@@ -20,7 +19,7 @@ export default function TournamentDetailsContestors({ contestors }: Props) {
                 <Item.Group divided>
                     {contestors.map((contestor) => (
 
-                        <Item as={contestor.username? Link: Item}>
+                        <Item key={contestor.displayName}>
                             <Item.Image size="tiny" src={userIcon} />
                             <Item.Content>
                                 <Header>

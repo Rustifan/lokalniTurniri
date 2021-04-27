@@ -20,7 +20,7 @@ export default observer(function TournamentDetails() {
         return deselectTournament;
     }, [selectTornament, deselectTournament, id])
 
-
+    console.log("Is admin: "+store.tournamentStore.isAdmin());
 
     if (tournamentLoading) return (<div>load</div>)
     return (

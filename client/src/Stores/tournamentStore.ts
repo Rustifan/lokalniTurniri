@@ -1,6 +1,7 @@
 import {makeAutoObservable, runInAction} from "mobx";
 import { agent } from "../App/agent";
 import { Tournament } from "../App/Interfaces/Tournament";
+import { store } from "./store";
 
 export class TournamentStore
 {
@@ -79,4 +80,18 @@ export class TournamentStore
     {
         this.selectedTournament = undefined;
     }
+
+    isAdmin = ()=>
+    {
+        if(!this.selectedTournament || !store.userStore.user) return false;
+
+        const admins = this.selectedTournament.admins;
+        const user = store.userStore.user;
+        for(const admin of admins)
+        {
+            if(user.username === admin) return true;
+        }
+        return false;
+    }
+
 }
