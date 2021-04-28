@@ -13,6 +13,7 @@ import NotFoundPage from './Components/Errors/NotFound';
 import FlashError from './Components/Errors/FlashError';
 import { observer } from 'mobx-react-lite';
 import { history } from '.';
+import CreateTournamentForm from './Components/Forms/CreateTournament';
 function App() {
 
   const {userStore, errorStore} = store;
@@ -43,6 +44,7 @@ function App() {
           <Route exact path="/">Homer</Route>
           <Route path="/tournaments/:id" component={TournamentDetails} key="asd"/>
           <Route path="/tournaments" component={TournamentList}/>
+          <Route path="/createTournament" component={CreateTournamentForm}/>
           <Route path="/errorTesting" component={ErrorTesting}/>
           <Route component={NotFoundPage}/>
         </Switch>

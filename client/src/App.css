@@ -14,3 +14,8 @@ body
     white-space: pre-line;
     font-size: 15px;
 }
+
+.react-datepicker-wrapper
+{
+    width: 100%;
+}

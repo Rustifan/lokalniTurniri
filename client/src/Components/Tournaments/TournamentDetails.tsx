@@ -2,10 +2,11 @@ import React from "react"
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react"
 import { useParams } from "react-router"
-import { Grid } from "semantic-ui-react";
+import { Container, Grid } from "semantic-ui-react";
 import { store } from "../../Stores/store";
 import TournamentDetailsContestors from "./TournamentDetailsContestors";
 import TournamentDetailsHeader from "./TournamentDetailsHeader";
+import LoadingComponent from "../Loading/LoadingComponent";
 
 interface Params {
     id: string;
@@ -13,19 +14,19 @@ interface Params {
 
 export default observer(function TournamentDetails() {
     const { id } = useParams<Params>();
-    const { tournamentStore: { selectTornament, selectedTournament, deselectTournament, tournamentLoading } } = store;
+    const { tournamentStore: { selectTornament, selectedTournament, deselectTournament } } = store;
     useEffect(() => {
         selectTornament(id);
 
         return deselectTournament;
     }, [selectTornament, deselectTournament, id])
 
-    console.log("Is admin: "+store.tournamentStore.isAdmin());
 
-    if (tournamentLoading) return (<div>load</div>)
+    
     return (
         <>
-            {selectedTournament &&
+            
+            {selectedTournament ?
 
                 <Grid style={{marginTop: 50}}>
                     <Grid.Column width="10">
@@ -35,7 +36,10 @@ export default observer(function TournamentDetails() {
                         <TournamentDetailsContestors contestors={selectedTournament.contestors}/>
                     </Grid.Column>
                 </Grid>
-                
+                :
+                <Container style={{height: 500}}>
+                    <LoadingComponent text="Učitavanje turnira"/>
+                </Container>
 
             }
         </>

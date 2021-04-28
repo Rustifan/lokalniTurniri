@@ -8,6 +8,7 @@ interface Props
     placeholder: string;
     value?: string;
     type?: string;
+    
 }
 
 
@@ -17,8 +18,8 @@ export default function TextInput(props: Props)
     
     return(
         <Form.Field error={meta.error && meta.touched}>
-        
-            <input {...field} {...props}/>
+           
+            <input autoComplete="off" {...field} {...props}/>
             {meta.error && meta.touched &&
             (<Label basic color="red">{meta.error}</Label>)}
         </Form.Field>

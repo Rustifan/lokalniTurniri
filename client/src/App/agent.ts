@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios"
 import { history } from "..";
 import { store } from "../Stores/store";
-import { Tournament } from "./Interfaces/Tournament";
+import { CreateTournament, Tournament } from "./Interfaces/Tournament";
 import { LoginForm, RegisterDto, User } from "./Interfaces/User";
 
 const instance = axios.create({baseURL: "http://localhost:5000/api"});
@@ -82,7 +82,8 @@ const Users =
 const Tournaments = 
 {
     get: ()=>{return instance.get<Tournament[]>("/tournaments").then((value)=>value.data)},
-    details: (id:string)=>instance.get<Tournament>("/tournaments/"+id).then(value=>value.data)
+    details: (id:string)=>instance.get<Tournament>("/tournaments/"+id).then(value=>value.data),
+    create: (tournament: CreateTournament)=>instance.post("/tournaments", tournament)
 }
 
 export const agent = 

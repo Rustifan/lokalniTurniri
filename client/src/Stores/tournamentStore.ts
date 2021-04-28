@@ -1,14 +1,14 @@
 import {makeAutoObservable, runInAction} from "mobx";
 import { agent } from "../App/agent";
-import { Tournament } from "../App/Interfaces/Tournament";
+import { CreateTournament, Tournament } from "../App/Interfaces/Tournament";
 import { store } from "./store";
-
+import {v4 as uuid} from "uuid"
 export class TournamentStore
 {
     tournamentLoading = false;
     tournamentMap = new Map<string, Tournament>();    
     selectedTournament: Tournament | undefined = undefined;
-    
+    creatingTournament = false;    
     
     constructor()
     {
@@ -21,9 +21,10 @@ export class TournamentStore
         try
         {
             const tournaments = await agent.Tournaments.get();
+            
             tournaments.forEach(tournament=>
             {
-
+                
                 this.addToTournamentMap(tournament);
             });
             
@@ -34,7 +35,11 @@ export class TournamentStore
         }
         finally
         {
-            this.tournamentLoading = false;
+            runInAction(()=>
+            {
+                
+                this.tournamentLoading = false;
+            });
         }
     }
 
@@ -65,7 +70,8 @@ export class TournamentStore
                 console.log(err);
             }
             
-        }              
+        }
+                  
         
         runInAction(()=>
         {
@@ -74,6 +80,33 @@ export class TournamentStore
                 this.tournamentLoading = false;
         });
         
+    }
+
+    createTournament = async (createdTournament: CreateTournament)=>
+    {
+        this.creatingTournament = true;
+        const id = uuid();
+        createdTournament.id = id;
+        try
+        {
+            await agent.Tournaments.create(createdTournament);
+            if(this.ifLoaded())
+            {
+               const tournament = new Tournament(createdTournament);
+               this.addToTournamentMap(tournament);
+        
+            }
+
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>this.creatingTournament === false);
+        }
+
     }
 
     deselectTournament = ()=>
@@ -92,6 +125,12 @@ export class TournamentStore
             if(user.username === admin) return true;
         }
         return false;
+    }
+
+    ifLoaded = ()=>
+    {
+       
+        return this.tournamentMap.size !== 0;
     }
 
 }
