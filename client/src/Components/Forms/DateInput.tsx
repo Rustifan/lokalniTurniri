@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import hr from "date-fns/locale/hr"
 
 
-import { Label } from "semantic-ui-react";
+import { Form, Label } from "semantic-ui-react";
 
 interface Props
 {
@@ -25,16 +25,18 @@ export default function DateInput({name}: Props)
         helpers.setTouched(true);
         
     }
+
+    
     
     return(
-        <>
+        <Form.Field>
             <DatePicker
                 dateFormat="dd. MMMM, yyyy. '  u ' HH:mm" 
                 locale={"hr"}
-                showTimeInput 
-                timeInputLabel="Vrijeme: "
+                showTimeSelect
+                timeCaption="Vrijeme" 
                 timeFormat="HH:mm"
-
+                timeIntervals={15}
                 minDate={new Date()} 
                 name={name} 
                 selected={field.value} 
@@ -45,7 +47,7 @@ export default function DateInput({name}: Props)
             {meta.error && meta.touched &&
             (<Label basic color="red">{meta.error}</Label>)}
             
-        </>
+        </Form.Field>
     )
 }
 

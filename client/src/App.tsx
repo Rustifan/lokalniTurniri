@@ -14,6 +14,7 @@ import FlashError from './Components/Errors/FlashError';
 import { observer } from 'mobx-react-lite';
 import { history } from '.';
 import CreateTournamentForm from './Components/Forms/CreateTournament';
+import EditTournament from './Components/Forms/EditTournament';
 function App() {
 
   const {userStore, errorStore} = store;
@@ -42,7 +43,8 @@ function App() {
       <Container style={{ marginTop: 0 }}>
         <Switch>
           <Route exact path="/">Homer</Route>
-          <Route path="/tournaments/:id" component={TournamentDetails} key="asd"/>
+          <Route exact path="/tournaments/:id" component={TournamentDetails}/>
+          <Route exact path="/tournaments/:id/edit" component={EditTournament}/>
           <Route path="/tournaments" component={TournamentList}/>
           <Route path="/createTournament" component={CreateTournamentForm}/>
           <Route path="/errorTesting" component={ErrorTesting}/>

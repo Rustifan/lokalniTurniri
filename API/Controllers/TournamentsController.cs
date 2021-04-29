@@ -36,7 +36,7 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Edit.Command{Tournament = tournament, Id = id}));
         }
 
-        [Authorize(Policy = "IsHostRequirement")]
+        [Authorize(Policy = "IsAdminRequirement")]
         [HttpDelete("{id}")]
 
         public async Task<IActionResult> DeleteTournament(Guid id)

@@ -1,14 +1,16 @@
 import {makeAutoObservable, runInAction} from "mobx";
 import { agent } from "../App/agent";
-import { CreateTournament, Tournament } from "../App/Interfaces/Tournament";
+import { TournamentFormValues, Tournament } from "../App/Interfaces/Tournament";
 import { store } from "./store";
 import {v4 as uuid} from "uuid"
+import { history } from "..";
 export class TournamentStore
 {
     tournamentLoading = false;
     tournamentMap = new Map<string, Tournament>();    
     selectedTournament: Tournament | undefined = undefined;
-    creatingTournament = false;    
+    creatingTournament = false;   
+    editingTournament = false; 
     
     constructor()
     {
@@ -82,7 +84,7 @@ export class TournamentStore
         
     }
 
-    createTournament = async (createdTournament: CreateTournament)=>
+    createTournament = async (createdTournament: TournamentFormValues)=>
     {
         this.creatingTournament = true;
         const id = uuid();
@@ -96,7 +98,7 @@ export class TournamentStore
                this.addToTournamentMap(tournament);
         
             }
-
+            history.push("/tournaments/"+createdTournament.id);
         }
         catch(err)
         {
@@ -107,6 +109,37 @@ export class TournamentStore
             runInAction(()=>this.creatingTournament === false);
         }
 
+    }
+
+    editTournament = async (tournamentForm: TournamentFormValues)=>
+    {
+        this.editingTournament = true;
+        const tournament = this.selectedTournament;
+        try
+        {
+            await agent.Tournaments.edit(tournamentForm);
+            if(tournament !== undefined)
+            {
+                runInAction(()=>
+                {
+                    tournament.name = tournamentForm.name;
+                    tournament.sport = tournamentForm.sport;
+                    tournament.numberOfRounds = tournamentForm.numberOfRounds;
+                    tournament.location = tournamentForm.location;
+                    tournament.date = tournamentForm.date;
+                })
+            }
+            if(tournamentForm.id) history.push("/tournaments/"+tournamentForm.id);
+
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>this.editingTournament=false);
+        }
     }
 
     deselectTournament = ()=>

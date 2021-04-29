@@ -17,7 +17,7 @@ export interface Tournament
     contestors: Contestor[];
 }
 
-export interface CreateTournament
+export interface TournamentFormValues
 {
     id?: string;
     name: string;
@@ -29,7 +29,7 @@ export interface CreateTournament
 
 export class Tournament
 {
-    constructor(tournament: CreateTournament)
+    constructor(tournament: TournamentFormValues)
     {
         if(tournament.id) this.id = tournament.id;
         this.name = tournament.name;

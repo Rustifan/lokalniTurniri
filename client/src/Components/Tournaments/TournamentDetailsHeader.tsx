@@ -1,14 +1,20 @@
 import { format } from "date-fns"
+import { observer } from "mobx-react-lite"
 import React from "react"
+import { Link } from "react-router-dom"
 import { Segment, Image, Button, Item} from "semantic-ui-react"
 import { Tournament } from "../../App/Interfaces/Tournament"
 import PictureFromSport from "../../App/Tools/pictureFromSoprt"
+import { store } from "../../Stores/store"
+
 
 interface Props {
     tournament: Tournament;
 }
 
-export default function TournamentDetailsHeader({ tournament }: Props) {
+export default observer(function TournamentDetailsHeader({ tournament }: Props) {
+    const {tournamentStore} = store;
+    
     const imageSegmanetStyle =
     {
 
@@ -61,10 +67,14 @@ export default function TournamentDetailsHeader({ tournament }: Props) {
 
                     
                 </Segment>
-                <Button></Button>
             </Segment>
-            <Segment attached="top"><Button positive content="Prijavi se" /></Segment>
+            <Segment attached="top">
+                <Button positive content="Prijavi se" />
+                {tournamentStore.isAdmin() &&
+                <Button as={Link} to={`/tournaments/${tournament.id}/edit`} color="blue" content="Uredi"/>
+                }
+            </Segment>
         </Segment.Group>
 
     )
-}
+});

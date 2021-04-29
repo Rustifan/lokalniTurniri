@@ -37,7 +37,7 @@ export default function Navbar()
                 */}
 
                 <Menu.Item>
-                    <Link  style={style} to="createTournament">Kreiraj turnir</Link>
+                    <Link  style={style} to="/createTournament">Kreiraj turnir</Link>
                 </Menu.Item> 
                 
                 

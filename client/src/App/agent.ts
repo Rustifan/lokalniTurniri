@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios"
 import { history } from "..";
 import { store } from "../Stores/store";
-import { CreateTournament, Tournament } from "./Interfaces/Tournament";
+import { TournamentFormValues, Tournament } from "./Interfaces/Tournament";
 import { LoginForm, RegisterDto, User } from "./Interfaces/User";
 
 const instance = axios.create({baseURL: "http://localhost:5000/api"});
@@ -47,6 +47,10 @@ instance.interceptors.response.use(async (config)=>
         store.errorStore.setError({statusCode: 500, head: "Server Error",
             body: error.response.data.error + "\n" + error.response.data.errorDetails || ""});
         break;
+        case 403:
+            store.errorStore.setError({statusCode: 403, head: "Zabranjeno ti je to raditi"});
+        throw(error)
+        
     }
 })
 
@@ -83,7 +87,8 @@ const Tournaments =
 {
     get: ()=>{return instance.get<Tournament[]>("/tournaments").then((value)=>value.data)},
     details: (id:string)=>instance.get<Tournament>("/tournaments/"+id).then(value=>value.data),
-    create: (tournament: CreateTournament)=>instance.post("/tournaments", tournament)
+    create: (tournament: TournamentFormValues)=>instance.post("/tournaments", tournament),
+    edit: (tournament: TournamentFormValues)=>instance.put("/tournaments/"+tournament.id, tournament)
 }
 
 export const agent = 
