@@ -142,6 +142,25 @@ export class TournamentStore
         }
     }
 
+    deleteTournament = async (id: string)=>
+    {
+        this.tournamentLoading = true;
+        try
+        {   
+            await agent.Tournaments.delete(id);
+            this.tournamentMap.delete(id);
+            history.push("/tournaments");
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>this.tournamentLoading=false);
+        }
+    }
+
     deselectTournament = ()=>
     {
         this.selectedTournament = undefined;

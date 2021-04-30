@@ -1,11 +1,12 @@
 import { format } from "date-fns"
 import { observer } from "mobx-react-lite"
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { Segment, Image, Button, Item} from "semantic-ui-react"
 import { Tournament } from "../../App/Interfaces/Tournament"
 import PictureFromSport from "../../App/Tools/pictureFromSoprt"
 import { store } from "../../Stores/store"
+import YesNoModal from "../Common/YesNoModal"
 
 
 interface Props {
@@ -14,7 +15,8 @@ interface Props {
 
 export default observer(function TournamentDetailsHeader({ tournament }: Props) {
     const {tournamentStore} = store;
-    
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
     const imageSegmanetStyle =
     {
 
@@ -54,8 +56,14 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
     
 
     return (
-
-        <Segment.Group>
+        <>
+        <YesNoModal question="Dali zaista želite izbrisati turnir?" 
+                loading={tournamentStore.tournamentLoading} 
+                setOpen={setDeleteModalOpen} 
+                open={deleteModalOpen}
+                onSubmit={()=>tournamentStore.deleteTournament(tournament.id)}
+                />
+            <Segment.Group>
             <Segment attached="bottom" clearing style={imageSegmanetStyle}>
                 <Image fluid style={imageStyle} src={PictureFromSport(tournament.sport)} />
                 <Segment style={headerSegmentStyle} basic>
@@ -71,10 +79,19 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
             <Segment attached="top">
                 <Button positive content="Prijavi se" />
                 {tournamentStore.isAdmin() &&
+                <>
                 <Button as={Link} to={`/tournaments/${tournament.id}/edit`} color="blue" content="Uredi"/>
+                <Button 
+                    negative 
+                    content="Izbriši"
+                    onClick={()=>setDeleteModalOpen(true)}
+                    
+                    />
+
+                </>
                 }
             </Segment>
         </Segment.Group>
-
+        </>
     )
 });

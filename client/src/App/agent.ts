@@ -22,7 +22,8 @@ instance.interceptors.response.use(async (config)=>
     {
         case 404:
         history.push("/notFound");
-        break;
+        throw(error);
+        
         case 400:
         if(typeof error.response.data === "string")
         {
@@ -38,15 +39,16 @@ instance.interceptors.response.use(async (config)=>
         {
            store.errorStore.setError({statusCode: 400, head: "Validation Error"});
         }
-    
-        break;
+        throw(error);
+        
         case 401:
         store.errorStore.setError({statusCode: 401, head: "Zabranjen pristup"});
-        break;
+        throw(error);
+    
         case 500:
         store.errorStore.setError({statusCode: 500, head: "Server Error",
             body: error.response.data.error + "\n" + error.response.data.errorDetails || ""});
-        break;
+        throw(error);
         case 403:
             store.errorStore.setError({statusCode: 403, head: "Zabranjeno ti je to raditi"});
         throw(error)
@@ -88,7 +90,8 @@ const Tournaments =
     get: ()=>{return instance.get<Tournament[]>("/tournaments").then((value)=>value.data)},
     details: (id:string)=>instance.get<Tournament>("/tournaments/"+id).then(value=>value.data),
     create: (tournament: TournamentFormValues)=>instance.post("/tournaments", tournament),
-    edit: (tournament: TournamentFormValues)=>instance.put("/tournaments/"+tournament.id, tournament)
+    edit: (tournament: TournamentFormValues)=>instance.put("/tournaments/"+tournament.id, tournament),
+    delete: (id: string)=>instance.delete("/tournaments/"+id)
 }
 
 export const agent = 
