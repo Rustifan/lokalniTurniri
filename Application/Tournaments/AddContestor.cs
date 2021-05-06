@@ -68,8 +68,10 @@ namespace Application.Tournaments
                 }
                 else
                 {
-                    var user = await _userManager.FindByNameAsync(request.Name);
-                    if(user == null) return Result<Unit>.Failed("User with that name does not exist");
+                    
+                    var user = await _context.Users.FirstOrDefaultAsync(x=>x.UserName == request.Name,cancellationToken);
+                    
+                    if(user == null) return Result<Unit>.Failed("Ne postoji korisnik sa tim imenom");
 
                     var contestor = tournament.Contestors.FirstOrDefault(x=>x.DisplayName == request.Name);
                     if(contestor == null)

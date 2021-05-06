@@ -4,14 +4,18 @@ import { TournamentFormValues, Tournament } from "../App/Interfaces/Tournament";
 import { store } from "./store";
 import {v4 as uuid} from "uuid"
 import { history } from "..";
+import { Contestor } from "../App/Interfaces/Contestor";
+import { AddContestor } from "../App/Interfaces/AddContestor";
 export class TournamentStore
 {
     tournamentLoading = false;
     tournamentMap = new Map<string, Tournament>();    
     selectedTournament: Tournament | undefined = undefined;
+    addContestorModalOpen = false;
     creatingTournament = false;   
     editingTournament = false; 
-    
+    participateLoading = false;    
+
     constructor()
     {
         makeAutoObservable(this);
@@ -185,4 +189,136 @@ export class TournamentStore
         return this.tournamentMap.size !== 0;
     }
 
+    isContestor = ()=>
+    {
+        if(!this.selectedTournament) return false;
+        if(!store.userStore.user) return false;
+
+        const user =  this.selectedTournament.contestors.find(x=>x.username === store.userStore.user?.username);
+        if(user) return true;
+
+        return false;
+
+    }
+
+    isContestorByName = (displayName: string)=>
+    {
+        if(!this.selectedTournament) return false;
+        const user = this.selectedTournament.contestors.find(x=>x.displayName.toLowerCase() === displayName.toLowerCase());
+
+        if(user) return true;
+
+        return false;
+    }
+
+    participate = async (id: string)=>
+    {
+        this.participateLoading = true;
+        try
+        {   
+            await agent.Tournaments.participate(id);
+            if(this.isContestor())
+            {
+                runInAction(()=>
+                {
+                    this.selectedTournament!.contestors = 
+                    this.selectedTournament!.contestors.filter(x=>x.username !== store.userStore.user?.username);
+                })
+            }
+            else if(this.selectedTournament && store.userStore.user)
+            {
+                runInAction(()=>
+                {
+                    const user = store.userStore.user;
+                    const contestor = new Contestor(user!.username, user?.username)
+                    
+                    this.selectedTournament?.contestors.push(contestor);
+                })
+            }
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>this.participateLoading = false);
+        }
+    }
+
+    setAddContestorModalOpen = (open: boolean)=>
+    {
+        this.addContestorModalOpen = open;
+    }
+
+    addContestor = async (values: AddContestor)=>
+    {
+        if(this.isContestorByName(values.name))
+        {
+            this.setAddContestorModalOpen(false);
+            return store.errorStore.setError({head: "Već postoji natjecatelj sa tim imenom", statusCode: 400});
+        }
+
+        if(!this.selectedTournament) return;
+
+        this.participateLoading = true;
+        try
+        {
+
+            await agent.Tournaments.addContestor(this.selectedTournament.id, values.name, values.isGuest);
+            if(this.selectedTournament)
+            {
+                const contestor = new Contestor(values.name, values.isGuest ? null: values.name);
+                this.selectedTournament.contestors.push(contestor);
+            }
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>
+            {
+                this.participateLoading = false;
+                this.setAddContestorModalOpen(false);
+            });
+            
+        }
+    }
+
+    removeContestor = async (values: AddContestor)=>
+    {
+        this.participateLoading = true;
+        if(!this.isContestorByName(values.name))
+        {
+            this.setAddContestorModalOpen(false);
+            return store.errorStore.setError({head: "Natjecatelj nije na popisu", statusCode: 400});
+        }
+
+        if(!this.selectedTournament) return;
+
+        try
+        {
+
+            await agent.Tournaments.addContestor(this.selectedTournament.id, values.name, values.isGuest);
+            if(this.selectedTournament)
+            {
+                this.selectedTournament.contestors = this.selectedTournament.contestors.filter(x=>x.displayName !== values.name);
+            }
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>
+            {
+                this.participateLoading = false;
+            });
+            
+        }
+
+    }
 }

@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event"
 import { format } from "date-fns"
 import { observer } from "mobx-react-lite"
 import React, { useState } from "react"
@@ -7,6 +8,7 @@ import { Tournament } from "../../App/Interfaces/Tournament"
 import PictureFromSport from "../../App/Tools/pictureFromSoprt"
 import { store } from "../../Stores/store"
 import YesNoModal from "../Common/YesNoModal"
+import AddContestorModal from "./AddContestorModal"
 
 
 interface Props {
@@ -15,6 +17,7 @@ interface Props {
 
 export default observer(function TournamentDetailsHeader({ tournament }: Props) {
     const {tournamentStore} = store;
+    const {isContestor, participate, participateLoading, setAddContestorModalOpen} = tournamentStore;
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const imageSegmanetStyle =
@@ -63,6 +66,8 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
                 open={deleteModalOpen}
                 onSubmit={()=>tournamentStore.deleteTournament(tournament.id)}
                 />
+        <AddContestorModal/>
+
             <Segment.Group>
             <Segment attached="bottom" clearing style={imageSegmanetStyle}>
                 <Image fluid style={imageStyle} src={PictureFromSport(tournament.sport)} />
@@ -77,15 +82,37 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
                 </Segment>
             </Segment>
             <Segment attached="top">
-                <Button positive content="Prijavi se" />
+                
+                <Button 
+                    onClick={store.userStore.user ? 
+                        ()=>participate(tournament.id) :
+                         ()=>store.userStore.setLoginModalOpen(true)}
+                    loading={participateLoading}
+                    disabled={participateLoading}               
+                    positive={!isContestor()}
+                    negative={isContestor()} 
+                    content={isContestor() ? "Odjavi se" : "Prijavi se"} 
+                        />
                 {tournamentStore.isAdmin() &&
                 <>
-                <Button as={Link} to={`/tournaments/${tournament.id}/edit`} color="blue" content="Uredi"/>
+                <Button
+                    color="green"
+                    content="Dodaj natjecatelja"
+                    onClick={()=>setAddContestorModalOpen(true)}
+
+                    />
                 <Button 
+                    floated="right"
                     negative 
                     content="Izbriši"
                     onClick={()=>setDeleteModalOpen(true)}
                     
+                    />
+                <Button 
+                    as={Link} 
+                    to={`/tournaments/${tournament.id}/edit`} 
+                    color="blue" content="Uredi"
+                    floated="right"
                     />
 
                 </>

@@ -49,7 +49,6 @@ export default function TournamentCard({ tournament }: Props) {
 
                     </List>
                     <Button as={Link} to={`/tournaments/${tournament.id}`} floated="right" color="green" content="Pogledaj" />
-                    <Button floated="right" primary content="Prijavi se" />
                 </Item.Extra>
             </Item.Content>
 

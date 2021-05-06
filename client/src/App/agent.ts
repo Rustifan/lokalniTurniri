@@ -91,7 +91,10 @@ const Tournaments =
     details: (id:string)=>instance.get<Tournament>("/tournaments/"+id).then(value=>value.data),
     create: (tournament: TournamentFormValues)=>instance.post("/tournaments", tournament),
     edit: (tournament: TournamentFormValues)=>instance.put("/tournaments/"+tournament.id, tournament),
-    delete: (id: string)=>instance.delete("/tournaments/"+id)
+    delete: (id: string)=>instance.delete("/tournaments/"+id),
+    participate: (id: string)=>instance.put(`/tournaments/${id}/participate`),
+    addContestor: (id: string, name: string, isGuest: boolean)=>
+    instance.put(`/tournaments/${id}/addContestor?name=${name}&isGuest=${isGuest}`)
 }
 
 export const agent = 

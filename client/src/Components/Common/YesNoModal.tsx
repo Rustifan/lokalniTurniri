@@ -1,5 +1,6 @@
+import { observer } from "mobx-react-lite";
 import React from "react"
-import { Button, Container, Modal } from "semantic-ui-react"
+import { Button, Modal } from "semantic-ui-react"
 
 interface Props
 {
@@ -12,7 +13,7 @@ interface Props
     no?: string;
 }
 
-export default function YesNoModal({setOpen,yes="Da", no="Ne", question, onSubmit, open, loading=false}:Props)
+export default observer(function YesNoModal({setOpen,yes="Da", no="Ne", question, onSubmit, open, loading=false}:Props)
 {
     
     return(
@@ -39,4 +40,4 @@ export default function YesNoModal({setOpen,yes="Da", no="Ne", question, onSubmi
             </Modal.Content>
         </Modal>
     )
-}
+});
