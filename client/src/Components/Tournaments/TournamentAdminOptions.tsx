@@ -37,12 +37,14 @@ export default observer(function TournamentAdminOptions({ tournament }: Props) {
                     />
                     <AddContestorModal />
                     <>
+                        {!tournament.applicationsClosed &&
                         <Button
                             color="green"
                             content="Dodaj natjecatelja"
                             onClick={() => setAddContestorModalOpen(true)}
 
                         />
+                        }
                         <Button
                             floated="right"
                             negative

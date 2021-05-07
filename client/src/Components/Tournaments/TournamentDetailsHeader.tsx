@@ -1,7 +1,6 @@
 import { format } from "date-fns"
 import { observer } from "mobx-react-lite"
-import React, { useState } from "react"
-import { Link } from "react-router-dom"
+import React from "react"
 import { Segment, Image, Button, Item, Label} from "semantic-ui-react"
 import { Tournament } from "../../App/Interfaces/Tournament"
 import PictureFromSport from "../../App/Tools/pictureFromSoprt"

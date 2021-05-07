@@ -44,7 +44,7 @@ namespace Application.Tournaments
 
                 if(tournament.ApplicationsClosed) return Result<Unit>.Failed("Applicatons are closed");
                 
-                var contestor = tournament.Contestors.FirstOrDefault(x=>x.AppUser.UserName == user.UserName);
+                var contestor = tournament.Contestors.FirstOrDefault(x=>x.AppUser?.UserName == user.UserName);
                 if(contestor != null)
                 {
                     tournament.Contestors.Remove(contestor);
