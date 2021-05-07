@@ -1,14 +1,11 @@
-import userEvent from "@testing-library/user-event"
 import { format } from "date-fns"
 import { observer } from "mobx-react-lite"
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
-import { Segment, Image, Button, Item} from "semantic-ui-react"
+import { Segment, Image, Button, Item, Label} from "semantic-ui-react"
 import { Tournament } from "../../App/Interfaces/Tournament"
 import PictureFromSport from "../../App/Tools/pictureFromSoprt"
 import { store } from "../../Stores/store"
-import YesNoModal from "../Common/YesNoModal"
-import AddContestorModal from "./AddContestorModal"
 
 
 interface Props {
@@ -17,8 +14,7 @@ interface Props {
 
 export default observer(function TournamentDetailsHeader({ tournament }: Props) {
     const {tournamentStore} = store;
-    const {isContestor, participate, participateLoading, setAddContestorModalOpen} = tournamentStore;
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const {isContestor, participate, participateLoading} = tournamentStore;
 
     const imageSegmanetStyle =
     {
@@ -55,18 +51,12 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
         paddingBottom: 10,
         marginTop: 35
     }
-
     
-
+    
+    
     return (
         <>
-        <YesNoModal question="Dali zaista želite izbrisati turnir?" 
-                loading={tournamentStore.tournamentLoading} 
-                setOpen={setDeleteModalOpen} 
-                open={deleteModalOpen}
-                onSubmit={()=>tournamentStore.deleteTournament(tournament.id)}
-                />
-        <AddContestorModal/>
+       
 
             <Segment.Group>
             <Segment attached="bottom" clearing style={imageSegmanetStyle}>
@@ -81,42 +71,22 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
                     
                 </Segment>
             </Segment>
+            
             <Segment attached="top">
-                
+                {tournament.applicationsClosed ? 
+                <Label ribbon size="large" color="red" content="Zatvorene prijave"/>
+                :
                 <Button 
                     onClick={store.userStore.user ? 
                         ()=>participate(tournament.id) :
-                         ()=>store.userStore.setLoginModalOpen(true)}
+                        ()=>store.userStore.setLoginModalOpen(true)}
                     loading={participateLoading}
                     disabled={participateLoading}               
                     positive={!isContestor()}
                     negative={isContestor()} 
                     content={isContestor() ? "Odjavi se" : "Prijavi se"} 
                         />
-                {tournamentStore.isAdmin() &&
-                <>
-                <Button
-                    color="green"
-                    content="Dodaj natjecatelja"
-                    onClick={()=>setAddContestorModalOpen(true)}
-
-                    />
-                <Button 
-                    floated="right"
-                    negative 
-                    content="Izbriši"
-                    onClick={()=>setDeleteModalOpen(true)}
-                    
-                    />
-                <Button 
-                    as={Link} 
-                    to={`/tournaments/${tournament.id}/edit`} 
-                    color="blue" content="Uredi"
-                    floated="right"
-                    />
-
-                </>
-                }
+                    }
             </Segment>
         </Segment.Group>
         </>

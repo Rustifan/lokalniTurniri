@@ -5,6 +5,7 @@ import { TournamentFormValues } from "../../App/Interfaces/Tournament"
 import DateInput from "./DateInput"
 import TextInput from "./TextInput"
 import * as Yup from "yup"
+import { history } from "../.."
 
 interface Props
 {
@@ -55,6 +56,12 @@ export default function CreateTournamentForm({initialValues, onSubmit, header, s
                     content={sendButtonContent}
                     loading={isSubmitting}
                     disabled={!dirty || isSubmitting || !isValid}
+                    />
+                <Button
+                    negative
+                    type="button"
+                    onClick={()=>history.goBack()}
+                    content="Odustani"
                     />
             </Form>
             )}

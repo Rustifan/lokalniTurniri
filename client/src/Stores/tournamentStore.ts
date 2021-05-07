@@ -8,13 +8,17 @@ import { Contestor } from "../App/Interfaces/Contestor";
 import { AddContestor } from "../App/Interfaces/AddContestor";
 export class TournamentStore
 {
-    tournamentLoading = false;
     tournamentMap = new Map<string, Tournament>();    
     selectedTournament: Tournament | undefined = undefined;
     addContestorModalOpen = false;
+    
+    //loading
+    tournamentLoading = false;
     creatingTournament = false;   
     editingTournament = false; 
     participateLoading = false;    
+    closeApplicationsLoading = false;
+
 
     constructor()
     {
@@ -318,6 +322,30 @@ export class TournamentStore
                 this.participateLoading = false;
             });
             
+        }
+
+    }
+
+    closeApplications = async ()=>
+    {
+        if(!this.selectTornament) return;
+        this.closeApplicationsLoading = true;
+
+        try
+        {
+            await agent.Tournaments.closeApplications(this.selectedTournament?.id!);
+            runInAction(()=>
+            {
+                this.selectedTournament!.applicationsClosed = !this.selectedTournament!.applicationsClosed;
+            })
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>this.closeApplicationsLoading=false);
         }
 
     }

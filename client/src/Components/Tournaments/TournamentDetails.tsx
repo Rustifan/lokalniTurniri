@@ -7,6 +7,7 @@ import { store } from "../../Stores/store";
 import TournamentDetailsContestors from "./TournamentDetailsContestors";
 import TournamentDetailsHeader from "./TournamentDetailsHeader";
 import LoadingComponent from "../Loading/LoadingComponent";
+import TournamentAdminOptions from "./TournamentAdminOptions";
 
 interface Params {
     id: string;
@@ -14,7 +15,7 @@ interface Params {
 
 export default observer(function TournamentDetails() {
     const { id } = useParams<Params>();
-    const { tournamentStore: { selectTornament, selectedTournament, deselectTournament } } = store;
+    const { tournamentStore: { isAdmin, selectTornament, selectedTournament, deselectTournament } } = store;
     useEffect(() => {
         selectTornament(id);
 
@@ -31,6 +32,9 @@ export default observer(function TournamentDetails() {
                 <Grid style={{marginTop: 50}}>
                     <Grid.Column width="10">
                         <TournamentDetailsHeader tournament={selectedTournament}/>
+                        {isAdmin() &&
+                        <TournamentAdminOptions tournament={selectedTournament}/>
+                        }
                     </Grid.Column>
                     <Grid.Column width="5">
                         <TournamentDetailsContestors contestors={selectedTournament.contestors}/>
