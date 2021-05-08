@@ -4,9 +4,7 @@ import { Button, Header, Item, Segment } from "semantic-ui-react"
 import { userIcon } from "../../App/Core/Constants"
 import { AddContestor } from "../../App/Interfaces/AddContestor"
 import { Contestor } from "../../App/Interfaces/Contestor"
-import { Tournament } from "../../App/Interfaces/Tournament"
 import { store } from "../../Stores/store"
-import { TournamentStore } from "../../Stores/tournamentStore"
 import YesNoModal from "../Common/YesNoModal"
 
 interface Props {

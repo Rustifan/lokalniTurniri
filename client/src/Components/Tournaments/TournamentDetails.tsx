@@ -10,7 +10,7 @@ import LoadingComponent from "../Loading/LoadingComponent";
 import TournamentAdminOptions from "./TournamentAdminOptions";
 import TournamnetAdminList from "./TournamentAdminList";
 import TournamentTable from "./TournamentTable";
-import { Tournament } from "../../App/Interfaces/Tournament";
+import TournamentGames from "./TournamentGames";
 
 interface Params {
     id: string;
@@ -33,7 +33,7 @@ export default observer(function TournamentDetails() {
             {selectedTournament ?
 
                 <Grid style={{marginTop: 50}}>
-                    <Grid.Column width="10">
+                    <Grid.Column width="9">
                         <TournamentDetailsHeader tournament={selectedTournament}/>
                         <Segment.Group>
                         <TournamnetAdminList tournament={selectedTournament}/>
@@ -42,9 +42,12 @@ export default observer(function TournamentDetails() {
                         }
                         </Segment.Group>
                     </Grid.Column>
-                    <Grid.Column width="5">
+                    <Grid.Column width="7">
                         {selectedTournament.currentRound !==0 ? <TournamentTable contestors={selectedTournament.contestors}/> :
                         <TournamentDetailsContestors contestors={selectedTournament!.contestors}/>}
+                    </Grid.Column>
+                    <Grid.Column width="16">
+                        <TournamentGames tournament={selectedTournament}/>
                     </Grid.Column>
                 </Grid>
                 :

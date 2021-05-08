@@ -21,7 +21,7 @@ export default observer(function TournamentAdminOptions({ tournament }: Props) {
     const [accordionActive, setAccordionActive] = useState(false);
 
     return (
-        <Segment>
+        <Segment clearing>
             <Accordion>
                 <Accordion.Title 
                     active={accordionActive}
@@ -78,7 +78,7 @@ export default observer(function TournamentAdminOptions({ tournament }: Props) {
                             disabled={closeApplicationsLoading}
                             />
                         }
-                        {tournament.applicationsClosed &&
+                        {tournament.applicationsClosed && !tournamentStore.hasActiveGames &&
                         <Button
                             color="teal"
                             content={tournament.currentRound !==0 ? "Započni novu rundu" : "Započni turnir!"}

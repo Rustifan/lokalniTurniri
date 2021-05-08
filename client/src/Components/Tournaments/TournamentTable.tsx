@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React from "react"
-import { Segment, Table } from "semantic-ui-react";
+import { Table } from "semantic-ui-react";
 import { Contestor } from "../../App/Interfaces/Contestor";
 
 interface Props
@@ -10,7 +10,6 @@ interface Props
 
 export default observer(function TournamentTable({contestors}: Props)
 {
-    console.log(contestors[0].wins)
     return(
         <Table celled>
             <Table.Header>

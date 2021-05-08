@@ -21,7 +21,7 @@ namespace Application.Helpers
 
         public List<ContestorDto> SortContestorDtos(List<ContestorDto> contestors)
         {
-            var sortedContestors = contestors.OrderBy(x=>x.Score).ThenBy(x=>x.Rating);
+            var sortedContestors = contestors.OrderByDescending(x=>x.Score).ThenBy(x=>x.Rating);
 
             return sortedContestors.ToList();
         }

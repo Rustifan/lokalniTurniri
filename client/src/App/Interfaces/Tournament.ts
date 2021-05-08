@@ -1,5 +1,6 @@
 import { store } from "../../Stores/store";
 import { Contestor } from "./Contestor";
+import { Game } from "./Game";
 
 export interface Tournament
 {
@@ -15,6 +16,7 @@ export interface Tournament
     contestorNum: number;
     applicationsClosed: boolean;
     contestors: Contestor[];
+    games: Game[];
 }
 
 export interface TournamentFormValues
@@ -46,6 +48,6 @@ export class Tournament
         this.contestorNum = 0;
         this.applicationsClosed = false;
         this.contestors = [];
-
+        this.games = [];
     }
 }

@@ -6,6 +6,7 @@ import {v4 as uuid} from "uuid"
 import { history } from "..";
 import { Contestor } from "../App/Interfaces/Contestor";
 import { AddContestor } from "../App/Interfaces/AddContestor";
+import { Game } from "../App/Interfaces/Game";
 export class TournamentStore
 {
     tournamentMap = new Map<string, Tournament>();    
@@ -13,6 +14,8 @@ export class TournamentStore
     addContestorModalOpen = false;
     addAdminModalOpen = false;    
     removeAdminModalOpen = false;
+    setGameResultModalOpen: string | null = null;
+    setResultLoading: number | null = null;
     //loading
     tournamentLoading = false;
     creatingTournament = false;   
@@ -90,6 +93,10 @@ export class TournamentStore
 
                 this.tournamentLoading = false;
         });
+
+        //Testing Remove this line
+        console.dir(this.selectedTournament);
+        ///
         
     }
 
@@ -400,6 +407,11 @@ export class TournamentStore
         this.removeAdminModalOpen = open;
     }  
     
+    setSetGameResultModalOpen = (openId: string | null)=>
+    {
+        this.setGameResultModalOpen = openId;
+    }    
+
     removeAdmin = async (adminName: string)=>
     {
         if(!this.selectedTournament) return;
@@ -444,6 +456,12 @@ export class TournamentStore
                     this.addToTournamentMap(updatedTournament);
                     this.selectedTournament = this.tournamentMap.get(tournament.id);
                 }
+                else
+                {
+                    updatedTournament.date = new Date(updatedTournament.date);
+                    this.selectedTournament = updatedTournament;
+                    
+                }
             });
 
         }
@@ -457,5 +475,127 @@ export class TournamentStore
         }
 
 
+    }
+
+    get gamesByRound()
+    {
+        if(!this.selectedTournament) return [];
+        const gamesByRoundArray: Game[][] = [];
+        for(let i = 0; i <= this.selectedTournament.currentRound; i++)
+        {
+            gamesByRoundArray.push([]);
+        }
+
+        for(const game of this.selectedTournament.games)
+        {
+            gamesByRoundArray[game.round].push(game);    
+        }
+
+        return gamesByRoundArray;
+
+    }
+
+    get hasActiveGames()
+    {
+        if(!this.selectedTournament) return false;
+        for(let game of this.selectedTournament.games)
+        {
+            if(game.active) return true;
+        }
+        return false;
+    }
+
+    setGameResult = async (gameId: string, result: number)=>
+    {
+        if(!this.selectedTournament) return;
+        this.setResultLoading = result;
+        try
+        {
+            await agent.Tournaments.setGameResult(gameId, result);
+            runInAction(()=>
+            {
+                this.selectedTournament!.games = this.selectedTournament!.games.map(game=>
+                    {
+                        if(game.id === gameId)
+                        {
+                            const previousResult = game.result;
+                            game.result = result;
+                            game.active = false;
+                            this.updateTournamentTable(game, previousResult);
+                        }
+                        return game;
+                    });
+            })
+
+
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>
+            {
+                this.setResultLoading = null;
+                this.setSetGameResultModalOpen(null);
+            });
+        }
+
+        
+    }
+
+    updateTournamentTable = (game: Game, previosResult: number)=>
+    {
+        if(!this.selectedTournament) return;
+        const tournament = this.selectedTournament;
+        const contestor1 = tournament.contestors.find(x=>x.displayName === game.contestor1);
+        const contestor2 = tournament.contestors.find(x=>x.displayName === game.contestor2);
+        
+        switch(previosResult)
+        {
+            case -1:
+                break;
+            case 0:
+                contestor1!.draws--;
+                contestor2!.draws--;
+                break;
+            case 1:
+                contestor1!.wins--;
+                contestor2!.loses--;
+                break;
+            case 2:
+                contestor1!.loses--;
+                contestor2!.wins--;
+                break;
+        }
+        
+        switch(game.result)
+        {
+            case 0:
+                contestor1!.draws++;
+                contestor2!.draws++;
+                break;
+            case 1:
+                contestor1!.wins++;
+                contestor2!.loses++;
+                break;
+            case 2:
+                contestor1!.loses++;
+                contestor2!.wins++;
+                break;
+        }
+
+        contestor1!.score = contestor1!.wins+ contestor1!.draws/2;
+        contestor2!.score = contestor2!.wins+ contestor2!.draws/2;
+
+        tournament.contestors = tournament.contestors.sort((x, y)=>
+        {
+            if(x.score > y.score) return -1;
+            if(y.score > x.score) return 1;
+            if(x.rating > y.rating) return 1;
+            if(y.rating > x.rating) return -1;
+            return 0;
+        });
     }
 }

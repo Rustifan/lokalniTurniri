@@ -94,11 +94,13 @@ const Tournaments =
     delete: (id: string)=>instance.delete("/tournaments/"+id),
     participate: (id: string)=>instance.put(`/tournaments/${id}/participate`),
     addContestor: (id: string, name: string, isGuest: boolean)=>
-    instance.put(`/tournaments/${id}/addContestor?name=${name}&isGuest=${isGuest}`),
+        instance.put(`/tournaments/${id}/addContestor?name=${name}&isGuest=${isGuest}`),
     closeApplications: (id: string)=>instance.put(`/tournaments/${id}/closeApplications`),
     addAdmin: (id: string, adminName: string)=>instance.put(`/tournaments/${id}/addAdmin?adminName=${adminName}`),
     removeAdmin: (id: string, adminName: string)=>instance.put(`/tournaments/${id}/removeAdmin?adminName=${adminName}`),
-    calculatePairs: (id: string) => instance.put(`/tournaments/${id}/calculatePairs`)
+    calculatePairs: (id: string) => instance.put(`/tournaments/${id}/calculatePairs`),
+    setGameResult: (gameId: string, result: number)=>
+        instance.put(`/tournaments/setGameResult/${gameId}?result=${result}`)
 
 }
 

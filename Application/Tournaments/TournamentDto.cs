@@ -17,7 +17,7 @@ namespace Application.Tournaments
         public int ContestorNum { get; set; }
         public bool ApplicationsClosed { get; set; }
         public List<ContestorDto> Contestors { get; set; }
-
+        public List<GameDto> Games { get; set; }
 
 
     }
