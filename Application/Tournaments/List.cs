@@ -9,6 +9,7 @@ using Application.Core;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using System;
+using Application.Interfaces;
 
 namespace Application.Tournaments
 {
@@ -23,10 +24,12 @@ namespace Application.Tournaments
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
-            public Handler(DataContext context, IMapper mapper)
+            private readonly ISorter _sorter;
+            public Handler(DataContext context, IMapper mapper, ISorter sorter)
             {
                 _context = context;
                 _mapper = mapper;
+                _sorter = sorter;
             }
             public async Task<Result<List<TournamentDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -36,6 +39,9 @@ namespace Application.Tournaments
 
                 
                 if(tournaments == null) return null;
+
+                tournaments = _sorter.SortContestorsInTournamentDto(tournaments);
+
                 return Result<List<TournamentDto>>.Success(tournaments);
             }
         }

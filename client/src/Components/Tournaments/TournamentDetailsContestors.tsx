@@ -4,7 +4,9 @@ import { Button, Header, Item, Segment } from "semantic-ui-react"
 import { userIcon } from "../../App/Core/Constants"
 import { AddContestor } from "../../App/Interfaces/AddContestor"
 import { Contestor } from "../../App/Interfaces/Contestor"
+import { Tournament } from "../../App/Interfaces/Tournament"
 import { store } from "../../Stores/store"
+import { TournamentStore } from "../../Stores/tournamentStore"
 import YesNoModal from "../Common/YesNoModal"
 
 interface Props {
@@ -13,7 +15,7 @@ interface Props {
 
 export default observer( function TournamentDetailsContestors({ contestors }: Props) {
 
-    const {tournamentStore: {removeContestor, participateLoading, isAdmin}} = store;
+    const {tournamentStore: {removeContestor, participateLoading, isAdmin, selectedTournament}} = store;
     const [removeModalOpen, setRemoveModalOpen] = useState(false);
     const [contestorToRemove, setContestorToRemove] = useState<Contestor | null>(null);
 
@@ -65,7 +67,7 @@ export default observer( function TournamentDetailsContestors({ contestors }: Pr
                                     {contestor.displayName}
                                 </Header>
                             </Item.Content>
-                                {isAdmin() &&
+                                {isAdmin() && !selectedTournament?.applicationsClosed &&
                                 <Button 
                                     size="small"
                                     compact 

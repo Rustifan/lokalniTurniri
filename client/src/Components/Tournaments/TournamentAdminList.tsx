@@ -1,7 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, { useState } from "react"
 import { Image, Header, List, Popup, Segment, Button } from "semantic-ui-react"
-import { isThrowStatement } from "typescript"
 import { userIcon } from "../../App/Core/Constants"
 import { Tournament } from "../../App/Interfaces/Tournament"
 import { store } from "../../Stores/store"
@@ -16,7 +15,7 @@ interface Props
 export default observer(function TournamnetAdminList({tournament}: Props)
 {
     const {tournamentStore} = store;
-    const {editingTournament ,removeAdminModalOpen, removeAdmin, setRemoveAdminModalOpen, isHost} = tournamentStore;
+    const {editingTournament, removeAdminModalOpen, removeAdmin, setRemoveAdminModalOpen, isHost} = tournamentStore;
     const [adminToRemove, setAdminToRemove] = useState<string | null>(null);
 
     const handleRemovingAdmin = ()=>

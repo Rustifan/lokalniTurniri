@@ -9,6 +9,8 @@ import TournamentDetailsHeader from "./TournamentDetailsHeader";
 import LoadingComponent from "../Loading/LoadingComponent";
 import TournamentAdminOptions from "./TournamentAdminOptions";
 import TournamnetAdminList from "./TournamentAdminList";
+import TournamentTable from "./TournamentTable";
+import { Tournament } from "../../App/Interfaces/Tournament";
 
 interface Params {
     id: string;
@@ -41,7 +43,8 @@ export default observer(function TournamentDetails() {
                         </Segment.Group>
                     </Grid.Column>
                     <Grid.Column width="5">
-                        <TournamentDetailsContestors contestors={selectedTournament.contestors}/>
+                        {selectedTournament.currentRound !==0 ? <TournamentTable contestors={selectedTournament.contestors}/> :
+                        <TournamentDetailsContestors contestors={selectedTournament!.contestors}/>}
                     </Grid.Column>
                 </Grid>
                 :

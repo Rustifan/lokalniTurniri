@@ -39,6 +39,7 @@ namespace API.Controllers
         [Authorize(Policy = "IsAdminRequirement")]
         [HttpDelete("{id}")]
 
+
         public async Task<IActionResult> DeleteTournament(Guid id)
         {
             return HandleResult(await Mediator.Send(new Delete.Command{Id = id}));

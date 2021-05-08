@@ -284,6 +284,7 @@ export class TournamentStore
             {
                 const contestor = new Contestor(values.name, values.isGuest ? null: values.name);
                 this.selectedTournament.contestors.push(contestor);
+                this.selectedTournament.contestorNum++;
             }
         }
         catch(err)
@@ -319,6 +320,7 @@ export class TournamentStore
             if(this.selectedTournament)
             {
                 this.selectedTournament.contestors = this.selectedTournament.contestors.filter(x=>x.displayName !== values.name);
+                this.selectedTournament.contestorNum--;
             }
         }
         catch(err)
@@ -422,4 +424,38 @@ export class TournamentStore
         }
     }
 
+    calculatePairs = async ()=>
+    {
+        if(!this.selectedTournament) return;
+        const tournament = this.selectedTournament;
+        this.editingTournament = true;
+        try
+        {
+            await agent.Tournaments.calculatePairs(tournament.id);
+            
+            //TODO return tournament from one API call
+            const updatedTournament = await agent.Tournaments.details(tournament.id);
+            //
+
+            runInAction(()=>
+            {
+                if(this.ifLoaded())
+                {
+                    this.addToTournamentMap(updatedTournament);
+                    this.selectedTournament = this.tournamentMap.get(tournament.id);
+                }
+            });
+
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>this.editingTournament=false);
+        }
+
+
+    }
 }

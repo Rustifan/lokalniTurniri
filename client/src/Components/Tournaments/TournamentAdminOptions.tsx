@@ -16,6 +16,7 @@ export default observer(function TournamentAdminOptions({ tournament }: Props) {
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const { tournamentStore} = store;
+    const {editingTournament, calculatePairs} = tournamentStore;
     const {isHost, setAddAdminModalOpen, setAddContestorModalOpen, closeApplicationsLoading, closeApplications } = tournamentStore;
     const [accordionActive, setAccordionActive] = useState(false);
 
@@ -68,6 +69,7 @@ export default observer(function TournamentAdminOptions({ tournament }: Props) {
                             floated="right"
                             />
                         
+                        {tournament.currentRound ===0 &&
                         <Button
                             color={tournament.applicationsClosed ? "yellow" : "orange"}
                             content={tournament.applicationsClosed ? "Otvori prijave": "Zatvori prijave"}
@@ -75,6 +77,16 @@ export default observer(function TournamentAdminOptions({ tournament }: Props) {
                             loading={closeApplicationsLoading}
                             disabled={closeApplicationsLoading}
                             />
+                        }
+                        {tournament.applicationsClosed &&
+                        <Button
+                            color="teal"
+                            content={tournament.currentRound !==0 ? "Započni novu rundu" : "Započni turnir!"}
+                            onClick={calculatePairs}
+                            loading={editingTournament}
+                            disabled={editingTournament}
+                            />
+                        }
                     </>
                 </Accordion.Content>
             </Accordion>

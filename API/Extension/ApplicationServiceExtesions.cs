@@ -9,6 +9,7 @@ using AutoMapper;
 using Application.Core;
 using Application.Interfaces;
 using Infrastructure.Security;
+using Application.Helpers;
 
 namespace API.Extension
 {
@@ -43,7 +44,9 @@ namespace API.Extension
             services.AddTransient<IUserAccessor, UserAccessor>();
             services.AddMediatR(typeof(Application.Tournaments.List).Assembly);
             services.AddAutoMapper(typeof(MappingProfile));           
-            
+
+            services.AddSingleton<ISorter, Sorter>();
+                       
             return services;
         }
     }

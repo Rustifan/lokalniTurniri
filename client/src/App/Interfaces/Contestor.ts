@@ -3,10 +3,10 @@ export interface Contestor
     displayName: string;
     username: string | null;
     rating: number;
-    Wins: number;
-    Loses: number;
-    Draws: number;
-    Score: number;
+    wins: number;
+    loses: number;
+    draws: number;
+    score: number;
     
 }
 
@@ -17,10 +17,10 @@ export class Contestor
         this.displayName = displayName;
         this.username = username;
         this.rating = 0;
-        this.Wins = 0;
-        this.Loses = 0;
-        this.Draws = 0;
-        this.Score = 0;
+        this.wins = 0;
+        this.loses = 0;
+        this.draws = 0;
+        this.score = 0;
     }
 
 }
