@@ -11,7 +11,8 @@ export class TournamentStore
     tournamentMap = new Map<string, Tournament>();    
     selectedTournament: Tournament | undefined = undefined;
     addContestorModalOpen = false;
-    
+    addAdminModalOpen = false;    
+    removeAdminModalOpen = false;
     //loading
     tournamentLoading = false;
     creatingTournament = false;   
@@ -205,6 +206,15 @@ export class TournamentStore
 
     }
 
+    isHost=()=>
+    {
+        if(!this.selectedTournament || !store.userStore.user) return false;
+
+        if(this.selectedTournament.hostUsername === store.userStore.user.username) return true;
+
+        return false;
+    }
+
     isContestorByName = (displayName: string)=>
     {
         if(!this.selectedTournament) return false;
@@ -349,4 +359,67 @@ export class TournamentStore
         }
 
     }
+
+    addAdmin = async (adminName: string)=>
+    {
+        if(!this.selectedTournament) return;
+
+        this.editingTournament = true;
+
+        try
+        {
+            await agent.Tournaments.addAdmin(this.selectedTournament.id, adminName);
+            this.selectedTournament.admins.push(adminName);
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>
+            {
+                this.editingTournament = false;
+                this.setAddAdminModalOpen(false);   
+            })
+        }
+
+
+    }
+    
+    setAddAdminModalOpen = (open: boolean)=>
+    {
+        this.addAdminModalOpen = open;
+
+    }
+
+    setRemoveAdminModalOpen = (open: boolean)=>
+    {
+        this.removeAdminModalOpen = open;
+    }  
+    
+    removeAdmin = async (adminName: string)=>
+    {
+        if(!this.selectedTournament) return;
+        this.editingTournament = true;
+        try
+        {
+            await agent.Tournaments.removeAdmin(this.selectedTournament.id, adminName);
+            runInAction(()=>
+            {
+                this.selectedTournament!.admins = 
+                this.selectedTournament!.admins.filter(x=>x!==adminName);
+            })
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>this.editingTournament = false)
+            this.setRemoveAdminModalOpen(false);
+        }
+    }
+
 }

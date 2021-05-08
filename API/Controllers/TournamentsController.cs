@@ -29,7 +29,7 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Create.Command{Tournament = tournament}));
         }
 
-        [Authorize(Policy = "IsHostRequirement")]
+        [Authorize(Policy = "IsAdminRequirement")]
         [HttpPut("{id}")]
         public async Task<IActionResult> EditTournament(Guid id, TournamentEditDto tournament)
         {

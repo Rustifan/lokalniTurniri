@@ -38,11 +38,11 @@ namespace Application.Tournaments
                 if(tournament == null) return null;
 
                 
-                var user = await _userManager.FindByNameAsync(request.AdminName);
+                var user = await _context.Users.FirstOrDefaultAsync(x=>x.UserName == request.AdminName, cancellationToken);
 
-                if(user == null) return null;
+                if(user == null) return Result<Unit>.Failed("Nema korisnika sa tim imenom");
 
-                if(tournament.Admins.Any(x=>x.User.UserName == user.UserName)) return Result<Unit>.Failed(user.UserName+ " is already Admin");
+                if(tournament.Admins.Any(x=>x.User.UserName == user.UserName)) return Result<Unit>.Failed(user.UserName+ " je već administrator");
 
                 tournament.Admins.Add(new Admin
                 {

@@ -95,7 +95,10 @@ const Tournaments =
     participate: (id: string)=>instance.put(`/tournaments/${id}/participate`),
     addContestor: (id: string, name: string, isGuest: boolean)=>
     instance.put(`/tournaments/${id}/addContestor?name=${name}&isGuest=${isGuest}`),
-    closeApplications: (id: string)=>instance.put(`/tournaments/${id}/closeApplications`)
+    closeApplications: (id: string)=>instance.put(`/tournaments/${id}/closeApplications`),
+    addAdmin: (id: string, adminName: string)=>instance.put(`/tournaments/${id}/addAdmin?adminName=${adminName}`),
+    removeAdmin: (id: string, adminName: string)=>instance.put(`/tournaments/${id}/removeAdmin?adminName=${adminName}`)
+
 }
 
 export const agent = 

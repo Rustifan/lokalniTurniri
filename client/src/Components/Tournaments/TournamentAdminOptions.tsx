@@ -5,6 +5,7 @@ import { Accordion, Button, Header, Icon, Segment } from "semantic-ui-react"
 import { Tournament } from "../../App/Interfaces/Tournament"
 import { store } from "../../Stores/store"
 import YesNoModal from "../Common/YesNoModal"
+import AddAdminModal from "./AddAdminModal"
 import AddContestorModal from "./AddContestorModal"
 
 interface Props {
@@ -15,7 +16,7 @@ export default observer(function TournamentAdminOptions({ tournament }: Props) {
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const { tournamentStore} = store;
-    const { setAddContestorModalOpen, closeApplicationsLoading, closeApplications } = tournamentStore;
+    const {isHost, setAddAdminModalOpen, setAddContestorModalOpen, closeApplicationsLoading, closeApplications } = tournamentStore;
     const [accordionActive, setAccordionActive] = useState(false);
 
     return (
@@ -36,7 +37,15 @@ export default observer(function TournamentAdminOptions({ tournament }: Props) {
                         onSubmit={() => tournamentStore.deleteTournament(tournament.id)}
                     />
                     <AddContestorModal />
+                    <AddAdminModal/>
                     <>
+                        {isHost() &&
+                        <Button
+                            color="blue"
+                            onClick={()=>setAddAdminModalOpen(true)}
+                            content="Dodaj administratora"
+                            />
+                        }
                         {!tournament.applicationsClosed &&
                         <Button
                             color="green"
