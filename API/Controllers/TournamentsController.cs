@@ -87,6 +87,7 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new CalculatePairs.Command{Id=id}));
         }
 
+        //Currently not in use.....
         [HttpGet("{id}/activeGames")]
         public async Task<IActionResult> GetActiveGames(Guid id)
         {

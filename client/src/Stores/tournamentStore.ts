@@ -443,11 +443,8 @@ export class TournamentStore
         this.editingTournament = true;
         try
         {
-            await agent.Tournaments.calculatePairs(tournament.id);
-            
-            //TODO return tournament from one API call
-            const updatedTournament = await agent.Tournaments.details(tournament.id);
-            //
+            const updatedTournament = await agent.Tournaments.calculatePairs(tournament.id);
+
 
             runInAction(()=>
             {

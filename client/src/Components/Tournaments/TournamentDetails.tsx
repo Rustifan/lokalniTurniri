@@ -46,9 +46,11 @@ export default observer(function TournamentDetails() {
                         {selectedTournament.currentRound !==0 ? <TournamentTable contestors={selectedTournament.contestors}/> :
                         <TournamentDetailsContestors contestors={selectedTournament!.contestors}/>}
                     </Grid.Column>
+                    {selectedTournament.currentRound !==0 &&
                     <Grid.Column width="16">
                         <TournamentGames tournament={selectedTournament}/>
                     </Grid.Column>
+                    }
                 </Grid>
                 :
                 <Container style={{height: 500}}>

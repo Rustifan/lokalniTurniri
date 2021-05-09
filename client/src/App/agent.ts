@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios"
 import { history } from "..";
 import { store } from "../Stores/store";
+import { ApiResponseDelay } from "./Core/Constants";
 import { TournamentFormValues, Tournament } from "./Interfaces/Tournament";
 import { LoginForm, RegisterDto, User } from "./Interfaces/User";
 
@@ -12,7 +13,8 @@ function sleep(ms: number) {
 
 instance.interceptors.response.use(async (config)=>
 {
-    await sleep(2000);
+    
+    await sleep(ApiResponseDelay);
     
     return config;
 },(error: AxiosError)=>
@@ -98,7 +100,7 @@ const Tournaments =
     closeApplications: (id: string)=>instance.put(`/tournaments/${id}/closeApplications`),
     addAdmin: (id: string, adminName: string)=>instance.put(`/tournaments/${id}/addAdmin?adminName=${adminName}`),
     removeAdmin: (id: string, adminName: string)=>instance.put(`/tournaments/${id}/removeAdmin?adminName=${adminName}`),
-    calculatePairs: (id: string) => instance.put(`/tournaments/${id}/calculatePairs`),
+    calculatePairs: (id: string) => instance.put<Tournament>(`/tournaments/${id}/calculatePairs`).then(value=>value.data),
     setGameResult: (gameId: string, result: number)=>
         instance.put(`/tournaments/setGameResult/${gameId}?result=${result}`)
 

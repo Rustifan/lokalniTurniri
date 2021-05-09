@@ -14,7 +14,7 @@ export default observer(function GameComponent({game}: Props)
 {
     const [adminOptionHeight, setAdminOptionHeight] = useState(0);
     const {tournamentStore} = store;
-    const {isAdmin, setGameResultModalOpen, setSetGameResultModalOpen, editingTournament} = tournamentStore;
+    const {isAdmin, setSetGameResultModalOpen, } = tournamentStore;
 
     function HandleHover()
     {
@@ -64,7 +64,7 @@ export default observer(function GameComponent({game}: Props)
                         }} 
                         positive 
                         fluid 
-                        basic>Kako je završilo?</Button>
+                        basic>{game.result === -1 ? "Kako je završilo?" : "Promijeni rezultat"}</Button>
                 </Segment>
             </div> 
         </Segment.Group>

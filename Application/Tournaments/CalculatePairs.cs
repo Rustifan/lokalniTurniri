@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Interfaces;
+using AutoMapper;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -18,20 +20,24 @@ namespace Application.Tournaments
 {
     public class CalculatePairs
     {
-        public class Command: IRequest<Result<Unit>>
+        public class Command: IRequest<Result<TournamentDto>>
         {
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<TournamentDto>>
         {
             private readonly List<Game> _games = new(); 
             private readonly DataContext _context;
-            public Handler(DataContext context)
+            private readonly IMapper _mapper;
+            private readonly ISorter _sorter;
+            public Handler(DataContext context, IMapper mapper, ISorter sorter)
             {
                 _context = context;
+                _mapper = mapper;
+                _sorter = sorter;
             }
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<TournamentDto>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var tournament = await _context.Tournaments
                     .Include(x=>x.Games)
@@ -40,10 +46,10 @@ namespace Application.Tournaments
 
                 if(tournament == null) return null;
 
-                if(!tournament.ApplicationsClosed) return Result<Unit>.Failed("Tournament applications are not closed");
+                if(!tournament.ApplicationsClosed) return Result<TournamentDto>.Failed("Tournament applications are not closed");
                 
                 //if there are active games Bad request
-                if(tournament.Games.Any(x=>x.Result == -1)) return Result<Unit>.Failed("There are still active games left");
+                if(tournament.Games.Any(x=>x.Result == -1)) return Result<TournamentDto>.Failed("There are still active games left");
                 //random rating always
 
                 var contestors = tournament.Contestors;
@@ -89,7 +95,7 @@ namespace Application.Tournaments
                 if(loners.Count > 0)
                 {
                     //TODO
-                    return Result<Unit>.Failed("Loners Error ");
+                    return Result<TournamentDto>.Failed("Loners Error ");
                 }
                 
 
@@ -97,9 +103,12 @@ namespace Application.Tournaments
 
                 ////////////////////disable for testing////////////////////////////////////////
                 var result = await _context.SaveChangesAsync(cancellationToken) > 0;
-                if(!result) return Result<Unit>.Failed("Something went wrong while saving to database");
+                if(!result) return Result<TournamentDto>.Failed("Something went wrong while saving to database");
                 
-                return Result<Unit>.Success(Unit.Value);
+                var tournamentDto = _mapper.Map<TournamentDto>(tournament);
+                tournamentDto.Contestors = _sorter.SortContestorDtos(tournamentDto.Contestors);
+
+                return Result<TournamentDto>.Success(tournamentDto);
                     
             }
 
@@ -160,7 +169,7 @@ namespace Application.Tournaments
                 if(contestors.Count == 0) return;
                 SplitListInTwo(contestors, out List<Contestor> list1, out List<Contestor> list2);
                 
-                for(int i = 0; i < list1.Count && i < list2.Count; i++)
+                for(int i = 0; i < list1.Count; i++)
                 {
                     for(int j = 0; j < list2.Count; j++)
                     {
