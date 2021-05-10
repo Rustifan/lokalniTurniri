@@ -48,6 +48,7 @@ namespace Application.Tournaments
 
                 if(!tournament.ApplicationsClosed) return Result<TournamentDto>.Failed("Tournament applications are not closed");
                 
+                if(tournament.CurrentRound >= tournament.NumberOfRounds) return Result<TournamentDto>.Failed("Tournament is over"); 
                 //if there are active games Bad request
                 if(tournament.Games.Any(x=>x.Result == -1)) return Result<TournamentDto>.Failed("There are still active games left");
                 //random rating always

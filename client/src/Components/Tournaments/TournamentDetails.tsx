@@ -11,6 +11,8 @@ import TournamentAdminOptions from "./TournamentAdminOptions";
 import TournamnetAdminList from "./TournamentAdminList";
 import TournamentTable from "./TournamentTable";
 import TournamentGames from "./TournamentGames";
+import Winners from "./Winners";
+import Confetti from "react-confetti"
 
 interface Params {
     id: string;
@@ -18,7 +20,7 @@ interface Params {
 
 export default observer(function TournamentDetails() {
     const { id } = useParams<Params>();
-    const { tournamentStore: { isAdmin, selectTornament, selectedTournament, deselectTournament } } = store;
+    const { tournamentStore: { isAdmin, selectTornament, selectedTournament, deselectTournament, isTournamentFinnished } } = store;
     useEffect(() => {
         selectTornament(id);
 
@@ -30,8 +32,14 @@ export default observer(function TournamentDetails() {
     return (
         <>
             
+            {selectedTournament && isTournamentFinnished && 
+                        <>
+                        <Confetti height={2000}/>
+                        <Winners contestors={selectedTournament.contestors}/>
+                        </>
+            }
             {selectedTournament ?
-
+            
                 <Grid style={{marginTop: 50}}>
                     <Grid.Column width="9">
                         <TournamentDetailsHeader tournament={selectedTournament}/>
@@ -45,9 +53,12 @@ export default observer(function TournamentDetails() {
                     <Grid.Column width="7">
                         {selectedTournament.currentRound !==0 ? <TournamentTable contestors={selectedTournament.contestors}/> :
                         <TournamentDetailsContestors contestors={selectedTournament!.contestors}/>}
+                       
+
                     </Grid.Column>
                     {selectedTournament.currentRound !==0 &&
                     <Grid.Column width="16">
+                        
                         <TournamentGames tournament={selectedTournament}/>
                     </Grid.Column>
                     }

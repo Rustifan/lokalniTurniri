@@ -78,7 +78,8 @@ export default observer(function TournamentAdminOptions({ tournament }: Props) {
                             disabled={closeApplicationsLoading}
                             />
                         }
-                        {tournament.applicationsClosed && !tournamentStore.hasActiveGames &&
+                        {tournament.applicationsClosed && !tournamentStore.hasActiveGames 
+                            && tournament.currentRound < tournament.numberOfRounds &&
                         <Button
                             color="teal"
                             content={tournament.currentRound !==0 ? "Započni novu rundu" : "Započni turnir!"}

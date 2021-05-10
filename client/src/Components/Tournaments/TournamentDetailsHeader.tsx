@@ -64,7 +64,10 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
                     <Item  style={itemStyle}>
                         <Item.Header as="h1">{tournament.name}</Item.Header>
                         <Item.Meta style={sportStyle}>{tournament.sport.toUpperCase()}</Item.Meta>
-                        <Item.Extra>{format(tournament.date, "dd.  mm.  yyyy")}</Item.Extra>
+                        <Item.Extra>
+                            {format(tournament.date, "dd.  mm.  yyyy")}
+                            <span style={{position: "absolute", left: "70%" }}>{"BROJ RUNDI: " +tournament.numberOfRounds}</span>
+                        </Item.Extra>
                     </Item>
 
                     
@@ -73,7 +76,11 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
             
             <Segment attached="top">
                 {tournament.applicationsClosed ? 
-                <Label ribbon size="large" color="red" content="Zatvorene prijave"/>
+                <Label 
+                    ribbon 
+                    size="large" 
+                    color={tournament.currentRound===0?"red":"blue"} 
+                    content={tournament.currentRound ===0?"Zatvorene Prijave": "U tijeku je "+tournament.currentRound+" runda."}/>
                 :
                 <Button 
                     onClick={store.userStore.user ? 
@@ -86,6 +93,7 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
                     content={isContestor() ? "Odjavi se" : "Prijavi se"} 
                         />
                     }
+                
             </Segment>
         </Segment.Group>
         </>

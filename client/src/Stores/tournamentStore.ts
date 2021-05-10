@@ -7,6 +7,7 @@ import { history } from "..";
 import { Contestor } from "../App/Interfaces/Contestor";
 import { AddContestor } from "../App/Interfaces/AddContestor";
 import { Game } from "../App/Interfaces/Game";
+import { useField } from "formik";
 export class TournamentStore
 {
     tournamentMap = new Map<string, Tournament>();    
@@ -594,5 +595,14 @@ export class TournamentStore
             if(y.rating > x.rating) return -1;
             return 0;
         });
+    }
+
+    get isTournamentFinnished()
+    {
+        if(!this.selectedTournament) return false;
+        const tournament = this.selectedTournament;
+
+        if(tournament.currentRound >= tournament.numberOfRounds && !this.hasActiveGames) return true;
+        return false;
     }
 }
