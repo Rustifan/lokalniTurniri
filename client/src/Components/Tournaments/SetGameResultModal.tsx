@@ -48,19 +48,19 @@ export default observer(function SetGameResultModal({game}: Props)
                 <Button.Group>
                 <Button 
                     color="blue" 
-                    disabled={disabled()} 
+                    disabled={disabled() || game.result === 1} 
                     loading={loading(1)}
                     onClick={()=>submit(1)}
                     >{game.contestor1}</Button>
                 <Button 
                     color="yellow" 
-                    disabled={disabled()} 
+                    disabled={disabled() || game.result === 0} 
                     loading={loading(0)}
                     onClick={()=>submit(0)}
                     >Neriješeno</Button>
                 <Button 
                     color="green" 
-                    disabled={disabled()} 
+                    disabled={disabled() || game.result === 2} 
                     loading={loading(2)}
                     onClick={()=>submit(2)}
                     >{game.contestor2}</Button>

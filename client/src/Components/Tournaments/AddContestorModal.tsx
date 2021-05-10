@@ -40,7 +40,7 @@ export default observer(function AddContestorModal()
                         <Header sub>Ime natjecatelja</Header>
                         <TextInput name="name" placeholder="ime"/>
 
-                        <Header sub>Dali je natjecatelj gost?</Header>
+                        <Header sub>Je li natjecatelj gost?</Header>
                         <TextInput name="isGuest" placeholder="gost" type="checkbox"/>
                         
                         <div style={{display: "flex", justifyContent: "center"}}>

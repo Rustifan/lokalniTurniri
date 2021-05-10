@@ -31,7 +31,7 @@ export default observer(function TournamentAdminOptions({ tournament }: Props) {
                     <Header as="h2"><Icon name="dropdown"/>Administratorske opcije</Header>
                 </Accordion.Title>
                 <Accordion.Content active={accordionActive}>
-                    <YesNoModal question="Dali zaista želite izbrisati turnir?"
+                    <YesNoModal question="Želite li zaista izbrisati turnir?"
                         loading={tournamentStore.tournamentLoading}
                         setOpen={setDeleteModalOpen}
                         open={deleteModalOpen}

@@ -80,7 +80,7 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
                     ribbon 
                     size="large" 
                     color={tournament.currentRound===0?"red":"blue"} 
-                    content={tournament.currentRound ===0?"Zatvorene Prijave": "U tijeku je "+tournament.currentRound+" runda."}/>
+                    content={tournament.currentRound ===0?"Zatvorene Prijave": "U tijeku je "+tournament.currentRound+". runda."}/>
                 :
                 <Button 
                     onClick={store.userStore.user ? 
