@@ -35,13 +35,7 @@ export default observer(function TournamentGames({tournament}: Props) {
         }
         setRoundsOpenAccordion(roundsOpenInitial);
     }, [tournament.currentRound, setRoundsOpenAccordion])
-    
-
-    
-    console.log(roundsOpenAccordion);
-        
-    
-    
+            
     const rounds = [];
     const games = gamesByRound;
     

@@ -1,7 +1,7 @@
 export default function PictureFromSport(sport: string)
 {
     let sportImg = "";
-    switch(sport)
+    switch(sport.toLowerCase())
     {
         case "šah":
         sportImg = "chess.png";

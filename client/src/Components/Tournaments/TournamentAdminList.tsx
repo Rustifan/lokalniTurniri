@@ -5,6 +5,7 @@ import { userIcon } from "../../App/Core/Constants"
 import { Tournament } from "../../App/Interfaces/Tournament"
 import { store } from "../../Stores/store"
 import YesNoModal from "../Common/YesNoModal"
+import AddAdminModal from "./AddAdminModal"
 
 interface Props
 {
@@ -15,8 +16,9 @@ interface Props
 export default observer(function TournamnetAdminList({tournament}: Props)
 {
     const {tournamentStore} = store;
-    const {editingTournament, removeAdminModalOpen, removeAdmin, setRemoveAdminModalOpen, isHost} = tournamentStore;
+    const {editingTournament, removeAdminModalOpen, removeAdmin, setRemoveAdminModalOpen, isHost, setAddAdminModalOpen} = tournamentStore;
     const [adminToRemove, setAdminToRemove] = useState<string | null>(null);
+    const [openRemoveAdminPopup, setOpenRemoveAdminPopup] = useState(false);
 
     const handleRemovingAdmin = ()=>
     {
@@ -27,6 +29,8 @@ export default observer(function TournamnetAdminList({tournament}: Props)
 
     return(
         <Segment>
+        <AddAdminModal/>
+
         <YesNoModal
             open={removeAdminModalOpen}
             setOpen={setRemoveAdminModalOpen}
@@ -34,7 +38,16 @@ export default observer(function TournamnetAdminList({tournament}: Props)
             loading={editingTournament}
             onSubmit={handleRemovingAdmin}
             />
-        <Header as="h2">Administratori</Header>
+        <Header as="h2">Administratori
+        {isHost() &&
+        <Button
+            floated="right"
+            color="blue"
+            onClick={()=>setAddAdminModalOpen(true)}
+            content="Dodaj administratora"
+            />
+        }
+        </Header>
         <List horizontal>
 
                         {tournament.admins.map(((admin, i) => (
@@ -46,12 +59,18 @@ export default observer(function TournamnetAdminList({tournament}: Props)
                                     header={<Button size="mini" content="Ukloni" negative 
                                         onClick={()=>{
                                             setRemoveAdminModalOpen(true);
+                                            setOpenRemoveAdminPopup(false);
                                             setAdminToRemove(admin)
                                             }
                                             }/>}
+                                    open={openRemoveAdminPopup}
+                                    closeOnDocumentClick
+                                    onOpen={()=>setOpenRemoveAdminPopup(true)}
+                                    onClose={()=>setOpenRemoveAdminPopup(false)}
                                     on="click"
                                     trigger={
                                     <Image 
+                                    
                                     size="mini"
                                     avatar 
                                     src={userIcon}

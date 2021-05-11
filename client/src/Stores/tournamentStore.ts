@@ -7,7 +7,6 @@ import { history } from "..";
 import { Contestor } from "../App/Interfaces/Contestor";
 import { AddContestor } from "../App/Interfaces/AddContestor";
 import { Game } from "../App/Interfaces/Game";
-import { useField } from "formik";
 export class TournamentStore
 {
     tournamentMap = new Map<string, Tournament>();    
@@ -61,7 +60,11 @@ export class TournamentStore
     addToTournamentMap = (tournament: Tournament) =>
     {
         tournament.date = new Date(tournament.date);
-        this.tournamentMap.set(tournament.id, tournament);
+        runInAction(()=>
+        {
+            this.tournamentMap.set(tournament.id, tournament);
+
+        })
     }
     
     get tournamentList()
@@ -95,9 +98,7 @@ export class TournamentStore
                 this.tournamentLoading = false;
         });
 
-        //Testing Remove this line
-        console.dir(this.selectedTournament);
-        ///
+       
         
     }
 
@@ -115,17 +116,17 @@ export class TournamentStore
                this.addToTournamentMap(tournament);
         
             }
+            runInAction(()=>this.creatingTournament === false);
+
             history.push("/tournaments/"+createdTournament.id);
         }
         catch(err)
         {
+            runInAction(()=>this.creatingTournament === false);
+
             console.log(err);
         }
-        finally
-        {
-            runInAction(()=>this.creatingTournament === false);
-        }
-
+        
     }
 
     editTournament = async (tournamentForm: TournamentFormValues)=>
@@ -290,9 +291,14 @@ export class TournamentStore
             await agent.Tournaments.addContestor(this.selectedTournament.id, values.name, values.isGuest);
             if(this.selectedTournament)
             {
+                const tournament = this.selectedTournament;
                 const contestor = new Contestor(values.name, values.isGuest ? null: values.name);
-                this.selectedTournament.contestors.push(contestor);
-                this.selectedTournament.contestorNum++;
+                runInAction(()=>
+                {
+                    tournament.contestors.push(contestor);
+                    tournament.contestorNum++;
+
+                })
             }
         }
         catch(err)

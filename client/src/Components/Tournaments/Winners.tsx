@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React from "react"
+import React, { Fragment } from "react"
 import { Icon, Segment } from "semantic-ui-react";
 import { Contestor } from "../../App/Interfaces/Contestor";
 
@@ -37,7 +37,7 @@ export default observer(function Winners({contestors}: Props)
             </div>
             <div style={{marginTop: 40, color: "gold"}}>
             {winners.map((winner, index)=>(
-                <>
+                <Fragment key={index}>
                 <span style={winnersStyle}>{winner.displayName.toUpperCase()}</span>
                 { index < winners.length-2 &&
                     <span style={winnersStyle}>{", "}</span>
@@ -46,7 +46,7 @@ export default observer(function Winners({contestors}: Props)
                     index === winners.length-2 &&
                     <span style={winnersStyle}>{" i "}</span>
                 }
-                </>
+                </Fragment>
             ))}
             </div>
         </Segment>

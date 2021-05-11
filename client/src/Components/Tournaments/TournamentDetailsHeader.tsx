@@ -12,8 +12,9 @@ interface Props {
 }
 
 export default observer(function TournamentDetailsHeader({ tournament }: Props) {
+    
     const {tournamentStore} = store;
-    const {isContestor, participate, participateLoading} = tournamentStore;
+    const {isContestor, participate, participateLoading, isTournamentFinnished} = tournamentStore;
 
     const imageSegmanetStyle =
     {
@@ -51,12 +52,10 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
         marginTop: 35
     }
     
-    
+   
     
     return (
         <>
-       
-
             <Segment.Group>
             <Segment attached="bottom" clearing style={imageSegmanetStyle}>
                 <Image fluid style={imageStyle} src={PictureFromSport(tournament.sport)} />
@@ -80,7 +79,8 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
                     ribbon 
                     size="large" 
                     color={tournament.currentRound===0?"red":"blue"} 
-                    content={tournament.currentRound ===0?"Zatvorene Prijave": "U tijeku je "+tournament.currentRound+". runda."}/>
+                    content={tournament.currentRound ===0 ? "Zatvorene Prijave": 
+                        isTournamentFinnished ? "Turnir je završen!" : "U tijeku je "+tournament.currentRound+". runda."}/>
                 :
                 <Button 
                     onClick={store.userStore.user ? 
