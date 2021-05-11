@@ -13,6 +13,7 @@ namespace Application.Core
             CreateMap<AppUser, Profiles.Profile>();
             CreateMap<Tournament, TournamentDto>()
                 .ForMember(x=>x.Admins, o=>o.MapFrom(a=>a.Admins.Select(x=>x.User.UserName)))
+                .ForMember(x=>x.Games, o=>o.MapFrom(x=>x.Games.OrderBy(x=>x.Round).ThenBy(x=>x.GameNumber)))
                 .ForMember(x=>x.HostUsername, o=>o.MapFrom(h=>h.Host.UserName))
                 .ForMember(x=>x.ContestorNum, o=>o.MapFrom(x=>x.Contestors.Count));
             CreateMap<Contestor, ContestorDto>()

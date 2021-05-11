@@ -95,7 +95,7 @@ namespace Application.Tournaments
 
                 if(loners.Count > 0)
                 {
-                    //TODO
+                    //TODO 
                     return Result<TournamentDto>.Failed("Loners Error ");
                 }
                 
@@ -104,6 +104,8 @@ namespace Application.Tournaments
 
                 ////////////////////disable for testing////////////////////////////////////////
                 var result = await _context.SaveChangesAsync(cancellationToken) > 0;
+                /////////
+                
                 if(!result) return Result<TournamentDto>.Failed("Something went wrong while saving to database");
                 
                 var tournamentDto = _mapper.Map<TournamentDto>(tournament);
@@ -194,7 +196,8 @@ namespace Application.Tournaments
                             Contestor2 = contestor2,
                             Tournament = tournament,
                             Round = tournament.CurrentRound,
-                            Result = -1
+                            Result = -1,
+                            GameNumber = _games.Count + 1
                         };
                         _games.Add(game);
 
@@ -254,7 +257,8 @@ namespace Application.Tournaments
                         Contestor2 = contestor2,
                         Tournament = tournament,
                         Result = -1,
-                        Round = tournament.CurrentRound
+                        Round = tournament.CurrentRound,
+                        GameNumber = _games.Count + 1
                     };
                     game.Contestor2 = contestor1;
 

@@ -5,6 +5,7 @@ namespace Domain
     public class Game
     {
         public Guid Id { get; set; }
+        public int GameNumber { get; set; }
         public Guid Contestor1Id { get; set; }
         public Contestor Contestor1 { get; set; }
         public Guid Contestor2Id { get; set; }
