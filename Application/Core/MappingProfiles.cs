@@ -11,6 +11,8 @@ namespace Application.Core
         {
             CreateMap<TournamentEditDto, Tournament>();
             CreateMap<AppUser, Profiles.Profile>();
+            CreateMap<AppUser, Profiles.UserProfileDto>();
+            
             CreateMap<Tournament, TournamentDto>()
                 .ForMember(x=>x.Admins, o=>o.MapFrom(a=>a.Admins.Select(x=>x.User.UserName)))
                 .ForMember(x=>x.Games, o=>o.MapFrom(x=>x.Games.OrderBy(x=>x.Round).ThenBy(x=>x.GameNumber)))

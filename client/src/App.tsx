@@ -15,6 +15,7 @@ import { observer } from 'mobx-react-lite';
 import { history } from '.';
 import CreateTournamentForm from './Components/Forms/CreateTournament';
 import EditTournament from './Components/Forms/EditTournament';
+import UserProfile from './Components/Users/UserProfile';
 function App() {
 
   const {userStore, errorStore} = store;
@@ -48,6 +49,7 @@ function App() {
           <Route path="/tournaments" component={TournamentList}/>
           <Route path="/createTournament" component={CreateTournamentForm}/>
           <Route path="/errorTesting" component={ErrorTesting}/>
+          <Route path="/userProfile/:username" component={UserProfile}/>
           <Route component={NotFoundPage}/>
         </Switch>
       </Container>

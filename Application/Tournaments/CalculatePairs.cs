@@ -52,6 +52,8 @@ namespace Application.Tournaments
                 //if there are active games Bad request
                 if(tournament.Games.Any(x=>x.Result == -1)) return Result<TournamentDto>.Failed("There are still active games left");
                 //random rating always
+                
+                if(tournament.Contestors.Count <= tournament.NumberOfRounds) return Result<TournamentDto>.Failed("Natjecatelja mora biti više nego rundi");
 
                 var contestors = tournament.Contestors;
                 if(tournament.CurrentRound == 0) AssignRandomRating(contestors);
@@ -93,10 +95,27 @@ namespace Application.Tournaments
                     
                 }
 
+                //loners play together. Count should be pair number
                 if(loners.Count > 0)
                 {
-                    //TODO 
-                    return Result<TournamentDto>.Failed("Loners Error ");
+                    if(loners.Count % 2 != 0) return Result<TournamentDto>.Failed("Loners Count is not in pair ");
+                    
+                    for(int i = 0; i < loners.Count / 2; i++)
+                    {
+                        var game = new Game
+                        {
+                            Contestor1 = loners[i],
+                            Contestor2 = loners[i+loners.Count/2],
+                            GameNumber = _games.Count+1,
+                            Result = -1,
+                            Round = tournament.CurrentRound
+                        
+                        };
+                        tournament.Games.Add(game);
+                        _games.Add(game);
+                    }
+
+                    
                 }
                 
 

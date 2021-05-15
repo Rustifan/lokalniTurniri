@@ -13,7 +13,6 @@ import TournamentTable from "./TournamentTable";
 import TournamentGames from "./TournamentGames";
 import Winners from "./Winners";
 import Confetti from "react-confetti"
-import { TournamentStore } from "../../Stores/tournamentStore";
 
 interface Params {
     id: string;
@@ -28,6 +27,7 @@ export default observer(function TournamentDetails() {
 
         return deselectTournament;
     }, [selectTornament, deselectTournament, id])
+
 
     return (
         <>

@@ -1,3 +1,4 @@
+
 export interface Game
 {
     id: string;
@@ -7,3 +8,6 @@ export interface Game
     active: boolean;
     round: number;
 }
+
+
+

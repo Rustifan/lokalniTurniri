@@ -1,4 +1,4 @@
-import {makeAutoObservable, runInAction} from "mobx";
+import { get, makeAutoObservable, runInAction, set} from "mobx";
 import { agent } from "../App/agent";
 import { TournamentFormValues, Tournament } from "../App/Interfaces/Tournament";
 import { store } from "./store";
@@ -7,6 +7,7 @@ import { history } from "..";
 import { Contestor } from "../App/Interfaces/Contestor";
 import { AddContestor } from "../App/Interfaces/AddContestor";
 import { Game } from "../App/Interfaces/Game";
+
 export class TournamentStore
 {
     tournamentMap = new Map<string, Tournament>();    
@@ -27,6 +28,7 @@ export class TournamentStore
     constructor()
     {
         makeAutoObservable(this);
+        
     }
 
     loadTournaments = async ()=>
@@ -59,12 +61,14 @@ export class TournamentStore
 
     addToTournamentMap = (tournament: Tournament) =>
     {
-        tournament.date = new Date(tournament.date);
         runInAction(()=>
         {
-            this.tournamentMap.set(tournament.id, tournament);
-
+            tournament.date = new Date(tournament.date);
+            set(this.tournamentMap, tournament.id, {...tournament});
+            
         })
+    
+    
     }
     
     get tournamentList()
@@ -75,7 +79,7 @@ export class TournamentStore
     selectTornament = async (id: string)=>
     {
         this.tournamentLoading = true;
-        let tournament = this.tournamentMap.get(id);
+        let tournament = get(this.tournamentMap, id);
         if(!tournament)
         {
             try
