@@ -14,5 +14,12 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new List.Query()));
         }
+
+        [AllowAnonymous]
+        [HttpGet("{username}")]
+        public async Task<IActionResult> Details(string username)
+        {
+            return HandleResult(await Mediator.Send(new Details.Query{Username = username}));
+        }
     }
 }

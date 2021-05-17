@@ -4,6 +4,7 @@ import { store } from "../Stores/store";
 import { ApiResponseDelay } from "./Core/Constants";
 import { TournamentFormValues, Tournament } from "./Interfaces/Tournament";
 import { LoginForm, RegisterDto, User } from "./Interfaces/User";
+import { UserProfile } from "./Interfaces/UserProfile";
 
 const instance = axios.create({baseURL: "http://localhost:5000/api"});
 
@@ -106,10 +107,16 @@ const Tournaments =
 
 }
 
+const UserProfiles = 
+{
+    details: (username: string) => instance.get<UserProfile>("/userProfiles/"+username).then(value=>value.data)
+}
+
 export const agent = 
 {
     Tournaments,
     Users,
+    UserProfiles,
     TestErrors
 }
 
