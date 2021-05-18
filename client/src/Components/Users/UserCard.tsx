@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Card, Image } from 'semantic-ui-react'
 import { userIcon } from '../../App/Core/Constants'
 import { UserProfile } from '../../App/Interfaces/UserProfile'
+import reduceText from '../../App/Tools/reduceText'
 
 interface Props
 {
@@ -16,7 +17,7 @@ const UserCard = ({profile}: Props) => (
       <Card.Header textAlign="center">{profile.username}</Card.Header>
       
       <Card.Description>
-        {profile.bio}
+        {reduceText(profile.bio ? profile.bio : "", 200)}
       </Card.Description>
      
     </Card.Content>

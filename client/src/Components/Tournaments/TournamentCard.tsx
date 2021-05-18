@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button, Icon,  Item, Label, List, Message } from "semantic-ui-react";
 import { Tournament } from "../../App/Interfaces/Tournament";
 import PictureFromSport from "../../App/Tools/pictureFromSoprt";
-import UserAvatar from "../Users/UserAvatar";
+import UserPopup from "../Users/UserPopup";
 
 interface Props {
     tournament: Tournament;
@@ -43,7 +43,7 @@ export default function TournamentCard({ tournament }: Props) {
 
                             <List.Item key={i}>
 
-                                <UserAvatar user={admin} highlited={tournament.hostUsername === admin} />
+                                <UserPopup user={admin} highlited={tournament.hostUsername === admin} />
                             </List.Item>)
 
                         ))}

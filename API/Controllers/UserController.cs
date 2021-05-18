@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Dtos;
 using Application.Interfaces;
+using Application.Profiles;
 using AutoMapper;
 using Domain;
 using Microsoft.AspNetCore.Authorization;

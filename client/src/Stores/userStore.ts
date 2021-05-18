@@ -1,6 +1,8 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import { history } from "..";
 import { agent } from "../App/agent";
 import { LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
+import { UserProfile } from "../App/Interfaces/UserProfile";
 import { store } from "./store";
 
 export class UserStore
@@ -119,4 +121,31 @@ export class UserStore
 
     }
     
+    editUser = async (editProfile: UserProfile)=>
+    {
+        if(!this.user) return console.log("There is no user loged in");
+        try{
+
+            const newUser = await agent.Users.editUser(editProfile);
+            await store.profileStore.updateProfile(this.user.username, newUser.username);
+            runInAction(()=>
+            {
+                this.user = newUser;
+
+            })
+            localStorage.setItem("jwt", newUser.token);
+            history.push("/userProfile/"+newUser.username);           
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+    }
+
+    isLogedIn=(username: string |null = null)=>
+    {
+        if(!username || !this.user) return false;
+
+        return this.user.username === username;
+    }
 }

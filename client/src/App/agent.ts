@@ -85,7 +85,9 @@ const Users =
     login: (loginForm: LoginForm)=>instance.post<User>("/user/login", loginForm)
         .then(value=>value.data),
         
-    getCurrentUser: () => instance.get<User>("/user").then(value=>value.data)
+    getCurrentUser: () => instance.get<User>("/user").then(value=>value.data),
+    editUser: (editProfile: UserProfile)=>instance.put<User>("/userProfiles", editProfile)
+        .then(value=>value.data)
 }
 
 const Tournaments = 

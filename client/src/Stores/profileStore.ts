@@ -33,4 +33,10 @@ export class ProfileStore
         }
         return profile;
     }
+
+    updateProfile = async (oldUsername: string, newUsername: string)=>
+    {
+        this.profileMap.delete(oldUsername);
+        return await this.getProfile(newUsername);
+    }
 }

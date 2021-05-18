@@ -1,4 +1,4 @@
-namespace API.Dtos
+namespace Application.Profiles
 {
     public class UserDto
     {

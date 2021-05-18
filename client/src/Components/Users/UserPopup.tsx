@@ -12,14 +12,14 @@ interface Props
     size?: SemanticSIZES;
 }
 
-export default function UserAvatar({user, highlited=false, size=undefined}: Props)
+export default function UserPopup({user, highlited=false, size=undefined}: Props)
 {
     const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
     const {profileStore: {getProfile}} = store;
     useEffect(()=>
     {
         getProfile(user).then(value=>setProfile(value));
-    }, [setProfile, user]);
+    }, [setProfile, user, getProfile]);
     
 
 
