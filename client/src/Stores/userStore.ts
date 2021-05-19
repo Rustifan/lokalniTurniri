@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { history } from "..";
 import { agent } from "../App/agent";
-import { LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
+import { ChangePasswordForm, LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
 import { UserProfile } from "../App/Interfaces/UserProfile";
 import { store } from "./store";
 
@@ -11,7 +11,7 @@ export class UserStore
     loadingUser = false;
     loginModalOpen = false;
     registerModalOpen = false;
-    
+    changePasswordModalOpen = false;    
 
     constructor()
     {
@@ -144,8 +144,29 @@ export class UserStore
 
     isLogedIn=(username: string |null = null)=>
     {
-        if(!username || !this.user) return false;
+        if(!username && this.user) return true;
+        if(!this.user) return false;
 
         return this.user.username === username;
     }
+
+    setChangePasswordModalOpen = (open: boolean) =>
+    {
+        this.changePasswordModalOpen = open;
+    }
+
+    changePassword = async (changePasswordForm: ChangePasswordForm)=>
+    {
+        if(!this.isLogedIn()) return console.log("Not loged in");
+
+        try{
+            await agent.Users.changePassword(changePasswordForm);
+            this.setChangePasswordModalOpen(false);
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+    }
+
 }

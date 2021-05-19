@@ -2,8 +2,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.Interfaces;
+using Application.Validation;
 using AutoMapper;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,13 @@ namespace Application.Profiles
             public EditProfileDto EditDto { get; set; }
         }
 
+        public class CommandValidator: AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x=>x.EditDto).SetValidator(new EditProfileValidator());
+            }
+        }
         public class Handler : IRequestHandler<Command, Result<UserDto>>
         {
             private readonly IMapper _mapper;

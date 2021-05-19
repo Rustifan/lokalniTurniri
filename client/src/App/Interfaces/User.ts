@@ -33,3 +33,9 @@ export class RegisterDto
     }
 }
 
+export interface ChangePasswordForm
+{
+    oldPassword: string;
+    newPassword: string;
+    repeatPassword: string;
+}

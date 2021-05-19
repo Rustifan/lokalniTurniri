@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Errors;
 using Application.Interfaces;
 using Application.Profiles;
 using AutoMapper;
@@ -41,9 +42,9 @@ namespace API.Controllers
             };
 
             
-            if(await _userManager.FindByNameAsync(newUser.UserName) != null) return BadRequest(new{userError=true, message = "Ime je već zauzeto"});
+            if(await _userManager.FindByNameAsync(newUser.UserName) != null) return BadRequest(new UserError("Ime je već zauzeto"));
 
-            if(await _userManager.FindByEmailAsync(newUser.Email) != null) return BadRequest(new{userError=true, message = "Email je već zauzet"});
+            if(await _userManager.FindByEmailAsync(newUser.Email) != null) return BadRequest(new UserError("Email je već zauzet"));
 
             var result = await _userManager.CreateAsync(newUser, userDto.Password);
             
@@ -58,10 +59,10 @@ namespace API.Controllers
         public async Task<IActionResult> Login(LoginUserDto userDto)
         {
             var user = await _userManager.FindByEmailAsync(userDto.Email);
-            if(user == null) return BadRequest(new{userError=true, message = "Pogrešan email ili zaporka!"});
+            if(user == null) return BadRequest(new UserError("Pogrešan email ili zaporka!"));
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, userDto.Password, false);
-            if(!result.Succeeded) return BadRequest(new{userError=true, message = "Pogrešan email ili zaporka!"});
+            if(!result.Succeeded) return BadRequest(new UserError("Pogrešan email ili zaporka!"));
 
             return Ok(CreateUserDto(user));
         }
@@ -79,6 +80,25 @@ namespace API.Controllers
             return Ok(profile);
         }
 
+        [Authorize]
+        [HttpPut("changePassword")]
+
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if(user == null) return BadRequest("Could not retreve user profile");
+
+            if(changePasswordDto.NewPassword != changePasswordDto.RepeatPassword) return BadRequest(new UserError("Ponovljena lozinka se na poklapa"));
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, changePasswordDto.OldPassword, false );
+            if(!result.Succeeded) return BadRequest(new UserError("Pogrešna stara lozinka"));
+
+            var isChangedResult = await _userManager.ChangePasswordAsync(user, changePasswordDto.OldPassword, changePasswordDto.NewPassword);
+            if(!isChangedResult.Succeeded) return BadRequest(new UserError("Newšto je pošlo po krivu"));
+
+            return Ok();
+        }
+ 
 
         private UserDto CreateUserDto(AppUser user)
         {

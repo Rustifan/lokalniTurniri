@@ -3,7 +3,7 @@ import { history } from "..";
 import { store } from "../Stores/store";
 import { ApiResponseDelay } from "./Core/Constants";
 import { TournamentFormValues, Tournament } from "./Interfaces/Tournament";
-import { LoginForm, RegisterDto, User } from "./Interfaces/User";
+import { ChangePasswordForm, LoginForm, RegisterDto, User } from "./Interfaces/User";
 import { UserProfile } from "./Interfaces/UserProfile";
 
 const instance = axios.create({baseURL: "http://localhost:5000/api"});
@@ -33,7 +33,7 @@ instance.interceptors.response.use(async (config)=>
             store.errorStore.setError({statusCode: 400, head: error.response.data});
 
         }
-        else if(error.response.data.userError)
+        else if(error.response.data.isUserError)
         {
             store.errorStore.setLoginRegisterError(error.response.data.message);
             
@@ -87,7 +87,8 @@ const Users =
         
     getCurrentUser: () => instance.get<User>("/user").then(value=>value.data),
     editUser: (editProfile: UserProfile)=>instance.put<User>("/userProfiles", editProfile)
-        .then(value=>value.data)
+        .then(value=>value.data),
+    changePassword: (changePasswordForm: ChangePasswordForm)=> instance.put("/user/changePassword", changePasswordForm)
 }
 
 const Tournaments = 
