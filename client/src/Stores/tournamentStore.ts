@@ -533,7 +533,7 @@ export class TournamentStore
                         }
                         return game;
                     });
-            })
+            });
 
 
         }

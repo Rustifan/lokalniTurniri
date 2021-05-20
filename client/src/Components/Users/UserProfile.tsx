@@ -7,6 +7,7 @@ import { userIcon } from "../../App/Core/Constants";
 import { UserProfile } from "../../App/Interfaces/UserProfile";
 import { store } from "../../Stores/store";
 import LoadingComponent from "../Loading/LoadingComponent";
+import Photos from "./Photos";
 import ProfileBio from "./ProfileBio";
 
 interface Params {
@@ -32,7 +33,7 @@ export default observer(function UserProfile() {
 
         const panes = [
             { menuItem: 'O korisniku', render: () => <Tab.Pane><ProfileBio bio={profile.bio}/></Tab.Pane> },
-            { menuItem: 'Fotografije', render: () => <Tab.Pane>Fotografije</Tab.Pane> },
+            { menuItem: 'Fotografije', render: () => <Tab.Pane><Photos/></Tab.Pane> },
             { menuItem: 'Turniri', render: () => <Tab.Pane>Turniri</Tab.Pane> },
           ]
 
