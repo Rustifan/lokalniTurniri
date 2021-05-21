@@ -17,6 +17,7 @@ namespace Persistence
 
         public DbSet<Contestor> Contestors {get; set;}
         public DbSet<Game> Games { get; set; }
+        public DbSet<Image> Images { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // Admin many to many setup
@@ -63,6 +64,7 @@ namespace Persistence
             
 
             // pass builder to parent class
+            
             base.OnModelCreating(builder);
         }
 

@@ -10,6 +10,7 @@ using Application.Core;
 using Application.Interfaces;
 using Infrastructure.Security;
 using Application.Helpers;
+using Infrastructure.ImageUpload;
 
 namespace API.Extension
 {
@@ -35,6 +36,7 @@ namespace API.Extension
             {
                 
                 opt.UseNpgsql(config.GetConnectionString("DefaultConnection"));
+                
             });
 
             services.AddSwaggerGen(c =>
@@ -46,7 +48,8 @@ namespace API.Extension
             services.AddAutoMapper(typeof(MappingProfile));           
 
             services.AddSingleton<ISorter, Sorter>();
-                       
+            services.AddSingleton<IImageUploader, CloudinaryImageUploader>();
+
             return services;
         }
     }

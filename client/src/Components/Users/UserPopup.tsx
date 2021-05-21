@@ -32,7 +32,7 @@ export default function UserPopup({user, highlited=false, size=undefined}: Props
             <Image 
                  size={size}
                  avatar 
-                 src={userIcon}
+                 src={profile && profile.avatar ? profile?.avatar : userIcon}
                  style={{border: highlited ? "solid red 2px" : "none"}}
                  />}
         />

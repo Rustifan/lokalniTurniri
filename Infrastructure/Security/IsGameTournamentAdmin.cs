@@ -31,7 +31,6 @@ namespace Infrastructure.Security
             if(username == null) return;
 
             var gameId = Guid.Parse(request.RouteValues["gameId"]?.ToString());
-            if(gameId == null) return;
 
             var game = await _context.Games
                 .Include(x=>x.Tournament)

@@ -16,13 +16,13 @@ interface Params {
 
 export default observer(function UserProfile() {
 
-    const { profileStore: { getProfile }, userStore:{isLogedIn} } = store;
+    const { profileStore: { getProfile, profileMap }, userStore:{isLogedIn} } = store;
     const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
     const { username } = useParams<Params>();
     useEffect(() => {
         if (!username) return;
         getProfile(username).then(value => setProfile(value));
-    }, [username, setProfile, getProfile]);
+    }, [username, setProfile, getProfile, profileMap]);
 
     if (!profile)
         return (
@@ -33,7 +33,7 @@ export default observer(function UserProfile() {
 
         const panes = [
             { menuItem: 'O korisniku', render: () => <Tab.Pane><ProfileBio bio={profile.bio}/></Tab.Pane> },
-            { menuItem: 'Fotografije', render: () => <Tab.Pane><Photos/></Tab.Pane> },
+            { menuItem: 'Fotografije', render: () => <Tab.Pane><Photos profile={profile}/></Tab.Pane> },
             { menuItem: 'Turniri', render: () => <Tab.Pane>Turniri</Tab.Pane> },
           ]
 
@@ -61,7 +61,7 @@ export default observer(function UserProfile() {
                     }
                     {
                         !isLogedIn(profile.username) &&
-                        <Button floated="right" positive>Pošalji poruku</Button>
+                        <Button floated="right" positive>Pošalji poruku</Button> //TODO
                     }
                 </Segment>
                 </Segment.Group>

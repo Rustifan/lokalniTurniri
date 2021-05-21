@@ -115,11 +115,25 @@ const UserProfiles =
     details: (username: string) => instance.get<UserProfile>("/userProfiles/"+username).then(value=>value.data)
 }
 
+const Images = 
+{
+    post: (imageBlob: Blob)=> 
+    {
+        const formData = new FormData();
+        formData.append("image", imageBlob);
+        console.log(formData.get("image"));
+        
+        return instance.post("/pictures", formData,
+            {headers: {"Content-Type": "multipart/form-data"}})
+    }
+}
+
 export const agent = 
 {
     Tournaments,
     Users,
     UserProfiles,
+    Images,
     TestErrors
 }
 

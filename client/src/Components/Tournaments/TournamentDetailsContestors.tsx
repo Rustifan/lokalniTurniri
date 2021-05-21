@@ -1,11 +1,11 @@
 import { observer } from "mobx-react-lite"
 import React, { useState } from "react"
-import { Button, Header, Item, Segment } from "semantic-ui-react"
-import { userIcon } from "../../App/Core/Constants"
+import {  Header, Item, Segment } from "semantic-ui-react"
 import { AddContestor } from "../../App/Interfaces/AddContestor"
 import { Contestor } from "../../App/Interfaces/Contestor"
 import { store } from "../../Stores/store"
 import YesNoModal from "../Common/YesNoModal"
+import ContestorItem from "./ContestorItem"
 
 interface Props {
     contestors: Contestor[];
@@ -13,7 +13,7 @@ interface Props {
 
 export default observer( function TournamentDetailsContestors({ contestors }: Props) {
 
-    const {tournamentStore: {removeContestor, participateLoading, isAdmin, selectedTournament}} = store;
+    const {tournamentStore: {removeContestor, participateLoading}} = store;
     const [removeModalOpen, setRemoveModalOpen] = useState(false);
     const [contestorToRemove, setContestorToRemove] = useState<Contestor | null>(null);
 
@@ -58,26 +58,7 @@ export default observer( function TournamentDetailsContestors({ contestors }: Pr
                 <Item.Group divided>
                     {contestors.map((contestor) => (
 
-                        <Item key={contestor.displayName}>
-                            <Item.Image size="tiny" src={userIcon} />
-                            <Item.Content>
-                                <Header>
-                                    {contestor.displayName}
-                                </Header>
-                            </Item.Content>
-                                {isAdmin() && !selectedTournament?.applicationsClosed &&
-                                <Button 
-                                    size="small"
-                                    compact 
-                                    key={contestor.displayName} 
-                                    content="Izbaci" negative
-                                    style={{ height: "30%", alignSelf: "bottom"}}
-                                    onClick={()=>handleTryRemoveContestor(contestor)}
-                                    />}
-                            
-
-                           
-                        </Item>
+                        <ContestorItem key={contestor.displayName} contestor={contestor} handleTryRemoveContestor={handleTryRemoveContestor}/>
 
                     ))}
                 </Item.Group>
