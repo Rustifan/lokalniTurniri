@@ -1,10 +1,9 @@
-using System;
-using System.IO;
+
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Application.Images;
-
+using System;
 
 namespace API.Controllers
 {
@@ -16,6 +15,18 @@ namespace API.Controllers
             
             return HandleResult(await Mediator.Send(new Add.Command{Image = image}));
 
+        }
+
+        [HttpDelete("{imageId}")]
+        public async Task<IActionResult> DeletePhoto(Guid imageId)
+        {
+            return HandleResult(await Mediator.Send(new Delete.Command{ImageId = imageId}));
+        }
+
+        [HttpPut("setAvatar/{imageId}")]
+        public async Task<IActionResult> SetAvatar(Guid imageId)
+        {
+            return HandleResult(await Mediator.Send(new SetAvatar.Command{ImageId = imageId}));
         }
     }
 }

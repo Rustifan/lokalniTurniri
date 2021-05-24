@@ -22,7 +22,6 @@ export default function PhotoAddingSteps({step, setStep}: Props)
     {
         if(step > stepOfElement)
         {
-            console.log(step, stepOfElement);
             event.currentTarget.style.cursor = "pointer";
            
         }

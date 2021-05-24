@@ -21,8 +21,9 @@ export default observer(function UserProfile() {
     const { username } = useParams<Params>();
     useEffect(() => {
         if (!username) return;
+
         getProfile(username).then(value => setProfile(value));
-    }, [username, setProfile, getProfile, profileMap]);
+    }, [username, setProfile, getProfile, profileMap.size]);
 
     if (!profile)
         return (
@@ -53,7 +54,7 @@ export default observer(function UserProfile() {
                         </Grid.Column>
                     </Grid>
                 </Segment>
-                <Segment clearing>
+                <Segment clearing={true}>
                     <Label as="a" href={"mailto:"+profile.email} color="blue"><Icon name="mail"/>{profile.email}</Label>
                     {
                         isLogedIn(profile.username) &&

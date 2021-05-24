@@ -121,11 +121,12 @@ const Images =
     {
         const formData = new FormData();
         formData.append("image", imageBlob);
-        console.log(formData.get("image"));
         
         return instance.post("/pictures", formData,
             {headers: {"Content-Type": "multipart/form-data"}})
-    }
+    },
+    delete: (imageId: string)=>instance.delete("/pictures/"+imageId),
+    setAvatar: (imageId: string)=>instance.put("/pictures/setAvatar/"+imageId)
 }
 
 export const agent = 

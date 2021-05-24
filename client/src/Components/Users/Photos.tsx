@@ -1,35 +1,38 @@
-import React, { useState } from "react"
+import { observer } from "mobx-react-lite";
+import React from "react"
 import { Button, Container } from "semantic-ui-react";
 import { UserProfile } from "../../App/Interfaces/UserProfile";
 import { store } from "../../Stores/store";
 import AddPhoto from "./Photos/AddPhoto"
+import ProfilePhotoList from "./Photos/ProfilePhotoList";
 
 interface Props
 {
     profile: UserProfile;
 }
 
-export default function Photos({profile}: Props) 
+export default observer(function Photos({profile}: Props) 
 {
-   const [addPhotoMode, setAddPhotoMode] = useState(false);
-   const {userStore} = store;
+    const {userStore, profileStore} = store;
+    const {addPhotoMode, setAddPhotoMode} = profileStore;
    const {isLogedIn} = userStore;
 
     return(
         
-        <Container clearing>
+        <Container>
         {addPhotoMode ? 
             <AddPhoto/> :
-            <div>Grafije</div>
+            <ProfilePhotoList profile={profile}/>
         }
     
     {isLogedIn(profile.username) &&
     <Button
+        style={{marginTop: "20px"}}
         floated="right"
         content={addPhotoMode ? "Odustani" : "Dodaj sliku" }
         positive={!addPhotoMode}
         negative={addPhotoMode}
-        onClick={()=>setAddPhotoMode(value=>!value)}
+        onClick={()=>setAddPhotoMode(!addPhotoMode)}
         />
     }
 
@@ -38,7 +41,7 @@ export default function Photos({profile}: Props)
 
 
     
-}
+});
 
 
 

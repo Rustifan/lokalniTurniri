@@ -9,6 +9,9 @@ export class ProfileStore
     profileMap: Map<string, UserProfile> = new Map();
     profileLoading = false;
     postingImageLoading = false;
+    addPhotoMode = false;
+    deletingPhotoId: null | string = null;
+    settingAvatarId: null | string = null;
 
     constructor()
     {
@@ -23,7 +26,11 @@ export class ProfileStore
         {
             try{
                 profile = await  agent.UserProfiles.details(username);
-                this.profileMap.set(username, profile);
+                runInAction(()=>
+                {
+                    this.profileMap.set(username, profile!);
+
+                })
             }
             catch(err)
             {
@@ -43,6 +50,11 @@ export class ProfileStore
         return await this.getProfile(newUsername);
     }
 
+    setAddPhotoMode = (mode: boolean)=>
+    {
+        this.addPhotoMode = mode;
+    }
+
     postImage = async (image: Blob) =>
     {
         if(!store.userStore.user) return console.log("Not loged in");
@@ -53,6 +65,7 @@ export class ProfileStore
             await agent.Images.post(image);
             await this.updateProfile(store.userStore.user.username, store.userStore.user.username);
             history.push("/userProfile/"+store.userStore.user.username);
+            this.setAddPhotoMode(false);
         }
         catch(err)
         {
@@ -60,9 +73,53 @@ export class ProfileStore
         }
         finally
         {
-            this.postingImageLoading = false;
+            runInAction(()=>this.postingImageLoading = false)
             
         }
 
     }
+
+    deleteImage = async (photoId: string)=>
+    {
+        if(!store.userStore.user) return console.log("Not loged in");
+        runInAction(()=>
+        {
+            this.deletingPhotoId = photoId;
+
+        })
+        try{
+            await agent.Images.delete(photoId);
+            await this.updateProfile(store.userStore.user.username, store.userStore.user.username);
+
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally{
+            runInAction(()=>
+            {
+                this.deletingPhotoId = null;
+            })
+        }
+    }
+
+    setAvatar = async (imageId: string)=>
+    {
+        this.settingAvatarId = imageId;
+        if(!store.userStore.user) return console.log("Not loged in");
+
+        try{
+            await agent.Images.setAvatar(imageId);
+            await this.updateProfile(store.userStore.user.username, store.userStore.user.username);
+            
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally{
+            runInAction(()=>this.settingAvatarId = null);
+        }
+    }   
 }
