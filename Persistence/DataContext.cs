@@ -18,6 +18,7 @@ namespace Persistence
         public DbSet<Contestor> Contestors {get; set;}
         public DbSet<Game> Games { get; set; }
         public DbSet<Image> Images { get; set; }
+        public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // Admin many to many setup
@@ -62,6 +63,21 @@ namespace Persistence
                 .WithMany(x=>x.GamesAsContestor2)
                 .HasForeignKey(x=>x.Contestor2Id);
             
+            
+            //Message many to many relationship
+
+            builder.Entity<Message>()
+                .HasKey(x=>x.Id);
+
+            builder.Entity<Message>()
+                .HasOne(x=>x.Sender)
+                .WithMany(x=>x.SentMessages)
+                .HasForeignKey(x=>x.SenderId);
+
+            builder.Entity<Message>()
+                .HasOne(x=>x.Receiver)
+                .WithMany(x=>x.ReceivedMessages)
+                .HasForeignKey(x=>x.ReceiverId);
 
             // pass builder to parent class
             

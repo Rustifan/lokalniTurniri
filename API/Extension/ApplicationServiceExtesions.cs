@@ -21,13 +21,15 @@ namespace API.Extension
         {
             services.AddControllers()
                 .AddFluentValidation(x=>x.RegisterValidatorsFromAssemblyContaining<Application.Tournaments.Create>());
+            services.AddSignalR();
             services.AddCors(options=>
             {
                 options.AddPolicy("AllowLocalClient", builder=>
                 {
                     builder.WithOrigins("http://localhost:3000")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                 });
             });
 

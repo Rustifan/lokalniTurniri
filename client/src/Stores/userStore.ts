@@ -1,9 +1,11 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { history } from "..";
 import { agent } from "../App/agent";
 import { ChangePasswordForm, LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
 import { UserProfile } from "../App/Interfaces/UserProfile";
 import { store } from "./store";
+import * as signalR from "@microsoft/signalr";
+import Message from "../App/Interfaces/Message";
 
 export class UserStore
 {
@@ -12,10 +14,50 @@ export class UserStore
     loginModalOpen = false;
     registerModalOpen = false;
     changePasswordModalOpen = false;    
+    signalRConnection: signalR.HubConnection | null = null;
 
     constructor()
     {
         makeAutoObservable(this);
+        reaction(()=>this.user, (user)=>
+        {
+            if(user)
+            {
+                const token = localStorage.getItem("jwt");
+                if(token)
+                {
+                    this.signalRConnection = new signalR.HubConnectionBuilder()
+                        .withUrl("http://localhost:5000/api/messageHub", {accessTokenFactory: ()=>token})
+                        .build();
+                    this.signalRConnection.on("receiveMessage", this.receiveMessage);
+                    this.signalRConnection.on("sendMessageError", this.sendMessageError);
+                    this.signalRConnection.start();
+                }
+            }
+            else
+            {
+                this.signalRConnection?.stop();
+                this.signalRConnection = null;
+            }
+        })
+    }
+
+    sendMessage = (receiver: string, message: string) =>
+    {
+        
+        this.signalRConnection?.invoke("SendMessage", receiver, message);
+    }
+
+    receiveMessage = (message: Message) =>
+    {
+        //TODO
+        console.log(message);
+    }
+
+    sendMessageError = (error: string)=>
+    {
+        //TODO
+        console.log(error);
     }
 
     register = async (registerForm: RegisterForm)=>

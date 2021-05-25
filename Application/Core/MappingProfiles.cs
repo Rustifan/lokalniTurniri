@@ -1,3 +1,4 @@
+using Application.Messages;
 using Application.Tournaments;
 using AutoMapper;
 using Domain;
@@ -25,6 +26,10 @@ namespace Application.Core
             CreateMap<Game, GameDto>()
                 .ForMember(x=>x.Contestor1, o=>o.MapFrom(x=>x.Contestor1.DisplayName))
                 .ForMember(x=>x.Contestor2, o=>o.MapFrom(x=>x.Contestor2.DisplayName));
+
+            CreateMap<Message, MessageDto>()
+                .ForMember(x=>x.Sender, o=>o.MapFrom(x=>x.Sender.UserName))
+                .ForMember(x=>x.Receiver, o=>o.MapFrom(x=>x.Receiver.UserName));
         }      
     }
 }
