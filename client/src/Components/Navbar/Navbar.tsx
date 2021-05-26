@@ -1,10 +1,12 @@
 
+import { observer } from "mobx-react-lite"
 import React from "react"
 import { Link } from "react-router-dom"
-import { Container, Icon, Menu } from "semantic-ui-react"
+import { Button, Container, Icon, Menu } from "semantic-ui-react"
+import { store } from "../../Stores/store"
 import UserMenu from "../Users/UserMenu"
 
-export default function Navbar()
+export default observer(function Navbar()
 {
     
 
@@ -44,9 +46,22 @@ export default function Navbar()
                 <Menu.Item color="teal" position="right">
                     <UserMenu/>
                 </Menu.Item>
+                {store.userStore.isLogedIn() &&
+                <Menu.Item>
+                    <Button
+                        inverted 
+                        content="Poruke" 
+                        basic 
+                        circular 
+                        icon={{name: "chat",  color: "blue"}}
+                        as={Link}
+                        to={"/messages"}
+                        />
+                </Menu.Item>
+                }
         </Container>
         </Menu>
     
     </>
     )
-}
+});

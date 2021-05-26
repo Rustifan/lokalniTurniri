@@ -17,6 +17,7 @@ import CreateTournamentForm from './Components/Forms/CreateTournament';
 import EditTournament from './Components/Forms/EditTournament';
 import UserProfile from './Components/Users/UserProfile';
 import EditProfile from './Components/Users/EditProfile';
+import Messages from './Components/Messages/Messages';
 function App() {
 
   const {userStore, errorStore} = store;
@@ -52,6 +53,7 @@ function App() {
           <Route path="/errorTesting" component={ErrorTesting}/>
           <Route exact path="/userProfile/:username" component={UserProfile}/>
           <Route exact path="/userProfile/:username/edit" component={EditProfile}/>
+          <Route exact path="/messages" component={Messages}/>
           <Route component={NotFoundPage}/>
         </Switch>
       </Container>

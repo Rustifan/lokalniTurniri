@@ -1,4 +1,4 @@
-import { makeAutoObservable, reaction, runInAction } from "mobx";
+import { makeAutoObservable, reaction, runInAction, get, set } from "mobx";
 import { history } from "..";
 import { agent } from "../App/agent";
 import { ChangePasswordForm, LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
@@ -10,6 +10,7 @@ import Message from "../App/Interfaces/Message";
 export class UserStore
 {
     user: User | null = null;
+    messages = new Map<string, Message[]>();
     loadingUser = false;
     loginModalOpen = false;
     registerModalOpen = false;
@@ -19,6 +20,7 @@ export class UserStore
     constructor()
     {
         makeAutoObservable(this);
+        
         reaction(()=>this.user, (user)=>
         {
             if(user)
@@ -29,6 +31,7 @@ export class UserStore
                     this.signalRConnection = new signalR.HubConnectionBuilder()
                         .withUrl("http://localhost:5000/api/messageHub", {accessTokenFactory: ()=>token})
                         .build();
+                    this.signalRConnection.on("loadMessages", this.loadMessages);
                     this.signalRConnection.on("receiveMessage", this.receiveMessage);
                     this.signalRConnection.on("sendMessageError", this.sendMessageError);
                     this.signalRConnection.start();
@@ -50,14 +53,54 @@ export class UserStore
 
     receiveMessage = (message: Message) =>
     {
-        //TODO
-        console.log(message);
+        const interlocutor = 
+        message.sender === this.user?.username ? 
+        message.receiver : message.sender;
+        message.timeOfSending = new Date(message.timeOfSending);
+
+        if(!get(this.messages, interlocutor)) set(this.messages, interlocutor, []);
+        set(this.messages, interlocutor, [...get(this.messages, interlocutor), message]);
+        
+    }
+
+    loadMessages = (messages: any)=>
+    {
+        
+        const map = new Map<string, Message[]>(Object.entries(messages));
+        map.forEach(messageArr=>{
+            for(var message of messageArr)
+            {
+                message.timeOfSending = new Date(message.timeOfSending);
+            }
+        })
+        this.messages = map;
     }
 
     sendMessageError = (error: string)=>
     {
         //TODO
         console.log(error);
+    }
+    get messageInterlocutors()
+    {
+        const messages = this.messages;
+        const keyArray = messages.keys();
+        
+
+        return Array.from(keyArray)
+            .sort((a, b)=>
+            {
+                const messageListA = get(messages, a);
+                const messageListB = get(messages,b);
+                if(!messageListA || messageListA.length===0) return -1;
+                if(!messageListB || messageListB.length===0) return 1;
+                
+                const dateA = messageListA[messageListA.length-1].timeOfSending;
+                const dateB = messageListB[messageListB.length-1].timeOfSending;
+
+                return dateB.getTime() - dateA.getTime();
+                
+            });
     }
 
     register = async (registerForm: RegisterForm)=>

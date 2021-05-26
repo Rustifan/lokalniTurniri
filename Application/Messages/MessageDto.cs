@@ -9,6 +9,8 @@ namespace Application.Messages
         public string Receiver { get; set; }
         public bool Read { get; set; }
         public DateTime TimeOfSending { get; set; }
+        public string MessageText { get; set; }
+        
 
     }
 }

@@ -5,4 +5,5 @@ export default interface Message
     receiver: string;
     read: boolean;
     timeOfSending: Date;
+    messageText: string;
 }

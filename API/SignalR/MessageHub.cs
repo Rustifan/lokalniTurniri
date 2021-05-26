@@ -25,6 +25,7 @@ namespace API.SignalR
         {
             var username = _userAccessor.GetUsername();
             await Groups.AddToGroupAsync(Context.ConnectionId, username);
+            await LoadMessages();
             await base.OnConnectedAsync();
         }
 
@@ -50,6 +51,13 @@ namespace API.SignalR
 
             
 
+        }
+
+        public async Task LoadMessages()
+        {
+            var result = await _mediator.Send(new LoadMessages.Query());
+
+            await Clients.Group(_userAccessor.GetUsername()).SendAsync("loadMessages", result);
         }
     }
 }
