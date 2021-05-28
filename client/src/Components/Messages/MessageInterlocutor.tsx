@@ -66,7 +66,7 @@ export default observer(function MessageInterlocutor({interlocutor, setSelectedI
         </Grid.Column>
         <Grid.Column width="8">
             <Header style={{marginTop: 5, marginBottom: 5}}>{interlocutor}</Header>
-            <div>{lastMessage && reduceText(lastMessage.messageText, 40)}</div>
+            <div style={{wordBreak: "break-word"}}>{lastMessage && reduceText(lastMessage.messageText, 40)}</div>
         </Grid.Column>
         <Grid.Column width="3">
             <div style={{fontSize: "10px", position: "absolute", bottom:5, right:10}}>{lastMessage && formatDistance(lastMessage.timeOfSending, new Date(), {locale: hrLocale})}</div>
