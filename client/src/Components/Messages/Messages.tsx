@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite"
-import React, { useState } from "react"
+import React from "react"
 
-import { Button, Container, Grid, Header, Item, Segment } from "semantic-ui-react"
+import { Container, Grid, Header, Segment } from "semantic-ui-react"
 import { store } from "../../Stores/store"
 import MessageInterlocutor from "./MessageInterlocutor"
 import SelectedMessages from "./SelectedMessages"
@@ -10,8 +10,7 @@ import SendMessage from "./SendMessage"
 export default observer(function Messages() {
 
     const { userStore } = store;
-    const { messageInterlocutors } = userStore;
-    const [selectedInterLocutor, setSelectedInterlocutor] = useState<string | null>(null);
+    const { messageInterlocutors, selectedInterlocutor, setSelectedInterlocutor } = userStore;
     if (!userStore.user) return <></>;
 
     return (
@@ -26,7 +25,7 @@ export default observer(function Messages() {
                             <MessageInterlocutor
                                 key={index}
                                 setSelectedInterlocutor={setSelectedInterlocutor}
-                                selectedInterlocutor={selectedInterLocutor}
+                                selectedInterlocutor={selectedInterlocutor}
                                 interlocutor={interlocutor}
                             />
 
@@ -34,10 +33,10 @@ export default observer(function Messages() {
                     </Segment.Group>
                 </Grid.Column>
                 <Grid.Column width="11">
-                    {selectedInterLocutor &&
+                    {selectedInterlocutor &&
                         <Segment.Group>
-                            <SelectedMessages selectedInterlocutor={selectedInterLocutor} />
-                            <SendMessage sendTo={selectedInterLocutor} />
+                            <SelectedMessages selectedInterlocutor={selectedInterlocutor} />
+                            <SendMessage sendTo={selectedInterlocutor} />
                         </Segment.Group>
                     }
 

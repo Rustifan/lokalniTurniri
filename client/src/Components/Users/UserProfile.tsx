@@ -16,7 +16,7 @@ interface Params {
 
 export default observer(function UserProfile() {
 
-    const { profileStore: { getProfile, profileMap }, userStore:{isLogedIn, sendMessage} } = store;
+    const { profileStore: { getProfile, profileMap }, userStore:{isLogedIn, newMessage} } = store;
     const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
     const { username } = useParams<Params>();
     useEffect(() => {
@@ -63,7 +63,7 @@ export default observer(function UserProfile() {
                     {
                         !isLogedIn(profile.username) &&
                         //Testing TODO 
-                        <Button onClick={()=>sendMessage(profile.username, "Ej prika")} floated="right" positive>Pošalji poruku</Button> //TODO
+                        <Button onClick={()=>newMessage(profile.username)} floated="right" positive>Pošalji poruku</Button> //TODO
                     }
                 </Segment>
                 </Segment.Group>

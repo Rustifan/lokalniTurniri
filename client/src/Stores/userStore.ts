@@ -16,6 +16,7 @@ export class UserStore
     registerModalOpen = false;
     changePasswordModalOpen = false;    
     signalRConnection: signalR.HubConnection | null = null;
+    selectedInterlocutor: null | string = null;
 
     constructor()
     {
@@ -45,10 +46,25 @@ export class UserStore
         })
     }
 
+    setSelectedInterlocutor = (interlocutor: string | null)=>
+    {
+        this.selectedInterlocutor = interlocutor;
+    }
+    
     sendMessage = (receiver: string, message: string) =>
     {
         
         this.signalRConnection?.invoke("SendMessage", receiver, message);
+    }
+
+    newMessage = (messageTo: string)=>
+    {
+        if(!this.messages.get(messageTo))
+        {
+            this.messages.set(messageTo, []);
+        }
+        this.setSelectedInterlocutor(messageTo);
+        history.push("/messages");
     }
 
     receiveMessage = (message: Message) =>
