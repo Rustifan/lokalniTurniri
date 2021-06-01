@@ -9,7 +9,7 @@ import UserMenu from "../Users/UserMenu"
 export default observer(function Navbar()
 {
     
-
+    const unreadMessages = store.userStore.getUnreadMessages();
 
     const style = 
     {
@@ -50,7 +50,13 @@ export default observer(function Navbar()
                 <Menu.Item>
                     <Button
                         inverted 
-                        content="Poruke" 
+                        content=
+                        {<>
+                           Poruke
+                        {unreadMessages > 0 && 
+                        <div style={{position: "absolute", right: "-10px", top: "-10px"}} className="unreadMessages">{unreadMessages}</div> 
+                        }
+                        </>} 
                         basic 
                         circular 
                         icon={{name: "chat",  color: "blue"}}

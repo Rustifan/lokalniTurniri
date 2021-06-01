@@ -59,5 +59,15 @@ namespace API.SignalR
 
             await Clients.Group(_userAccessor.GetUsername()).SendAsync("loadMessages", result);
         }
+
+        public async Task MarkAsRead(string interlocutor)
+        {
+            var result = await _mediator.Send(new MarkAsRead.Command{Interlocutor = interlocutor});
+            if(result)
+            {
+                await Clients.Groups(_userAccessor.GetUsername(), interlocutor)
+                .SendAsync("updateReadMessages", _userAccessor.GetUsername(), interlocutor);
+            }
+        }
     }
 }

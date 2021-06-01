@@ -35,6 +35,7 @@ export class UserStore
                     this.signalRConnection.on("loadMessages", this.loadMessages);
                     this.signalRConnection.on("receiveMessage", this.receiveMessage);
                     this.signalRConnection.on("sendMessageError", this.sendMessageError);
+                    this.signalRConnection.on("updateReadMessages", this.updateReadMessages);
                     this.signalRConnection.start();
                 }
             }
@@ -46,11 +47,46 @@ export class UserStore
         })
     }
 
+    markAsRead = (interlocutor: string)=>
+    {
+        this.signalRConnection?.invoke("MarkAsRead", interlocutor);
+    }
+
     setSelectedInterlocutor = (interlocutor: string | null)=>
     {
+        if(interlocutor)
+        {
+            this.markAsRead(interlocutor);
+        }
         this.selectedInterlocutor = interlocutor;
     }
     
+    getUnreadMessages = (interlocutor: string | null = null)=>
+    {
+        if(!this.user) return 0;
+        let result = 0;
+        if(interlocutor)
+        {
+            if(!this.messages.get(interlocutor)) return 0;
+            for(let message of this.messages.get(interlocutor)!)
+            {
+                if(!message.read && message.receiver === this.user?.username) result++;
+            }
+            return result;
+        }
+
+        this.messages.forEach(values=>
+        {
+            for(let message of values)
+            {
+                if(!message.read && message.receiver === this.user?.username) result++
+            }
+        })
+
+        return result;
+
+    }
+
     sendMessage = (receiver: string, message: string) =>
     {
         
@@ -73,6 +109,11 @@ export class UserStore
         message.sender === this.user?.username ? 
         message.receiver : message.sender;
         message.timeOfSending = new Date(message.timeOfSending);
+        
+        if(interlocutor === this.selectedInterlocutor)
+        {
+            this.markAsRead(interlocutor);
+        }
 
         if(!get(this.messages, interlocutor)) set(this.messages, interlocutor, []);
         set(this.messages, interlocutor, [...get(this.messages, interlocutor), message]);
@@ -92,11 +133,48 @@ export class UserStore
         this.messages = map;
     }
 
+    updateReadMessages = (reader: string, sender: string) =>
+    {
+        if(!this.user) return console.log("Not loged in");
+        if(this.user.username === reader)
+        {
+            const messages = this.messages.get(sender);
+            if(messages)
+            {
+                for(const message of messages)
+                {
+                    if(message.sender === sender)
+                    {
+                        message.read = true;
+                    }
+                }
+            }
+        }
+        else if(this.user.username === sender)
+        {
+            const messages = this.messages.get(reader)
+            if(messages)
+            {
+                for(const message of messages)
+                {
+                    if(message.receiver === reader)
+                    {
+                        message.read = true;
+                    }
+                }
+            }
+
+            
+
+        }
+    }
+
     sendMessageError = (error: string)=>
     {
         //TODO
         console.log(error);
     }
+
     get messageInterlocutors()
     {
         const messages = this.messages;

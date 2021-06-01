@@ -19,7 +19,7 @@ interface Props
 
 export default observer(function MessageInterlocutor({interlocutor, setSelectedInterlocutor, selectedInterlocutor}: Props)
 {
-    const { profileStore: { getProfile, profileMap }, userStore: {messages} } = store;
+    const { profileStore: { getProfile, profileMap }, userStore: {messages, getUnreadMessages} } = store;
     const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
     const [hover, setHover] = useState(false);
     
@@ -30,7 +30,7 @@ export default observer(function MessageInterlocutor({interlocutor, setSelectedI
         lastMessage = interlocutorMessages[interlocutorMessages.length -1];
     }
     
-    
+    const unreadMessages = getUnreadMessages(interlocutor);
     
 
     useEffect(() => {
@@ -46,7 +46,6 @@ export default observer(function MessageInterlocutor({interlocutor, setSelectedI
 
     }
 
-    
 
     return (
         <Segment 
@@ -69,6 +68,9 @@ export default observer(function MessageInterlocutor({interlocutor, setSelectedI
             <div style={{wordBreak: "break-word"}}>{lastMessage && reduceText(lastMessage.messageText, 40)}</div>
         </Grid.Column>
         <Grid.Column width="3">
+            {unreadMessages > 0 &&
+                <div className="unreadMessages">{unreadMessages}</div>
+            }
             <div style={{fontSize: "10px", position: "absolute", bottom:5, right:10}}>{lastMessage && formatDistance(lastMessage.timeOfSending, new Date(), {locale: hrLocale})}</div>
         </Grid.Column>
         </Grid>

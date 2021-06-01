@@ -26,7 +26,7 @@ export default observer(function DisplayMessage({message}: Props)
         background: messageColor,
         color: "#FFFFFF",
         fontSize: "20px",
-        minWidth: "100px",
+        minWidth: "150px",
         maxWidth: "400px",
         lineHeight: "25px",
         width: "auto",
@@ -72,6 +72,16 @@ export default observer(function DisplayMessage({message}: Props)
         padding: "5px",
     }
 
+    const seenStyle: CSS.Properties =
+    {
+        fontSize: "10px",
+        lineHeight: "10px",
+        position: "absolute",
+        top: "5px",
+        right: "5px",
+        padding: "5px",
+        color: message.read ? "blue": "grey"
+    }
 
     return(
         <div style={{padding: 20, display: "flex", flexDirection: messageSent ? "row" : "row-reverse"}}>
@@ -81,8 +91,12 @@ export default observer(function DisplayMessage({message}: Props)
                 </div>
                 <div style={messageSent ? leftArrowStyle : rightArrowStyle}>
                 </div>
+               
                <div style={timeStyle}>
                    {formatDistance(message.timeOfSending, new Date(), {locale: hrLocale})}
+                   {messageSent && message.read &&
+                   <span style={{color: "#22A7F0", fontSize: "20px", fontWeight: "bold"}}>     &#10004;</span>
+                    }
                 </div>
             </div>
         

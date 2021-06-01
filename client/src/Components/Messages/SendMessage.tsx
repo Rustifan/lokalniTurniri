@@ -1,6 +1,6 @@
 import { Field, Form, Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
-import React, { useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import {  Segment } from "semantic-ui-react";
 import { store } from "../../Stores/store";
 
@@ -18,7 +18,15 @@ export default observer(function SendMessage({sendTo}: Props)
     }
     
     const formikRef = useRef<null | FormikProps<{messageText: string}>>(null)
+    const fieldRef = useRef<HTMLInputElement | null>(null);
     const {userStore: {sendMessage}} = store;
+    
+    useEffect(()=>{
+        if(fieldRef)
+        {
+            fieldRef.current?.focus();
+        }
+    }, [fieldRef, sendTo])
 
     const handlePress = (event: React.KeyboardEvent<HTMLInputElement>)=>
     {
@@ -47,7 +55,7 @@ export default observer(function SendMessage({sendTo}: Props)
 
     return (
         <Segment>
-            <Formik 
+            <Formik key={sendTo}
                 initialValues={initialValue}
                 onSubmit={handleSubmit}
                 innerRef={formikRef}
@@ -55,8 +63,7 @@ export default observer(function SendMessage({sendTo}: Props)
                 {()=>
                 (
                     <Form className="ui form">
-                        
-                        <Field name="messageText" onKeyPress={(handlePress)} placeholder="Pošalji poruku (Enter)"/>
+                        <Field innerRef={fieldRef} name="messageText" onKeyPress={(handlePress)} placeholder="Pošalji poruku (Enter)"/>
                     </Form>
                     
                 )}
