@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import React from "react"
+import React, { useEffect } from "react"
 
 import { Container, Grid, Header, Segment } from "semantic-ui-react"
 import { store } from "../../Stores/store"
@@ -11,7 +11,12 @@ export default observer(function Messages() {
 
     const { userStore } = store;
     const { messageInterlocutors, selectedInterlocutor, setSelectedInterlocutor } = userStore;
+    useEffect(()=>
+    {
+        return ()=>{setSelectedInterlocutor(null)}
+    }, [setSelectedInterlocutor])
     if (!userStore.user) return <></>;
+
 
     return (
         <Container style={{ marginTop: 40 }}>
