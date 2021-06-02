@@ -19,6 +19,7 @@ export class UserStore
         makeAutoObservable(this);
         reaction(()=>this.user, (user)=>
         {
+            
             if(user)
             {
                 store.messageStore.connect();

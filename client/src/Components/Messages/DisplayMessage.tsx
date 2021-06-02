@@ -16,7 +16,7 @@ interface Props
 export default observer(function DisplayMessage({message}: Props)
 {
     const {userStore} = store;
-    const {user} = userStore;
+    const {user, isLogedIn} = userStore;
     const [hover, setHover] = useState(false);
     if(!user) return <></>;
     const messageSent = message.sender === user.username;
@@ -78,26 +78,28 @@ export default observer(function DisplayMessage({message}: Props)
 
     return(
         <div 
+            className="MessageContainer"
             key={message.id}
             style={{padding: 20, display: "flex", flexDirection: messageSent ? "row" : "row-reverse"}}
             >
             <div 
+                className="Message"
                 style={messageStyle}
                 onMouseEnter={()=>setHover(true)}
                 onMouseLeave={()=>setHover(false)}
                 >
-                {hover && 
+                {hover && isLogedIn(message.sender) &&
                 <MessageOptions 
                     style={{position: "absolute", top: "3px", right: "20px" }} 
                     message={message}
                     />}
-                <div style={{marginBottom: "15px", marginRight: "20px"}}>
+                <div className="MessageText" style={{marginBottom: "15px", marginRight: "20px"}}>
                     {message.messageText}
                 </div>
-                <div style={messageSent ? leftArrowStyle : rightArrowStyle}>
+                <div className="MessageArrow" style={messageSent ? leftArrowStyle : rightArrowStyle}>
                 </div>
                
-               <div style={timeStyle}>
+               <div className="MessageTime" style={timeStyle}>
                    {formatDistance(message.timeOfSending, new Date(), {locale: hrLocale})}
                    {messageSent && message.read &&
                    <span style={{color: "#22A7F0", fontSize: "20px", fontWeight: "bold"}}>     &#10004;</span>

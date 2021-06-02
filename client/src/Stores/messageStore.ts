@@ -137,6 +137,11 @@ export class MessageStore
         
     }
 
+    reloadMessages = ()=>
+    {
+        this.signalRConnection?.invoke("LoadMessages");
+    }
+
     loadMessages = (messages: any)=>
     {
         

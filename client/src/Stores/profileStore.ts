@@ -47,6 +47,7 @@ export class ProfileStore
     updateProfile = async (oldUsername: string, newUsername: string)=>
     {
         this.profileMap.delete(oldUsername);
+        
         return await this.getProfile(newUsername);
     }
 
