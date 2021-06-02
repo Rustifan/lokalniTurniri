@@ -16,7 +16,7 @@ interface Params {
 
 export default observer(function UserProfile() {
 
-    const { profileStore: { getProfile, profileMap }, userStore:{isLogedIn, newMessage} } = store;
+    const { profileStore: { getProfile, profileMap }, userStore:{isLogedIn}, messageStore: {newMessage} } = store;
     const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
     const { username } = useParams<Params>();
     useEffect(() => {

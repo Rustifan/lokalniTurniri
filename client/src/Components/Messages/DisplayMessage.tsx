@@ -1,10 +1,11 @@
 import { observer } from "mobx-react-lite"
-import React from "react"
+import React, { useState } from "react"
 import Message from "../../App/Interfaces/Message"
 import { store } from "../../Stores/store"
 import CSS from "csstype";
 import formatDistance from "date-fns/formatDistance"
 import hrLocale from "date-fns/locale/hr";
+import MessageOptions from "./MessageOptions";
 
 
 interface Props
@@ -16,6 +17,7 @@ export default observer(function DisplayMessage({message}: Props)
 {
     const {userStore} = store;
     const {user} = userStore;
+    const [hover, setHover] = useState(false);
     if(!user) return <></>;
     const messageSent = message.sender === user.username;
     const messageColor = "#2ab548";
@@ -72,20 +74,23 @@ export default observer(function DisplayMessage({message}: Props)
         padding: "5px",
     }
 
-    const seenStyle: CSS.Properties =
-    {
-        fontSize: "10px",
-        lineHeight: "10px",
-        position: "absolute",
-        top: "5px",
-        right: "5px",
-        padding: "5px",
-        color: message.read ? "blue": "grey"
-    }
+ 
 
     return(
-        <div style={{padding: 20, display: "flex", flexDirection: messageSent ? "row" : "row-reverse"}}>
-            <div style={messageStyle}>
+        <div 
+            key={message.id}
+            style={{padding: 20, display: "flex", flexDirection: messageSent ? "row" : "row-reverse"}}
+            >
+            <div 
+                style={messageStyle}
+                onMouseEnter={()=>setHover(true)}
+                onMouseLeave={()=>setHover(false)}
+                >
+                {hover && 
+                <MessageOptions 
+                    style={{position: "absolute", top: "3px", right: "20px" }} 
+                    message={message}
+                    />}
                 <div style={{marginBottom: "15px", marginRight: "20px"}}>
                     {message.messageText}
                 </div>

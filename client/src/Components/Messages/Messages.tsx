@@ -9,8 +9,8 @@ import SendMessage from "./SendMessage"
 
 export default observer(function Messages() {
 
-    const { userStore } = store;
-    const { messageInterlocutors, selectedInterlocutor, setSelectedInterlocutor } = userStore;
+    const { userStore, messageStore } = store;
+    const { messageInterlocutors, selectedInterlocutor, setSelectedInterlocutor } = messageStore;
     useEffect(()=>
     {
         return ()=>{setSelectedInterlocutor(null)}

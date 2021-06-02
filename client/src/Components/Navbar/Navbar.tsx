@@ -9,7 +9,7 @@ import UserMenu from "../Users/UserMenu"
 export default observer(function Navbar()
 {
     
-    const unreadMessages = store.userStore.getUnreadMessages();
+    const unreadMessages = store.messageStore.getUnreadMessages();
 
     const style = 
     {

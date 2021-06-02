@@ -19,7 +19,7 @@ export default observer(function SendMessage({sendTo}: Props)
     
     const formikRef = useRef<null | FormikProps<{messageText: string}>>(null)
     const fieldRef = useRef<HTMLInputElement | null>(null);
-    const {userStore: {sendMessage}} = store;
+    const {messageStore: {sendMessage}} = store;
     
     useEffect(()=>{
         if(fieldRef)

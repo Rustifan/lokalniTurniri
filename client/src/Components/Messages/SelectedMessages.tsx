@@ -11,8 +11,8 @@ interface Props
 
 export default observer(function SelectedMessages({selectedInterlocutor}: Props)
 {
-    const {userStore} = store;
-    const {messages} = userStore;
+    const { messageStore} = store;
+    const {messages} = messageStore;
     const selectedMessages = messages.get(selectedInterlocutor);
     const messageEndRef = useRef<HTMLDivElement | null>(null);
     useEffect(()=>

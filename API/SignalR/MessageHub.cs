@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Application.Messages;
+using System;
 
 namespace API.SignalR
 {
@@ -68,6 +69,25 @@ namespace API.SignalR
                 await Clients.Groups(_userAccessor.GetUsername(), interlocutor)
                 .SendAsync("updateReadMessages", _userAccessor.GetUsername(), interlocutor);
             }
+        }
+
+        public async Task DeleteMessage(string messageId)
+        {
+            var result = 
+                await _mediator.Send(new DeleteMessage.Command{MessageId = Guid.Parse(messageId)});
+
+            if(result.IsSuccess)
+            {
+                await Clients.Groups(_userAccessor.GetUsername(), result.Reciever)
+                    .SendAsync("messageDeleted",messageId, _userAccessor.GetUsername(), result.Reciever);
+            }
+            else
+            {   
+                await Clients.Caller.SendAsync("sendMessageError", result.Error);
+                
+            }
+
+
         }
     }
 }

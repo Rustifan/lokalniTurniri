@@ -1,202 +1,38 @@
-import { makeAutoObservable, reaction, runInAction, get, set } from "mobx";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { history } from "..";
 import { agent } from "../App/agent";
 import { ChangePasswordForm, LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
 import { UserProfile } from "../App/Interfaces/UserProfile";
 import { store } from "./store";
-import * as signalR from "@microsoft/signalr";
-import Message from "../App/Interfaces/Message";
 
 export class UserStore
 {
     user: User | null = null;
-    messages = new Map<string, Message[]>();
     loadingUser = false;
     loginModalOpen = false;
     registerModalOpen = false;
     changePasswordModalOpen = false;    
-    signalRConnection: signalR.HubConnection | null = null;
-    selectedInterlocutor: null | string = null;
+    
 
     constructor()
     {
         makeAutoObservable(this);
-        
         reaction(()=>this.user, (user)=>
         {
             if(user)
             {
-                const token = localStorage.getItem("jwt");
-                if(token)
-                {
-                    this.signalRConnection = new signalR.HubConnectionBuilder()
-                        .withUrl("http://localhost:5000/api/messageHub", {accessTokenFactory: ()=>token})
-                        .build();
-                    this.signalRConnection.on("loadMessages", this.loadMessages);
-                    this.signalRConnection.on("receiveMessage", this.receiveMessage);
-                    this.signalRConnection.on("sendMessageError", this.sendMessageError);
-                    this.signalRConnection.on("updateReadMessages", this.updateReadMessages);
-                    this.signalRConnection.start();
-                }
+                store.messageStore.connect();
             }
-            else
-            {
-                this.signalRConnection?.stop();
-                this.signalRConnection = null;
+            else{
+                store.messageStore.disconnect();
+
             }
+           
         })
-    }
-
-    markAsRead = (interlocutor: string)=>
-    {
-        this.signalRConnection?.invoke("MarkAsRead", interlocutor);
-    }
-
-    setSelectedInterlocutor = (interlocutor: string | null)=>
-    {
-        if(interlocutor)
-        {
-            this.markAsRead(interlocutor);
-        }
-        this.selectedInterlocutor = interlocutor;
-    }
-    
-    getUnreadMessages = (interlocutor: string | null = null)=>
-    {
-        if(!this.user) return 0;
-        let result = 0;
-        if(interlocutor)
-        {
-            if(!this.messages.get(interlocutor)) return 0;
-            for(let message of this.messages.get(interlocutor)!)
-            {
-                if(!message.read && message.receiver === this.user?.username) result++;
-            }
-            return result;
-        }
-
-        this.messages.forEach(values=>
-        {
-            for(let message of values)
-            {
-                if(!message.read && message.receiver === this.user?.username) result++
-            }
-        })
-
-        return result;
-
-    }
-
-    sendMessage = (receiver: string, message: string) =>
-    {
-        
-        this.signalRConnection?.invoke("SendMessage", receiver, message);
-    }
-
-    newMessage = (messageTo: string)=>
-    {
-        if(!this.messages.get(messageTo))
-        {
-            this.messages.set(messageTo, []);
-        }
-        this.setSelectedInterlocutor(messageTo);
-        history.push("/messages");
-    }
-
-    receiveMessage = (message: Message) =>
-    {
-        const interlocutor = 
-        message.sender === this.user?.username ? 
-        message.receiver : message.sender;
-        message.timeOfSending = new Date(message.timeOfSending);
-        
-        if(interlocutor === this.selectedInterlocutor)
-        {
-            this.markAsRead(interlocutor);
-        }
-
-        if(!get(this.messages, interlocutor)) set(this.messages, interlocutor, []);
-        set(this.messages, interlocutor, [...get(this.messages, interlocutor), message]);
         
     }
 
-    loadMessages = (messages: any)=>
-    {
-        
-        const map = new Map<string, Message[]>(Object.entries(messages));
-        map.forEach(messageArr=>{
-            for(var message of messageArr)
-            {
-                message.timeOfSending = new Date(message.timeOfSending);
-            }
-        })
-        this.messages = map;
-    }
-
-    updateReadMessages = (reader: string, sender: string) =>
-    {
-        if(!this.user) return console.log("Not loged in");
-        if(this.user.username === reader)
-        {
-            const messages = this.messages.get(sender);
-            if(messages)
-            {
-                for(const message of messages)
-                {
-                    if(message.sender === sender)
-                    {
-                        message.read = true;
-                    }
-                }
-            }
-        }
-        else if(this.user.username === sender)
-        {
-            const messages = this.messages.get(reader)
-            if(messages)
-            {
-                for(const message of messages)
-                {
-                    if(message.receiver === reader)
-                    {
-                        message.read = true;
-                    }
-                }
-            }
-
-            
-
-        }
-    }
-
-    sendMessageError = (error: string)=>
-    {
-        //TODO
-        console.log(error);
-    }
-
-    get messageInterlocutors()
-    {
-        const messages = this.messages;
-        const keyArray = messages.keys();
-        
-
-        return Array.from(keyArray)
-            .sort((a, b)=>
-            {
-                const messageListA = get(messages, a);
-                const messageListB = get(messages,b);
-                if(!messageListA || messageListA.length===0) return -1;
-                if(!messageListB || messageListB.length===0) return 1;
-                
-                const dateA = messageListA[messageListA.length-1].timeOfSending;
-                const dateB = messageListB[messageListB.length-1].timeOfSending;
-
-                return dateB.getTime() - dateA.getTime();
-                
-            });
-    }
-
+   
     register = async (registerForm: RegisterForm)=>
     {
         this.loadingUser = true;
