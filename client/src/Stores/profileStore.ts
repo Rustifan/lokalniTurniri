@@ -47,7 +47,10 @@ export class ProfileStore
     updateProfile = async (oldUsername: string, newUsername: string)=>
     {
         this.profileMap.delete(oldUsername);
-        
+        if(oldUsername === newUsername)
+        {
+            store.messageStore.reloadMessages();
+        }
         return await this.getProfile(newUsername);
     }
 

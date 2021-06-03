@@ -143,13 +143,13 @@ export class UserStore
         try{
 
             const newUser = await agent.Users.editUser(editProfile);
+            localStorage.setItem("jwt", newUser.token);
             await store.profileStore.updateProfile(this.user.username, newUser.username);
             runInAction(()=>
             {
                 this.user = newUser;
 
             })
-            localStorage.setItem("jwt", newUser.token);
             history.push("/userProfile/"+newUser.username);           
         }
         catch(err)

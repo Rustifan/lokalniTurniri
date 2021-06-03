@@ -26,9 +26,10 @@ export default function TournamentCard({ tournament }: Props) {
                 <Item.Meta>
 
                     <Label size="large" basic color="green"><Icon name="winner" /> {tournament.sport.toUpperCase()}</Label>
-                    <Label size="large" color="blue" basic><Icon name="location arrow" />  {tournament.location}</Label>
                     <Label tag color="teal" size="large" style={{float: "right"}}>{tournament.contestorNum+" "+(tournament.contestorNum===1?"natjecatelj":"natjecatelja")}</Label>
+                    <Label style={{marginTop: "5px"}} size="large" color="blue" basic><Icon name="location arrow" />  {tournament.location.formattedLocation}</Label>
                     <Message color="purple" header={"Datum održavanja: " + format(tournament.date, "dd. MM. yyyy. hh:mm")} />
+
                 </Item.Meta>
 
                 <Item.Description>

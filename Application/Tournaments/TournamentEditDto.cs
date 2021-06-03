@@ -1,4 +1,5 @@
 using System;
+using Domain;
 
 namespace Application.Tournaments
 {
@@ -6,7 +7,7 @@ namespace Application.Tournaments
     {
         public string Name { get; set; }
         public string Sport { get; set; }
-        public string Location { get; set; }
+        public Location Location { get; set; }
         public DateTime Date { get; set; }
         public int NumberOfRounds { get; set; }
     }

@@ -2,7 +2,7 @@ import React from "react"
 import { TournamentFormValues } from "../../App/Interfaces/Tournament"
 import { store } from "../../Stores/store"
 import TournamentForm from "./TournamentForm"
-
+import {Location} from "../../App/Interfaces/Location"
 
 
 export default function CreateTournamentForm()
@@ -13,7 +13,7 @@ export default function CreateTournamentForm()
     {
         name: "",
         sport: "",
-        location: "",
+        location: new Location(),
         date: new Date(),
         numberOfRounds: 0
     }

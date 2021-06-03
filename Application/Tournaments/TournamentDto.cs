@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Domain;
 
 namespace Application.Tournaments
 {
@@ -8,7 +9,7 @@ namespace Application.Tournaments
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Sport { get; set; }
-        public string Location { get; set; }
+        public Location Location { get; set; }
         public DateTime Date { get; set; }
         public string HostUsername { get; set; }
         public List<string> Admins {get; set;}

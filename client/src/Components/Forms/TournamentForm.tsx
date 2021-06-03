@@ -6,6 +6,7 @@ import DateInput from "./DateInput"
 import TextInput from "./TextInput"
 import * as Yup from "yup"
 import { history } from "../.."
+import LocationInput from "./LocationInput"
 
 interface Props
 {
@@ -21,7 +22,12 @@ export default function CreateTournamentForm({initialValues, onSubmit, header, s
     const validationSchema = Yup.object({
         name: Yup.string().required("Potrebno je unijeti naziv turnira"),
         sport: Yup.string().required("Potrebno je unijeti sport u kojem se održava turnir"),
-        location: Yup.string().required("Potrebno je mjesto održavanja turnira"),
+        location: Yup.object().shape({
+            lat: Yup.number(),
+            lng: Yup.number(),
+            formattedLocation: Yup.string().required(),
+            locationString: Yup.string().required()
+        }),
         date: Yup.date()
             .required("Potrebno je unijeti datum održavanja turnira"),
             
@@ -30,8 +36,14 @@ export default function CreateTournamentForm({initialValues, onSubmit, header, s
             .min(1, "Mora biti minimalno jedna runda")
     })
 
+   
+
     return(
-        <Formik validationSchema={validationSchema} initialValues={initialValues} onSubmit={onSubmit}>
+        <Formik validationSchema={validationSchema} initialValues={initialValues} 
+            onSubmit={onSubmit}
+           
+            
+        >
             {({dirty, isSubmitting, isValid})=>
             (<Form style={{marginTop: 30}} className="ui form">
                 <Header as="h1">{header}</Header>
@@ -42,8 +54,8 @@ export default function CreateTournamentForm({initialValues, onSubmit, header, s
                 <TextInput name="sport" placeholder="Sport"/>
 
                 <Header color="blue" sub>Lokacija</Header>
-                <TextInput name="location" placeholder="Lokacija"/>
-                
+                <LocationInput name="location" placeholder="Lokacija održavanja"/>
+
                 <Header color="blue" sub>Datum početka turnira</Header>
                 <DateInput name="date"/>
                 

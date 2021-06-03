@@ -1,13 +1,14 @@
 import { store } from "../../Stores/store";
 import { Contestor } from "./Contestor";
 import { Game } from "./Game";
+import {Location} from "../../App/Interfaces/Location"
 
 export interface Tournament
 {
     id: string;
     name: string;
     sport: string;
-    location: string;
+    location: Location;
     date: Date;
     hostUsername: string;
     admins: string[];
@@ -24,7 +25,7 @@ export interface TournamentFormValues
     id?: string;
     name: string;
     sport: string;
-    location: string;
+    location: Location;
     date: Date;
     numberOfRounds: number; 
 }

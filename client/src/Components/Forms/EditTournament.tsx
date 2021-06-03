@@ -16,14 +16,14 @@ export default observer(function EditTournament() {
         if (selectedTournament) {
 
             setInitialValues(
-                {
+            {
                     id: selectedTournament.id,
                     name: selectedTournament.name,
                     sport: selectedTournament.sport,
                     date: selectedTournament.date,
                     numberOfRounds: selectedTournament.numberOfRounds,
                     location: selectedTournament.location
-                }
+            }
             );
         }
         else {

@@ -18,6 +18,7 @@ import EditTournament from './Components/Forms/EditTournament';
 import UserProfile from './Components/Users/UserProfile';
 import EditProfile from './Components/Users/EditProfile';
 import Messages from './Components/Messages/Messages';
+import HomeComponent from './Components/HomeComponent';
 function App() {
 
   const {userStore, errorStore} = store;
@@ -45,7 +46,7 @@ function App() {
       <Register/>
       <Container style={{ marginTop: 0 }}>
         <Switch>
-          <Route exact path="/">Homer</Route>
+          <Route exact path="/"><HomeComponent/></Route>
           <Route exact path="/tournaments/:id" component={TournamentDetails}/>
           <Route exact path="/tournaments/:id/edit" component={EditTournament}/>
           <Route path="/tournaments" component={TournamentList}/>

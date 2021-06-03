@@ -136,9 +136,10 @@ export class TournamentStore
     editTournament = async (tournamentForm: TournamentFormValues)=>
     {
         this.editingTournament = true;
+        
         const tournament = this.selectedTournament;
         try
-        {
+        {   
             await agent.Tournaments.edit(tournamentForm);
             if(tournament !== undefined)
             {
@@ -149,6 +150,7 @@ export class TournamentStore
                     tournament.numberOfRounds = tournamentForm.numberOfRounds;
                     tournament.location = tournamentForm.location;
                     tournament.date = tournamentForm.date;
+                   
                 })
             }
             if(tournamentForm.id) history.push("/tournaments/"+tournamentForm.id);

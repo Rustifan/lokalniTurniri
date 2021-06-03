@@ -14,7 +14,31 @@ namespace Persistence
         private readonly List<string> Names = new(){"nasmijani", "dobri", "sahranjeni", "kakovi", "postojani", "moderni", "domaći", "zastupljeni",
         "kunkunski", "gospodnji", "lokalni", "gradski", "veliki", "mali", "koliki", "moj", "zub", "konkurentski",
         "šepurinski", "anemični", "ajme", "najbolji", "mrki", "golemi", "sportski", "udri"};
-        private readonly List<string> Locations = new(){"Zaton", "Prvić Šepurine", "Prvić Luka", "Tribunj"};
+        private readonly List<Location> Locations = new()
+        {
+            new Location
+            {
+                LocationString="Prvić Luka",
+                FormattedLocation="Privić Luka",
+                Lat=43.7252575,
+                Lng=15.7973748
+            },
+            new Location
+            {
+                LocationString="Zlarin",
+                FormattedLocation="Zlarin",
+                Lat= 43.689557699,
+                Lng= 15.8466437
+
+            },
+            new Location
+            {
+                LocationString="Zagreb",
+                FormattedLocation="Zagreb",
+                Lat=45.8150108,
+                Lng=15.9819189
+            }
+        };
 
         private readonly DataContext _context;
         private readonly UserManager<AppUser> _userManager;
@@ -49,7 +73,7 @@ namespace Persistence
             for(int i = 0; i < num; i++)
             {
                 string sport = Sports[rand.Next(Sports.Count)];
-                string location = Locations[rand.Next(Locations.Count)];
+                Location location = Locations[rand.Next(Locations.Count)];
                 DateTime date = DateTime.Now.AddDays(rand.Next(60));
                 var host = users[rand.Next(users.Count)];
                 

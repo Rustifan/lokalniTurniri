@@ -8,8 +8,8 @@ namespace Domain
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Sport { get; set; }
-        public string Location { get; set; }
         public DateTime Date { get; set; }
+        public Location Location { get; set; }
         public AppUser Host { get; set; }
         public bool ApplicationsClosed { get; set; } = false;
         public ICollection<Admin> Admins {get; set;} = new List<Admin>();

@@ -15,7 +15,9 @@ export default observer(function Messages() {
     {
         return ()=>{setSelectedInterlocutor(null)}
     }, [setSelectedInterlocutor])
-    if (!userStore.user) return <></>;
+    if (!userStore.user) return <></>;  
+
+    if(messageStore.messages.size === 0) return <></>; //TODO
 
 
     return (
