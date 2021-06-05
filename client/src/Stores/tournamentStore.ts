@@ -10,8 +10,12 @@ import { Game } from "../App/Interfaces/Game";
 
 export class TournamentStore
 {
-    tournamentMap = new Map<string, Tournament>();    
+    tournamentMap = new Map<string, Tournament>();   
+    paginatedList: Tournament[] = []; 
     selectedTournament: Tournament | undefined = undefined;
+    itemPerPage = 4;
+    totalPages = 0;
+    currentPage = 1;
     addContestorModalOpen = false;
     addAdminModalOpen = false;    
     removeAdminModalOpen = false;
@@ -31,19 +35,44 @@ export class TournamentStore
         
     }
 
+    
+
     loadTournaments = async ()=>
     {
         this.tournamentLoading = true;
+        console.log("loading tournamnets");
         try
         {
-            const tournaments = await agent.Tournaments.get();
             
+            const params = new URLSearchParams();
+            params.set("currentPage", this.currentPage.toString() );
+            params.set("itemsPerPage", this.itemPerPage.toString());
+
+            const response = await agent.Tournaments.get(params);
+            const pagination = JSON.parse(response.headers.pagination);
+            
+            runInAction(()=>
+            {
+                this.totalPages = pagination.numberOfPages;
+                
+
+            });
+
+            const tournaments = response.data;
+
             tournaments.forEach(tournament=>
             {
                 
                 this.addToTournamentMap(tournament);
+               
             });
             
+            runInAction(()=>
+            {
+                this.paginatedList.push(...tournaments);
+                this.currentPage++;
+
+            })
         }
         catch(err)
         {
@@ -114,13 +143,13 @@ export class TournamentStore
         try
         {
             await agent.Tournaments.create(createdTournament);
-            if(this.ifLoaded())
-            {
-               const tournament = new Tournament(createdTournament);
-               this.addToTournamentMap(tournament);
         
-            }
-            runInAction(()=>this.creatingTournament === false);
+            runInAction(()=>
+            {
+                
+                this.resetTournaments();
+                this.creatingTournament = false;
+            })
 
             history.push("/tournaments/"+createdTournament.id);
         }
@@ -131,6 +160,13 @@ export class TournamentStore
             console.log(err);
         }
         
+    }
+
+    resetTournaments = ()=>
+    {
+        this.currentPage = 1;
+        this.tournamentMap = new Map();
+        this.paginatedList = [];
     }
 
     editTournament = async (tournamentForm: TournamentFormValues)=>
@@ -206,7 +242,7 @@ export class TournamentStore
     ifLoaded = ()=>
     {
        
-        return this.tournamentMap.size !== 0;
+        return this.paginatedList.length !== 0;
     }
 
     isContestor = ()=>

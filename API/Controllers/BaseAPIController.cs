@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using API.Extension;
 using Application.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +26,23 @@ namespace API.Controllers
             else if(!result.IsSucess) return BadRequest(result.Error);
             return BadRequest();
 
+        }
+
+        public ActionResult<List<T>> HandlePaginatedList<T>(PaginatedList<T> paginatedList)
+        {
+            if(paginatedList == null) return NotFound();
+
+            var paginationHeader = new 
+            {
+                currentPage = paginatedList.CurrentPage,
+                itemsPerPage = paginatedList.ItemsPerPage,
+                numberOfPages = paginatedList.NumberOfPages,
+                totalItemCount = paginatedList.TotalItemCount
+            };
+            var serializedPagination = JsonSerializer.Serialize(paginationHeader);
+            HttpContext.Response.AddHeaders("pagination", serializedPagination);
+            
+            return Ok(paginatedList.ToList());
         }
     }
 }

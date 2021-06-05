@@ -93,7 +93,7 @@ const Users =
 
 const Tournaments = 
 {
-    get: ()=>{return instance.get<Tournament[]>("/tournaments").then((value)=>value.data)},
+    get: (params: URLSearchParams)=>{return instance.get<Tournament[]>("/tournaments", {params}).then((value)=>value)},
     details: (id:string)=>instance.get<Tournament>("/tournaments/"+id).then(value=>value.data),
     create: (tournament: TournamentFormValues)=>instance.post("/tournaments", tournament),
     edit: (tournament: TournamentFormValues)=>instance.put("/tournaments/"+tournament.id, tournament),

@@ -63,7 +63,7 @@ export default observer(function SendMessage({sendTo}: Props)
                 {()=>
                 (
                     <Form className="ui form">
-                        <Field autocomplete="off" innerRef={fieldRef} name="messageText" onKeyPress={(handlePress)} placeholder="Pošalji poruku (Enter)"/>
+                        <Field autoComplete="off" innerRef={fieldRef} name="messageText" onKeyPress={(handlePress)} placeholder="Pošalji poruku (Enter)"/>
                     </Form>
                     
                 )}

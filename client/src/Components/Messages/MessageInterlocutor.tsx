@@ -35,8 +35,15 @@ export default observer(function MessageInterlocutor({interlocutor, setSelectedI
 
     useEffect(() => {
         
-
-        getProfile(interlocutor).then(value => setProfile(value));
+        let isMounted = true;
+        getProfile(interlocutor).then(value =>
+        {
+            if(isMounted) setProfile(value);
+        });
+        
+        return ()=>{isMounted = false;}
+    
+        
     }, [interlocutor, setProfile, getProfile, profileMap.size]);
 
     const style: CSS.Properties =

@@ -7,7 +7,7 @@ namespace Application.Helpers
 {
     public class Sorter: ISorter
     {
-        public List<TournamentDto> SortContestorsInTournamentDto(List<TournamentDto> tournaments)
+        public IEnumerable<TournamentDto> SortContestorsInTournamentDto(IEnumerable<TournamentDto> tournaments)
         {
             
 
