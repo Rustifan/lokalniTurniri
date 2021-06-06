@@ -17,6 +17,8 @@ namespace Application.Tournaments
         public int CurrentRound { get; set; }
         public int ContestorNum { get; set; }
         public bool ApplicationsClosed { get; set; }
+        public bool Ended { get; set; }
+        public bool IsInProcess { get; set; }
         public List<ContestorDto> Contestors { get; set; }
         public List<GameDto> Games { get; set; }
 

@@ -12,9 +12,9 @@ namespace API.Controllers
     {
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<List<TournamentDto>>> ListTournaments([FromQuery]PageParams pageParams)
+        public async Task<ActionResult<List<TournamentDto>>> ListTournaments([FromQuery]TournamentLoadParams loadParams)
         {
-            return HandlePaginatedList(await Mediator.Send(new List.Query{PageParams=pageParams}));
+            return HandlePaginatedList(await Mediator.Send(new List.Query{LoadParams=loadParams}));
         }
 
         [HttpGet("{id}")]

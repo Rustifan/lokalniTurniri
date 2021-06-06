@@ -1,6 +1,11 @@
 import { get, makeAutoObservable, runInAction, set} from "mobx";
 import { agent } from "../App/agent";
-import { TournamentFormValues, Tournament } from "../App/Interfaces/Tournament";
+import { 
+    TournamentFormValues, 
+    Tournament, 
+    TournamentLoadingParams, 
+    TournamentContestingFilterEnum, 
+    TournamentFlowFilterEnum} from "../App/Interfaces/Tournament";
 import { store } from "./store";
 import {v4 as uuid} from "uuid"
 import { history } from "..";
@@ -13,14 +18,13 @@ export class TournamentStore
     tournamentMap = new Map<string, Tournament>();   
     paginatedList: Tournament[] = []; 
     selectedTournament: Tournament | undefined = undefined;
-    itemPerPage = 4;
-    totalPages = 0;
-    currentPage = 1;
+    tournamentLoadingParams = new TournamentLoadingParams();
     addContestorModalOpen = false;
     addAdminModalOpen = false;    
     removeAdminModalOpen = false;
     setGameResultModalOpen: string | null = null;
     setResultLoading: number | null = null;
+    loaded=false;
     //loading
     tournamentLoading = false;
     creatingTournament = false;   
@@ -44,16 +48,13 @@ export class TournamentStore
         try
         {
             
-            const params = new URLSearchParams();
-            params.set("currentPage", this.currentPage.toString() );
-            params.set("itemsPerPage", this.itemPerPage.toString());
-
+            const params = this.tournamentLoadingParams.toUrlParams();
             const response = await agent.Tournaments.get(params);
             const pagination = JSON.parse(response.headers.pagination);
             
             runInAction(()=>
             {
-                this.totalPages = pagination.numberOfPages;
+                this.tournamentLoadingParams.totalPages = pagination.numberOfPages;
                 
 
             });
@@ -70,8 +71,7 @@ export class TournamentStore
             runInAction(()=>
             {
                 this.paginatedList.push(...tournaments);
-                this.currentPage++;
-
+                this.tournamentLoadingParams.currentPage++;
             })
         }
         catch(err)
@@ -82,8 +82,9 @@ export class TournamentStore
         {
             runInAction(()=>
             {
-                
+                this.loaded = true;
                 this.tournamentLoading = false;
+                
             });
         }
     }
@@ -99,11 +100,24 @@ export class TournamentStore
     
     
     }
-    
-    get tournamentList()
-    {
-        return Array.from(this.tournamentMap.values());
-    }
+
+   setSearchDate = (date: Date)=>
+   {
+       this.tournamentLoadingParams.date = date;
+       this.resetTournaments();
+   }
+
+   setSearchContestingFilter = (filter: TournamentContestingFilterEnum)=>
+   {
+       this.tournamentLoadingParams.contestingFilter = filter;
+       this.resetTournaments();
+   }
+
+   setSearchFlowFilter = (filter: TournamentFlowFilterEnum)=>
+   {
+       this.tournamentLoadingParams.flowFilter = filter;
+       this.resetTournaments();
+   }
 
     selectTornament = async (id: string)=>
     {
@@ -164,7 +178,8 @@ export class TournamentStore
 
     resetTournaments = ()=>
     {
-        this.currentPage = 1;
+        this.loaded = false;
+        this.tournamentLoadingParams.currentPage = 1;
         this.tournamentMap = new Map();
         this.paginatedList = [];
     }
@@ -189,6 +204,7 @@ export class TournamentStore
                    
                 })
             }
+            
             if(tournamentForm.id) history.push("/tournaments/"+tournamentForm.id);
 
         }

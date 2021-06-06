@@ -1,33 +1,34 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react"
-import { Grid, Header, Item, Segment } from "semantic-ui-react"
+import { Grid, Header, Item } from "semantic-ui-react"
 import { store } from "../../Stores/store";
 import LoadingComponent from "../Loading/LoadingComponent";
 import TournamentCard from "./TournamentCard";
 import InfiniteScroll from 'react-infinite-scroller';
+import FiltersComponent from "./FiltersComponent";
 
 export default observer(() => {
 
     const { tournamentStore } = store;
     const { loadTournaments, paginatedList,
-         tournamentLoading, 
-        totalPages,currentPage } = tournamentStore;
+         tournamentLoading, loaded,
+        tournamentLoadingParams } = tournamentStore;
     const [loadingNext, setLoadingNext] = useState(false);
     
     useEffect(()=>
     {
         let mounted = true;
-        if(paginatedList.length ===0 && mounted)
+        if(paginatedList.length ===0 && mounted && !tournamentLoading && !loaded)
         {
             loadTournaments();
 
         }
         
         return ()=>{mounted = false};
-    }, [loadTournaments, setLoadingNext, paginatedList.length])
+    }, [loadTournaments, setLoadingNext, paginatedList.length, tournamentLoading])
 
     const handleLoadMore = async () => {
-        if(!loadingNext)
+        if(!loadingNext && paginatedList.length >= tournamentLoadingParams.itemPerPage)
         {
             setLoadingNext(true);
             
@@ -36,13 +37,6 @@ export default observer(() => {
         }
     }
 
-    if(tournamentLoading && !loadingNext) 
-    return (
-        <Segment style={{height: 500}}>
-            <LoadingComponent text="Učitavanje"/>
-        </Segment>
-    
-    )
 
     return (
         <>
@@ -50,17 +44,19 @@ export default observer(() => {
                 <Grid.Column width="12">
                     <Header as="h1" style={{ padding: 20 }} textAlign="center">Turniri</Header>
                     
+                {tournamentLoading && !loadingNext ? 
+                    <LoadingComponent text="Učitavanje"/> :
                     <div>
                     <InfiniteScroll
-
                         pageStart={1}
                         loadMore={handleLoadMore}
-                        hasMore={(currentPage<= totalPages) && !tournamentLoading}
-                        
+                        hasMore={(tournamentLoadingParams.currentPage<= tournamentLoadingParams.totalPages) 
+                            && !tournamentLoading}
                         useWindow={true}
                         initialLoad={false}
-                        
                         >
+                        
+                        
 
                         <Item.Group divided>
                             {paginatedList.map(tournament => (
@@ -70,15 +66,14 @@ export default observer(() => {
                         </Item.Group>
                     </InfiniteScroll>
                     {loadingNext && 
-                        <Segment style={{height: 300}}>
-                            <LoadingComponent text="Učitavanje"/>
-                        </Segment>
+                        <LoadingComponent text="Učitavanje"/>
                     }
                     </div>
+                }
                 </Grid.Column>
 
-                <Grid.Column>
-                    <Header textAlign="center" as="h2">Filteri</Header>
+                <Grid.Column width="4">
+                    <FiltersComponent/>
                 </Grid.Column>
 
             </Grid>

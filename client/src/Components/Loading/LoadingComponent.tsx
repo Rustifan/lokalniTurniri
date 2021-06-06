@@ -10,7 +10,7 @@ export default function LoadingComponent({text = "Loading"}: Props)
 {
     return(
         
-    <Segment style={{height: "100%"}}>
+    <Segment style={{height: "500px"}}>
             <Dimmer active inverted>
                 <Loader inverted>{text}</Loader>
             </Dimmer>

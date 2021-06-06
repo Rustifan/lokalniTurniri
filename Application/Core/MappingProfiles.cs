@@ -19,8 +19,12 @@ namespace Application.Core
             CreateMap<Tournament, TournamentDto>()
                 .ForMember(x=>x.Admins, o=>o.MapFrom(a=>a.Admins.Select(x=>x.User.UserName)))
                 .ForMember(x=>x.Games, o=>o.MapFrom(x=>x.Games.OrderBy(x=>x.Round).ThenBy(x=>x.GameNumber)))
+                .ForMember(x=>x.IsInProcess, o=>o.MapFrom(x=>x.CurrentRound > 0 && x.CurrentRound <= x.NumberOfRounds || 
+                        (x.CurrentRound == x.NumberOfRounds && x.Games.Any(g=>g.Result != -1))))
+                .ForMember(x=>x.Ended, o=>o.MapFrom(x=>x.CurrentRound >= x.NumberOfRounds && x.Games.Any(g=>g.Result == -1)==false))
                 .ForMember(x=>x.HostUsername, o=>o.MapFrom(h=>h.Host.UserName))
                 .ForMember(x=>x.ContestorNum, o=>o.MapFrom(x=>x.Contestors.Count));
+
             CreateMap<Contestor, ContestorDto>()
                 .ForMember(x=>x.Username, o=>o.MapFrom(x=>x.AppUser!=null? x.AppUser.UserName:null));
             CreateMap<Game, GameDto>()

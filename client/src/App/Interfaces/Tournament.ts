@@ -52,3 +52,27 @@ export class Tournament
         this.games = [];
     }
 }
+
+export type TournamentContestingFilterEnum = "all" | "contestor" | "administrator";
+export type TournamentFlowFilterEnum = "all" | "openApplications" | "inProcess" | "ended";
+
+export class TournamentLoadingParams
+{
+    itemPerPage = 4; //minimal 3 to scroll 
+    totalPages = 0;
+    currentPage = 1;
+    contestingFilter: TournamentContestingFilterEnum = "all";
+    flowFilter: TournamentFlowFilterEnum = "all";
+    date = new Date();
+
+    toUrlParams = ()=>
+    {
+        const params = new URLSearchParams();
+        params.set("itemsPerPage", this.itemPerPage.toString());
+        params.set("currentPage", this.currentPage.toString());
+        params.set("contestingFilter", this.contestingFilter);
+        params.set("flowFilter", this.flowFilter);
+        params.set("date", this.date.toLocaleDateString());
+        return params;
+    }
+}

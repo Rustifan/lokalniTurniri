@@ -2,7 +2,7 @@ import React from "react"
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react"
 import { useParams } from "react-router"
-import { Container, Grid, Segment } from "semantic-ui-react";
+import { Grid, Segment } from "semantic-ui-react";
 import { store } from "../../Stores/store";
 import TournamentDetailsContestors from "./TournamentDetailsContestors";
 import TournamentDetailsHeader from "./TournamentDetailsHeader";
@@ -64,9 +64,8 @@ export default observer(function TournamentDetails() {
                     }
                 </Grid>
                 :
-                <Container style={{height: 500}}>
-                    <LoadingComponent text="Učitavanje turnira"/>
-                </Container>
+               <LoadingComponent text="Učitavanje turnira"/>
+                
 
             }
         </>
