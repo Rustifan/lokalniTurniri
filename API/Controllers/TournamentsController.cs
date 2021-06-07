@@ -12,8 +12,13 @@ namespace API.Controllers
     {
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<List<TournamentDto>>> ListTournaments([FromQuery]TournamentLoadParams loadParams)
+        public async Task<IActionResult> ListTournaments([FromQuery]TournamentLoadParams loadParams)
         {
+            var query =HttpContext.Request.QueryString;
+            if(loadParams.MapMode)
+            {
+                return HandleResult(await Mediator.Send(new MapModeList.Query()));
+            }
             return HandlePaginatedList(await Mediator.Send(new List.Query{LoadParams=loadParams}));
         }
 

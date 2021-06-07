@@ -15,6 +15,7 @@ export default observer(() => {
         tournamentLoadingParams } = tournamentStore;
     const [loadingNext, setLoadingNext] = useState(false);
     
+    
     useEffect(()=>
     {
         let mounted = true;
@@ -25,7 +26,7 @@ export default observer(() => {
         }
         
         return ()=>{mounted = false};
-    }, [loadTournaments, setLoadingNext, paginatedList.length, tournamentLoading])
+    }, [loadTournaments, setLoadingNext, paginatedList.length, tournamentLoading, loaded])
 
     const handleLoadMore = async () => {
         if(!loadingNext && paginatedList.length >= tournamentLoadingParams.itemPerPage)

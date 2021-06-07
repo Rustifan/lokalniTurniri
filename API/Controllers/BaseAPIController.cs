@@ -4,7 +4,6 @@ using System.Text.Json;
 using API.Extension;
 using Application.Core;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,7 +27,7 @@ namespace API.Controllers
 
         }
 
-        public ActionResult<List<T>> HandlePaginatedList<T>(PaginatedList<T> paginatedList)
+        public IActionResult HandlePaginatedList<T>(PaginatedList<T> paginatedList)
         {
             if(paginatedList == null) return NotFound();
 

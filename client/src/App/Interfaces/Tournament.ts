@@ -55,6 +55,7 @@ export class Tournament
 
 export type TournamentContestingFilterEnum = "all" | "contestor" | "administrator";
 export type TournamentFlowFilterEnum = "all" | "openApplications" | "inProcess" | "ended";
+export type TournamentToggleFilterEnum = "map" | "list";
 
 export class TournamentLoadingParams
 {
@@ -63,16 +64,28 @@ export class TournamentLoadingParams
     currentPage = 1;
     contestingFilter: TournamentContestingFilterEnum = "all";
     flowFilter: TournamentFlowFilterEnum = "all";
+    toggleFilter: TournamentToggleFilterEnum = "list";
     date = new Date();
 
     toUrlParams = ()=>
     {
         const params = new URLSearchParams();
-        params.set("itemsPerPage", this.itemPerPage.toString());
-        params.set("currentPage", this.currentPage.toString());
+        if(this.toggleFilter ==="list")
+        {
+            
+            params.set("itemsPerPage", this.itemPerPage.toString());
+            params.set("currentPage", this.currentPage.toString());
+        }
+        else
+        {
+            params.set("mapMode", "true");
+        }
         params.set("contestingFilter", this.contestingFilter);
         params.set("flowFilter", this.flowFilter);
         params.set("date", this.date.toLocaleDateString());
+       
+
+
         return params;
     }
 }
