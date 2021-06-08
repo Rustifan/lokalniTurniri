@@ -15,6 +15,7 @@ export function GoogleMapPin(props: any)
                 transform: "translate(0px, -40px)"
             }} 
             src="/Assets/Images/mapPin.png" />
+            
         </div>
     )
 }

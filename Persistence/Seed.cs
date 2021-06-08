@@ -73,7 +73,20 @@ namespace Persistence
             for(int i = 0; i < num; i++)
             {
                 string sport = Sports[rand.Next(Sports.Count)];
+                
+                var locationOffsetSize = 0.001;
+                var randomLngOffset = (rand.NextDouble() * 2 - 1)* locationOffsetSize;
+                var randomLatOffset = (rand.NextDouble() * 2 - 1)* locationOffsetSize;
                 Location location = Locations[rand.Next(Locations.Count)];
+                Location newLocation = new()
+                {
+                    LocationString = location.LocationString,
+                    FormattedLocation = location.FormattedLocation,
+                    Lat = location.Lat + randomLatOffset,
+                    Lng = location.Lng + randomLngOffset
+                };
+                
+
                 DateTime date = DateTime.Now.AddDays(rand.Next(60));
                 var host = users[rand.Next(users.Count)];
                 
@@ -83,7 +96,7 @@ namespace Persistence
                 {
                     Name = name,
                     Sport = sport,
-                    Location = location,
+                    Location = newLocation,
                     Date = date,
                     Host = host,
                     NumberOfRounds = numOfRounds

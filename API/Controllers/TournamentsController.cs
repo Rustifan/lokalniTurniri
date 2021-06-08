@@ -17,7 +17,7 @@ namespace API.Controllers
             var query =HttpContext.Request.QueryString;
             if(loadParams.MapMode)
             {
-                return HandleResult(await Mediator.Send(new MapModeList.Query()));
+                return HandleResult(await Mediator.Send(new MapModeList.Query{LoadParams=loadParams}));
             }
             return HandlePaginatedList(await Mediator.Send(new List.Query{LoadParams=loadParams}));
         }

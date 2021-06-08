@@ -6,6 +6,8 @@ import LoadingComponent from "../Loading/LoadingComponent";
 import TournamentCard from "./TournamentCard";
 import InfiniteScroll from 'react-infinite-scroller';
 import FiltersComponent from "./FiltersComponent";
+import { TournamentLoadingParams } from "../../App/Interfaces/Tournament";
+import TournamentMapList from "./TournamentMapList";
 
 export default observer(() => {
 
@@ -14,7 +16,7 @@ export default observer(() => {
          tournamentLoading, loaded,
         tournamentLoadingParams } = tournamentStore;
     const [loadingNext, setLoadingNext] = useState(false);
-    
+    const {toggleFilter} = tournamentLoadingParams;
     
     useEffect(()=>
     {
@@ -46,7 +48,9 @@ export default observer(() => {
                     <Header as="h1" style={{ padding: 20 }} textAlign="center">Turniri</Header>
                     
                 {tournamentLoading && !loadingNext ? 
-                    <LoadingComponent text="Učitavanje"/> :
+                    <LoadingComponent text="Učitavanje turnira"/> :
+                    
+                    toggleFilter==="list" ? 
                     <div>
                     <InfiniteScroll
                         pageStart={1}
@@ -70,6 +74,9 @@ export default observer(() => {
                         <LoadingComponent text="Učitavanje"/>
                     }
                     </div>
+                    :
+                    <TournamentMapList/>
+                    
                 }
                 </Grid.Column>
 
