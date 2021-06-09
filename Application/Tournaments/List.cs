@@ -1,10 +1,7 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Domain;
 using MediatR;
 using Persistence;
-using Microsoft.EntityFrameworkCore;
 using Application.Core;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -12,6 +9,7 @@ using Application.Interfaces;
 using System.Linq;
 using System;
 using Microsoft.Extensions.Logging;
+using Application.Extensions;
 
 namespace Application.Tournaments
 {
@@ -53,37 +51,11 @@ namespace Application.Tournaments
                 {
                     _logger.LogInformation("User is guest");
                 }
-                switch(request.LoadParams.ContestingFilter)
-                {
-                    case TournamentContestingFilterEnum.Contestor:
-                    if(username == null) return null;
-                    tournamentQuery = tournamentQuery
-                        .Where(x=>x.Contestors.Any(x=>x.Username==username));
-                    break;
-                    case TournamentContestingFilterEnum.Administrator:
-                    
-                    if(username == null) return null;
-                    tournamentQuery = tournamentQuery
-                        .Where(x=>x.Admins.Any(x=>x==username));
-                    break;
-                }  
-            
+                
+                tournamentQuery = tournamentQuery.FilterByContesting(request.LoadParams.ContestingFilter, username);
+                
+                tournamentQuery = tournamentQuery.FilterByFlow(request.LoadParams.FlowFilter);
 
-                switch(request.LoadParams.FlowFilter)
-                {
-                    case TournamentFlowFilterEnum.OpenApplications:
-                    tournamentQuery = tournamentQuery
-                        .Where(x=>!x.ApplicationsClosed);
-                    break;
-                    case TournamentFlowFilterEnum.inProcess:
-                        tournamentQuery = tournamentQuery
-                        .Where(x=>x.IsInProcess);
-                    break;
-                    case TournamentFlowFilterEnum.Ended:
-                        tournamentQuery = tournamentQuery
-                        .Where(x=>x.Ended);
-                    break;
-                }
                 tournamentQuery = tournamentQuery.Where(x=>x.Date >= request.LoadParams.Date);
                 
 

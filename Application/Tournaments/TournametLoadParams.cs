@@ -8,5 +8,6 @@ namespace Application.Tournaments
         public TournamentFlowFilterEnum FlowFilter { get; set; } = TournamentFlowFilterEnum.All;
         public bool MapMode { get; set; }
         public DateTime Date { get; set; } = DateTime.Now;
+        public string SearchUsername { get; set; } = null;
     }
 }

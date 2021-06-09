@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Extensions;
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -44,47 +45,31 @@ namespace Application.Tournaments
                 var tournamentQuery = _context.Tournaments
                     .ProjectTo<TournamentDto>(_mapper.ConfigurationProvider);
                     
+                
                 string username = null;
-                try
+                if(request.LoadParams.SearchUsername == null)
                 {
-                    username = _userAccessor.GetUsername();
+                    try
+                    {
+                        username = _userAccessor.GetUsername();
+                    }
+                    catch(Exception)
+                    {
+                        _logger.LogInformation("User is guest");
+                    }
                 }
-                catch(Exception)
-                {
-                    _logger.LogInformation("User is guest");
+                else{
+                    var userExist = await _context.Users.AnyAsync(x=>x.UserName == request.LoadParams.SearchUsername,
+                    cancellationToken);
+                    if(userExist) username = request.LoadParams.SearchUsername;
+                    else return null;
                 }
-               
-                switch(request.LoadParams.ContestingFilter)
-                {
-                    case TournamentContestingFilterEnum.Contestor:
-                    if(username == null) return null;
-                    tournamentQuery = tournamentQuery
-                        .Where(x=>x.Contestors.Any(x=>x.Username==username));
-                    break;
-                    case TournamentContestingFilterEnum.Administrator:
-                    
-                    if(username == null) return null;
-                    tournamentQuery = tournamentQuery
-                        .Where(x=>x.Admins.Any(x=>x==username));
-                    break;
-                }  
-            
 
-                switch(request.LoadParams.FlowFilter)
-                {
-                    case TournamentFlowFilterEnum.OpenApplications:
-                    tournamentQuery = tournamentQuery
-                        .Where(x=>!x.ApplicationsClosed);
-                    break;
-                    case TournamentFlowFilterEnum.inProcess:
-                        tournamentQuery = tournamentQuery
-                        .Where(x=>x.IsInProcess);
-                    break;
-                    case TournamentFlowFilterEnum.Ended:
-                        tournamentQuery = tournamentQuery
-                        .Where(x=>x.Ended);
-                    break;
-                }
+               
+                tournamentQuery = tournamentQuery.FilterByContesting(request.LoadParams.ContestingFilter, username);
+                tournamentQuery = tournamentQuery.FilterByFlow(request.LoadParams.FlowFilter);
+
+                
                 tournamentQuery = tournamentQuery.Where(x=>x.Date >= request.LoadParams.Date);
 
                 
