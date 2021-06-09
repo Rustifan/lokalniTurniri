@@ -65,6 +65,8 @@ export class TournamentLoadingParams
     contestingFilter: TournamentContestingFilterEnum = "all";
     flowFilter: TournamentFlowFilterEnum = "all";
     toggleFilter: TournamentToggleFilterEnum = "list";
+    searchUsername?: string = undefined;
+
     date = new Date();
 
     toUrlParams = ()=>
@@ -83,7 +85,10 @@ export class TournamentLoadingParams
         params.set("contestingFilter", this.contestingFilter);
         params.set("flowFilter", this.flowFilter);
         params.set("date", this.date.toLocaleDateString());
-       
+        if(this.searchUsername)
+        {
+            params.set("searchUsername", this.searchUsername);
+        }
 
 
         return params;

@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { history } from "..";
 import { agent } from "../App/agent";
+import { Tournament, TournamentContestingFilterEnum, TournamentLoadingParams } from "../App/Interfaces/Tournament";
 import { UserProfile } from "../App/Interfaces/UserProfile";
 import { store } from "./store";
 
@@ -12,6 +13,8 @@ export class ProfileStore
     addPhotoMode = false;
     deletingPhotoId: null | string = null;
     settingAvatarId: null | string = null;
+    selectedProfileTournamets: Tournament[] = [];
+    profileTournamentsLoading = false;
 
     constructor()
     {
@@ -125,5 +128,41 @@ export class ProfileStore
         finally{
             runInAction(()=>this.settingAvatarId = null);
         }
-    }   
+    }
+    
+    loadProfileTournaments = async (contestorFilter: TournamentContestingFilterEnum, profileName: string)=>
+    {
+        this.profileTournamentsLoading = true;
+        try
+        {
+            const tournamentParams = new TournamentLoadingParams();
+            tournamentParams.contestingFilter = contestorFilter;
+            tournamentParams.toggleFilter = "map";
+            tournamentParams.searchUsername = profileName;
+            tournamentParams.date.setTime(0);
+            const urlParams = tournamentParams.toUrlParams();
+            const tournaments = (await agent.Tournaments.get(urlParams)).data;
+            tournaments.forEach(tournament=>
+            {
+                store.tournamentStore.addToTournamentMap(tournament);
+            })
+            runInAction(()=>
+            {
+                this.selectedProfileTournamets = tournaments;
+            })
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>this.profileTournamentsLoading = false)
+        }
+    }
+
+    clearProfileTournaments = ()=>
+    {
+        this.selectedProfileTournamets = [];
+    }
 }

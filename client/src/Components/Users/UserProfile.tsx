@@ -9,6 +9,7 @@ import { store } from "../../Stores/store";
 import LoadingComponent from "../Loading/LoadingComponent";
 import Photos from "./Photos";
 import ProfileBio from "./ProfileBio";
+import ProfileTournaments from "./ProfileTournaments";
 
 interface Params {
     username: string;
@@ -37,7 +38,7 @@ export default observer(function UserProfile() {
         const panes = [
             { menuItem: 'O korisniku', render: () => <Tab.Pane><ProfileBio bio={profile.bio}/></Tab.Pane> },
             { menuItem: 'Fotografije', render: () => <Tab.Pane><Photos profile={profile}/></Tab.Pane> },
-            { menuItem: 'Turniri', render: () => <Tab.Pane>Turniri</Tab.Pane> },
+            { menuItem: 'Turniri', render: () => <Tab.Pane><ProfileTournaments profile={profile}/></Tab.Pane> },
           ]
 
     return (

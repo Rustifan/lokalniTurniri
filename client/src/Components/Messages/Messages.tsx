@@ -17,7 +17,11 @@ export default observer(function Messages() {
     }, [setSelectedInterlocutor])
     if (!userStore.user) return <></>;  
 
-    if(messageStore.messages.size === 0) return <></>; //TODO
+    if(messageStore.messages.size === 0) 
+    return (
+    <Segment style={{marginTop: 300, padding: 60}}>
+    <Header  as="h2" textAlign="center">Trenutno nemate poruka</Header>; 
+    </Segment>)
 
 
     return (

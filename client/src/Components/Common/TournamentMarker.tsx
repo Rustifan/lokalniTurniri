@@ -2,7 +2,6 @@ import React from "react"
 import { Popup } from "semantic-ui-react"
 import { Tournament } from "../../App/Interfaces/Tournament"
 import TournamentPopup from "../TournamentPopup";
-import TournamentCard from "../Tournaments/TournamentCard"
 
 interface Props
 {
@@ -18,7 +17,7 @@ export function TournamentMarker({tournament}: Props)
     return(
         <Popup 
             
-            style={{padding: 5}}
+            style={{padding: 0}}
             hoverable
             basic
             trigger={

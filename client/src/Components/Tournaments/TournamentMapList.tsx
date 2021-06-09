@@ -45,7 +45,7 @@ export default observer(function TournamentMapList() {
     return (
         <div className="borderShadow" style={{ width: "100%", height: "90%", marginTop: "10px" }}>
             <GoogleMapReact
-                options={{scrollwheel: true}}
+                options={{scrollwheel: true, fullscreenControl: false}}
                 bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_API || "" }}
                 onChange={({ bounds, zoom }) => {
                     setBounds([

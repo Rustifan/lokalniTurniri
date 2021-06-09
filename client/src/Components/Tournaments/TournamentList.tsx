@@ -6,7 +6,6 @@ import LoadingComponent from "../Loading/LoadingComponent";
 import TournamentCard from "./TournamentCard";
 import InfiniteScroll from 'react-infinite-scroller';
 import FiltersComponent from "./FiltersComponent";
-import { TournamentLoadingParams } from "../../App/Interfaces/Tournament";
 import TournamentMapList from "./TournamentMapList";
 
 export default observer(() => {
