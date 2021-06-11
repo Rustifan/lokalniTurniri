@@ -127,7 +127,11 @@ export class UserStore
     setLoginModalOpen = (open: boolean)=>
     {
         store.errorStore.removeLoginRegisterError();
-        this.loginModalOpen = open;
+        runInAction(()=>
+        {
+            this.loginModalOpen = open;
+
+        })
     }
 
     setRegisterModalOpen = (open: boolean)=>

@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { Error } from "../App/Interfaces/Error";
 
 
@@ -30,7 +30,11 @@ export class ErrorStore
 
     removeLoginRegisterError = ()=>
     {
-        this.loginRegisterError = null;
+        runInAction(()=>
+        {
+            this.loginRegisterError = null;
+
+        })
     }
 
 

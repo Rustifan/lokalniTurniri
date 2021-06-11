@@ -19,6 +19,7 @@ import UserProfile from './Components/Users/UserProfile';
 import EditProfile from './Components/Users/EditProfile';
 import Messages from './Components/Messages/Messages';
 import HomeComponent from './Components/HomeComponent';
+import PrivateRoute from './App/Core/PrivateRoute';
 function App() {
 
   const {userStore, errorStore} = store;
@@ -46,7 +47,8 @@ function App() {
       <Register/>
       <Container style={{ marginTop: 0 }}>
         <Switch>
-          <Route exact path="/"><HomeComponent/></Route>
+          <PrivateRoute  exact path="/"><HomeComponent/></PrivateRoute>
+
           <Route exact path="/tournaments/:id" component={TournamentDetails}/>
           <Route exact path="/tournaments/:id/edit" component={EditTournament}/>
           <Route path="/tournaments" component={TournamentList}/>
