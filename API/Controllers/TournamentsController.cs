@@ -14,7 +14,6 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> ListTournaments([FromQuery]TournamentLoadParams loadParams)
         {
-            var query =HttpContext.Request.QueryString;
             if(loadParams.MapMode)
             {
                 return HandleResult(await Mediator.Send(new MapModeList.Query{LoadParams=loadParams}));
@@ -38,6 +37,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> EditTournament(Guid id, TournamentEditDto tournament)
         {
+            
             return HandleResult(await Mediator.Send(new Edit.Command{Tournament = tournament, Id = id}));
         }
 

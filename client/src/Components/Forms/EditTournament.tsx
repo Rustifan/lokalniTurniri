@@ -17,12 +17,13 @@ export default observer(function EditTournament() {
 
             setInitialValues(
             {
-                    id: selectedTournament.id,
-                    name: selectedTournament.name,
-                    sport: selectedTournament.sport,
-                    date: selectedTournament.date,
-                    numberOfRounds: selectedTournament.numberOfRounds,
-                    location: selectedTournament.location
+                id: selectedTournament.id,
+                name: selectedTournament.name,
+                description: selectedTournament.description,
+                sport: selectedTournament.sport,
+                date: selectedTournament.date,
+                numberOfRounds: selectedTournament.numberOfRounds,
+                location: selectedTournament.location
             }
             );
         }

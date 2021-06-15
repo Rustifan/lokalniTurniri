@@ -11,6 +11,7 @@ namespace Application.Tournaments
         public string Sport { get; set; }
         public Location Location { get; set; }
         public DateTime Date { get; set; }
+        public string Description { get; set; }
         public string HostUsername { get; set; }
         public List<string> Admins {get; set;}
         public int NumberOfRounds { get; set; }

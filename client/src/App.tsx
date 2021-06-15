@@ -47,16 +47,16 @@ function App() {
       <Register/>
       <Container style={{ marginTop: 0 }}>
         <Switch>
-          <PrivateRoute  exact path="/"><HomeComponent/></PrivateRoute>
+          <Route  exact path="/"><HomeComponent/></Route>
 
           <Route exact path="/tournaments/:id" component={TournamentDetails}/>
-          <Route exact path="/tournaments/:id/edit" component={EditTournament}/>
+          <PrivateRoute exact path="/tournaments/:id/edit" component={EditTournament}/>
           <Route path="/tournaments" component={TournamentList}/>
-          <Route path="/createTournament" component={CreateTournamentForm}/>
+          <PrivateRoute path="/createTournament" component={CreateTournamentForm}/>
           <Route path="/errorTesting" component={ErrorTesting}/>
           <Route exact path="/userProfile/:username" component={UserProfile}/>
-          <Route exact path="/userProfile/:username/edit" component={EditProfile}/>
-          <Route exact path="/messages" component={Messages}/>
+          <PrivateRoute exact path="/userProfile/:username/edit" component={EditProfile}/>
+          <PrivateRoute exact path="/messages" component={Messages}/>
           <Route component={NotFoundPage}/>
         </Switch>
       </Container>

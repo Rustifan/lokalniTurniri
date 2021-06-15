@@ -13,6 +13,7 @@ export default function CreateTournamentForm()
     {
         name: "",
         sport: "",
+        description: "",
         location: new Location(),
         date: new Date(),
         numberOfRounds: 0

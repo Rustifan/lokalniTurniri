@@ -37,6 +37,7 @@ export class TournamentStore {
     constructor() {
         makeAutoObservable(this);
         makeObservable(this.tournamentLoadingParams, {toggleFilter: observable});
+        
     }
 
 
@@ -154,11 +155,11 @@ export class TournamentStore {
 
             runInAction(() => {
 
-                this.resetTournaments();
                 this.creatingTournament = false;
             })
-
+            
             history.push("/tournaments/" + createdTournament.id);
+            this.resetTournaments();
         }
         catch (err) {
             runInAction(() => this.creatingTournament === false);
@@ -177,21 +178,23 @@ export class TournamentStore {
 
     editTournament = async (tournamentForm: TournamentFormValues) => {
         this.editingTournament = true;
-
-        const tournament = this.selectedTournament;
+       
+        
         try {
             await agent.Tournaments.edit(tournamentForm);
-            if (tournament !== undefined) {
+         
+            if (this.selectedTournament) {
                 runInAction(() => {
-                    tournament.name = tournamentForm.name;
-                    tournament.sport = tournamentForm.sport;
-                    tournament.numberOfRounds = tournamentForm.numberOfRounds;
-                    tournament.location = tournamentForm.location;
-                    tournament.date = tournamentForm.date;
+                    this.selectedTournament!.name = tournamentForm.name;
+                    this.selectedTournament!.sport = tournamentForm.sport;
+                    this.selectedTournament!.numberOfRounds = tournamentForm.numberOfRounds;
+                    this.selectedTournament!.location = tournamentForm.location;
+                    this.selectedTournament!.date = tournamentForm.date;
+                    this.selectedTournament!.description = tournamentForm.description;
 
                 })
             }
-
+            this.resetTournaments();
             if (tournamentForm.id) history.push("/tournaments/" + tournamentForm.id);
 
         }

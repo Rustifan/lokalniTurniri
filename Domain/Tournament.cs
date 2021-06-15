@@ -10,6 +10,8 @@ namespace Domain
         public string Sport { get; set; }
         public DateTime Date { get; set; }
         public Location Location { get; set; }
+        
+        public string Description { get; set; }
         public AppUser Host { get; set; }
         public bool ApplicationsClosed { get; set; } = false;
         public ICollection<Admin> Admins {get; set;} = new List<Admin>();

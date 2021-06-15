@@ -20,7 +20,7 @@ export default observer(() => {
     useEffect(()=>
     {
         let mounted = true;
-        if(paginatedList.length ===0 && mounted && !tournamentLoading && !loaded)
+        if(paginatedList.length === 0 && mounted && !tournamentLoading && !loaded)
         {
             loadTournaments();
 

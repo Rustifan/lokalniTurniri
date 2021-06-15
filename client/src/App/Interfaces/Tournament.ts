@@ -10,6 +10,7 @@ export interface Tournament
     sport: string;
     location: Location;
     date: Date;
+    description: string;
     hostUsername: string;
     admins: string[];
     numberOfRounds: number;
@@ -26,6 +27,7 @@ export interface TournamentFormValues
     name: string;
     sport: string;
     location: Location;
+    description: string;
     date: Date;
     numberOfRounds: number; 
 }
@@ -39,6 +41,7 @@ export class Tournament
         this.sport = tournament.sport;
         this.location = tournament.location;
         this.date = tournament.date;
+        this.description = tournament.description;
         this.numberOfRounds = tournament.numberOfRounds;
         if(store.userStore.user?.username)
         {

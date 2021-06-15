@@ -7,6 +7,7 @@ import TextInput from "./TextInput"
 import * as Yup from "yup"
 import { history } from "../.."
 import LocationInput from "./LocationInput"
+import TextAreaInput from "./TextAreaInput"
 
 interface Props
 {
@@ -22,6 +23,7 @@ export default function CreateTournamentForm({initialValues, onSubmit, header, s
     const validationSchema = Yup.object({
         name: Yup.string().required("Potrebno je unijeti naziv turnira"),
         sport: Yup.string().required("Potrebno je unijeti sport u kojem se održava turnir"),
+        description: Yup.string().required("Potrebno je unijeti opis turnira"),
         location: Yup.object().shape({
             lat: Yup.number(),
             lng: Yup.number(),
@@ -55,6 +57,9 @@ export default function CreateTournamentForm({initialValues, onSubmit, header, s
 
                 <Header color="blue" sub>Lokacija</Header>
                 <LocationInput name="location" placeholder="Lokacija održavanja"/>
+
+                <Header color="blue" sub>Opis Turnira</Header>
+                <TextAreaInput name="description" placeholder="Opis turnira" rows={2}/>
 
                 <Header color="blue" sub>Datum početka turnira</Header>
                 <DateInput name="date"/>

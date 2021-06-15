@@ -3,11 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.Validation;
-using Domain;
 using FluentValidation;
 using MediatR;
 using Persistence;
-using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
 namespace Application.Tournaments

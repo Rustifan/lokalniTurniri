@@ -7,6 +7,7 @@ namespace Application.Tournaments
     {
         public string Name { get; set; }
         public string Sport { get; set; }
+        public string Description { get; set; }
         public Location Location { get; set; }
         public DateTime Date { get; set; }
         public int NumberOfRounds { get; set; }
