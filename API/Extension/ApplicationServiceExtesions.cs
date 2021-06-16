@@ -11,6 +11,8 @@ using Application.Interfaces;
 using Infrastructure.Security;
 using Application.Helpers;
 using Infrastructure.ImageUpload;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 
 namespace API.Extension
 {
@@ -31,6 +33,13 @@ namespace API.Extension
                         .AllowAnyMethod()
                         .AllowCredentials();
                 });
+            });
+            
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+            
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
             services.AddHttpContextAccessor();

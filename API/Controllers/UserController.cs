@@ -1,12 +1,15 @@
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
+using Application.Extensions;
 using Application.Interfaces;
 using Application.Profiles;
 using AutoMapper;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,7 +54,7 @@ namespace API.Controllers
             if(!result.Succeeded) return BadRequest("Failed to create new user");
 
 
-
+            await AddRefreshToken(newUser);
             return Ok(CreateUserDto(newUser));
         }
         [AllowAnonymous]
@@ -64,6 +67,9 @@ namespace API.Controllers
             var result = await _signInManager.CheckPasswordSignInAsync(user, userDto.Password, false);
             if(!result.Succeeded) return BadRequest(new UserError("Pogrešan email ili zaporka!"));
 
+            
+
+            await AddRefreshToken(user);
             return Ok(CreateUserDto(user));
         }
 
@@ -76,6 +82,8 @@ namespace API.Controllers
             if(user == null) return BadRequest("Could not retreve user profile");
 
             var profile = _mapper.Map<AppUser, Application.Profiles.Profile>(user);
+            await AddRefreshToken(user);
+
             
             return Ok(profile);
         }
@@ -110,6 +118,26 @@ namespace API.Controllers
                 Token = token
             };
         }
+
+        private async Task AddRefreshToken(AppUser user)
+        {
+            var refreshToken = _tokenService.CreateRefreshToken();
+
+            user.RefreshTokens.Add(refreshToken);
+            await _userManager.UpdateAsync(user);
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.Now.AddDays(7),
+                IsEssential = true,
+                SameSite = SameSiteMode.None,
+                Secure = true
+                
+            };
+            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+        }
     }
     
 }
+

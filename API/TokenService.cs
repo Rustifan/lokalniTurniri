@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Application.Interfaces;
 using Domain;
@@ -22,8 +23,11 @@ namespace API.Services
         public string CreateToken(AppUser user)
         {
             string secret = _config["JwtTokenSecret"];
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
+            
 
             var claims = new List<Claim>
             {
@@ -32,13 +36,26 @@ namespace API.Services
                 new Claim(ClaimTypes.Email, user.Email)
             };
             
-            var header = new JwtHeader(credentials);
-            var payload = new JwtPayload(claims);
-            var token = new JwtSecurityToken(header, payload);
-            
-            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(60),
+                SigningCredentials = credentials,
+                
+            };
+
+            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
+            var jwtToken = jwtTokenHandler.WriteToken(token);
 
             return jwtToken;
+        }
+
+        public RefreshToken CreateRefreshToken()
+        {
+            var refreshToken = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(refreshToken);
+            return new RefreshToken{Token = Convert.ToBase64String(refreshToken)};
         }
     }
 }

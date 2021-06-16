@@ -1,7 +1,6 @@
 using Domain;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Persistence;
 using API.Services;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Infrastructure.Security;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Extension
 {
@@ -44,8 +44,9 @@ namespace API.Extension
                         ValidateIssuerSigningKey = true,
                         ValidateAudience = false,
                         ValidateIssuer = false,
-                        ValidateLifetime = false,
-                        IssuerSigningKey = securityKey
+                        ValidateLifetime = true,
+                        IssuerSigningKey = securityKey,
+                        ClockSkew = TimeSpan.Zero
 
                     };
                     

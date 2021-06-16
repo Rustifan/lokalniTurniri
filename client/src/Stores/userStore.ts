@@ -107,7 +107,11 @@ export class UserStore
             const user = await agent.Users.getCurrentUser();
             runInAction(()=>
             {
-                this.user = user;
+                if(user)
+                {
+                    this.user = user;
+
+                }
             })
         }
         catch(err)

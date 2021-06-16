@@ -6,7 +6,7 @@ import { TournamentFormValues, Tournament } from "./Interfaces/Tournament";
 import { ChangePasswordForm, LoginForm, RegisterDto, User } from "./Interfaces/User";
 import { UserProfile } from "./Interfaces/UserProfile";
 
-const instance = axios.create({baseURL: "http://localhost:5000/api"});
+const instance = axios.create({baseURL: "http://localhost:5000/api", withCredentials: true});
 
 function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -46,6 +46,8 @@ instance.interceptors.response.use(async (config)=>
         
         case 401:
         store.errorStore.setError({statusCode: 401, head: "Zabranjen pristup"});
+        
+        
         throw(error);
     
         case 500:
