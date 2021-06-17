@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios"
+import { toast } from "react-toastify";
 import { history } from "..";
 import { store } from "../Stores/store";
 import { ApiResponseDelay } from "./Core/Constants";
@@ -45,7 +46,18 @@ instance.interceptors.response.use(async (config)=>
         throw(error);
         
         case 401:
-        store.errorStore.setError({statusCode: 401, head: "Zabranjen pristup"});
+        
+        if(error.response.headers["www-authenticate"]?.startsWith('Bearer error="invalid_token"'))
+        {
+            store.userStore.logout();
+            toast.error("Sesija je istekla. Nažalost morate se ponovno ulogirati")
+        }
+        else
+        {
+            
+            store.errorStore.setError({statusCode: 401, head: "Zabranjen pristup"});
+        }
+        
         
         
         throw(error);
@@ -90,7 +102,8 @@ const Users =
     getCurrentUser: () => instance.get<User>("/user").then(value=>value.data),
     editUser: (editProfile: UserProfile)=>instance.put<User>("/userProfiles", editProfile)
         .then(value=>value.data),
-    changePassword: (changePasswordForm: ChangePasswordForm)=> instance.put("/user/changePassword", changePasswordForm)
+    changePassword: (changePasswordForm: ChangePasswordForm)=> instance.put("/user/changePassword", changePasswordForm),
+    refreshToken: ()=>instance.get<User>("/user/refreshToken").then(response=>response.data)
 }
 
 const Tournaments = 

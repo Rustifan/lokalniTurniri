@@ -8,7 +8,7 @@ namespace API.Extension
         {
             response.Headers.Add(headerKey, headerValue);
             response.Headers.Append("Access-Control-Expose-Headers", headerKey);
-       
+    
             return response;
         }
     }

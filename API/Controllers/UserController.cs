@@ -1,9 +1,9 @@
 using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
-using Application.Extensions;
 using Application.Interfaces;
 using Application.Profiles;
 using AutoMapper;
@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -24,14 +25,12 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
-        private readonly IMapper _mapper;
         public UserController(SignInManager<AppUser> signInManager, 
-            UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper)
+            UserManager<AppUser> userManager, ITokenService tokenService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
-            _mapper = mapper;
         }
         
         [AllowAnonymous]
@@ -81,11 +80,11 @@ namespace API.Controllers
             var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             if(user == null) return BadRequest("Could not retreve user profile");
 
-            var profile = _mapper.Map<AppUser, Application.Profiles.Profile>(user);
+            
             await AddRefreshToken(user);
 
             
-            return Ok(profile);
+            return Ok(CreateUserDto(user));
         }
 
         [Authorize]
@@ -106,7 +105,30 @@ namespace API.Controllers
 
             return Ok();
         }
- 
+
+        [Authorize]
+        [HttpGet("{refreshToken}")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            var user = await _userManager.Users
+                .Include(x=>x.RefreshTokens)
+                .FirstOrDefaultAsync(x=>x.UserName == username);
+            if(user == null) return Unauthorized();
+
+            var tokenFromCookie = Request.Cookies["refreshToken"];
+            if(tokenFromCookie == null) return Unauthorized();
+
+            var refreshToken = user.RefreshTokens.FirstOrDefault(x=>x.Token == tokenFromCookie);
+            if(refreshToken == null || !refreshToken.IsActive) return Unauthorized();
+
+            refreshToken.Revoked = true;
+            user.RefreshTokens.Remove(refreshToken);
+
+            await AddRefreshToken(user);
+
+            return Ok(CreateUserDto(user));
+        }
 
         private UserDto CreateUserDto(AppUser user)
         {
@@ -119,6 +141,7 @@ namespace API.Controllers
             };
         }
 
+        
         private async Task AddRefreshToken(AppUser user)
         {
             var refreshToken = _tokenService.CreateRefreshToken();

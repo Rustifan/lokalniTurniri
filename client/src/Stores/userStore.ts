@@ -1,6 +1,7 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { history } from "..";
 import { agent } from "../App/agent";
+import { refreshTimerOffset } from "../App/Core/Constants";
 import { ChangePasswordForm, LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
 import { UserProfile } from "../App/Interfaces/UserProfile";
 import { store } from "./store";
@@ -12,7 +13,7 @@ export class UserStore
     loginModalOpen = false;
     registerModalOpen = false;
     changePasswordModalOpen = false;    
-    
+    refreshTimer: NodeJS.Timer | null = null;
 
     constructor()
     {
@@ -33,7 +34,39 @@ export class UserStore
         
     }
 
-   
+    refreshToken = async ()=>
+    {
+        this.stopRefreshTimer();
+        const user = await agent.Users.refreshToken();
+        runInAction(()=>
+        {
+            this.user = user;
+        })
+
+        localStorage.setItem("jwt", user.token);
+        
+        this.startRefreshTimer();
+    }
+
+    startRefreshTimer = () =>
+    {
+        if(!this.user) return console.log("user not logged in");
+        
+        const jwt = this.user.token;
+        const jwtObject = JSON.parse(atob(jwt.split(".")[1]));
+        const expire =new Date(Number.parseInt(jwtObject.exp) * 1000);
+        const now = new Date();
+        const expireIn = expire.getTime() - now.getTime();
+        
+        this.refreshTimer = setTimeout(this.refreshToken,  expireIn - refreshTimerOffset);
+    }
+
+    stopRefreshTimer = ()=>
+    {
+        if(this.refreshTimer)
+        clearTimeout(this.refreshTimer);
+    }
+
     register = async (registerForm: RegisterForm)=>
     {
         this.loadingUser = true;
@@ -46,7 +79,7 @@ export class UserStore
                 this.user= user;
                 this.registerModalOpen = false;
             });
-            
+            this.startRefreshTimer();
         }
         catch(err)
         {
@@ -74,6 +107,7 @@ export class UserStore
             });
 
             this.setLoginModalOpen(false);
+            this.startRefreshTimer();
         }
         catch(err)
         {
@@ -90,8 +124,10 @@ export class UserStore
 
     logout = ()=>
     {
+        this.stopRefreshTimer();
         localStorage.removeItem("jwt");
         this.user= null;
+        
     }
 
     getUser = async ()=>
@@ -105,6 +141,7 @@ export class UserStore
         try
         {
             const user = await agent.Users.getCurrentUser();
+            console.log(user);
             runInAction(()=>
             {
                 if(user)
@@ -113,6 +150,7 @@ export class UserStore
 
                 }
             })
+            this.startRefreshTimer();
         }
         catch(err)
         {

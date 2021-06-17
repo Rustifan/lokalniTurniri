@@ -21,6 +21,7 @@ namespace API.Controllers
             return HandlePaginatedList(await Mediator.Send(new List.Query{LoadParams=loadParams}));
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> DetailsTournament(Guid id)
         {

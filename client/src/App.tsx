@@ -20,6 +20,9 @@ import EditProfile from './Components/Users/EditProfile';
 import Messages from './Components/Messages/Messages';
 import HomeComponent from './Components/HomeComponent';
 import PrivateRoute from './App/Core/PrivateRoute';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
 
   const {userStore, errorStore} = store;
@@ -46,6 +49,7 @@ function App() {
       <Login/>
       <Register/>
       <Container style={{ marginTop: 0 }}>
+      <ToastContainer position="top-center"/>
         <Switch>
           <Route  exact path="/"><HomeComponent/></Route>
 

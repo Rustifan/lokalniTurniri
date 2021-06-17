@@ -22,7 +22,8 @@ export class MessageStore
             
         const token = localStorage.getItem("jwt");
         if(token)
-        {
+        {   
+            this.signalRConnection?.stop();
             this.signalRConnection = new signalR.HubConnectionBuilder()
                 .withUrl("http://localhost:5000/api/messageHub", {accessTokenFactory: ()=>token})
                 .build();

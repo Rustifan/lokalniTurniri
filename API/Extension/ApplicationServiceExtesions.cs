@@ -30,6 +30,7 @@ namespace API.Extension
                 {
                     builder.WithOrigins("http://localhost:3000")
                         .AllowAnyHeader()
+                        .WithExposedHeaders("WWW-Authenticate")
                         .AllowAnyMethod()
                         .AllowCredentials();
                 });
