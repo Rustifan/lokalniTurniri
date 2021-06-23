@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {  Route,  Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import './App.css';
 import Navbar from './Components/Navbar/Navbar';
@@ -25,47 +25,52 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
-  const {userStore, errorStore} = store;
-  const {error} = errorStore;
+  const { userStore, errorStore } = store;
+  const { error } = errorStore;
 
-  useEffect(()=>
-  {
+  useEffect(() => {
     userStore.getUser();
   }, [userStore])
 
   //clear error on history change
-  history.listen(()=>
-  {
-      errorStore.removeError();
+  history.listen(() => {
+    errorStore.removeError();
   })
 
   return (
-      <>
-      <Navbar />
-
+    <>
       {error &&
-      <FlashError error={error}/>}
+        <FlashError error={error} />}
 
-      <Login/>
-      <Register/>
-      <Container style={{ marginTop: 0 }}>
-      <ToastContainer position="top-center"/>
-        <Switch>
-          <Route  exact path="/"><HomeComponent/></Route>
+      <Login />
+      <Register />
+      <ToastContainer position="top-center" />
+      <Route exact path="/" component={HomeComponent} />
+      <Route path="/(.+)" render={() =>
+      (
+        <>
+        <Navbar />
+        <Container style={{ marginTop: 80 }}>
+          <Switch>
+            <Route exact path="/"><HomeComponent /></Route>
 
-          <Route exact path="/tournaments/:id" component={TournamentDetails}/>
-          <PrivateRoute exact path="/tournaments/:id/edit" component={EditTournament}/>
-          <Route path="/tournaments" component={TournamentList}/>
-          <PrivateRoute path="/createTournament" component={CreateTournamentForm}/>
-          <Route path="/errorTesting" component={ErrorTesting}/>
-          <Route exact path="/userProfile/:username" component={UserProfile}/>
-          <PrivateRoute exact path="/userProfile/:username/edit" component={EditProfile}/>
-          <PrivateRoute exact path="/messages" component={Messages}/>
-          <Route component={NotFoundPage}/>
-        </Switch>
-      </Container>
-      </>
-)
+            <Route exact path="/tournaments/:id" component={TournamentDetails} />
+            <PrivateRoute exact path="/tournaments/:id/edit" component={EditTournament} />
+            <Route path="/tournaments" component={TournamentList} />
+            <PrivateRoute path="/createTournament" component={CreateTournamentForm} />
+            <Route path="/errorTesting" component={ErrorTesting} />
+            <Route exact path="/userProfile/:username" component={UserProfile} />
+            <PrivateRoute exact path="/userProfile/:username/edit" component={EditProfile} />
+            <PrivateRoute exact path="/messages" component={Messages} />
+            <Route component={NotFoundPage} />
+          </Switch>
+        </Container>
+        </>
+      )} />
+
+
+    </>
+  )
 }
 
 export default observer(App);

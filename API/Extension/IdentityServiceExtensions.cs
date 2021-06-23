@@ -30,6 +30,7 @@ namespace API.Extension
                 opt.Password.RequireUppercase = true;
 
                 opt.SignIn.RequireConfirmedEmail = false;
+                opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
             })
             .AddEntityFrameworkStores<DataContext>()
             .AddSignInManager<SignInManager<AppUser>>();

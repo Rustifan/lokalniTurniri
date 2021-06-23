@@ -5,15 +5,17 @@ import { Link } from "react-router-dom"
 import { Button, Container, Icon, Menu } from "semantic-ui-react"
 import { store } from "../../Stores/store"
 import UserMenu from "../Users/UserMenu"
+import CSS from "csstype"
 
 export default observer(function Navbar()
 {
     
     const unreadMessages = store.messageStore.getUnreadMessages();
 
-    const style = 
+    
+    const style: CSS.Properties = 
     {
-        fontSize: 20
+        fontSize: "20px"
     }
     
     return (

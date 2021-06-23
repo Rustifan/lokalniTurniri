@@ -3,9 +3,22 @@ body
     background-color: #fdfdfd !important;
 }
 
+.HomeComponent
+{
+    height: 100vh;
+    background: linear-gradient(58deg, rgba(33,117,255,1) 11%, rgba(131,255,0,1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .navbar
 {
-    background: rgb(33,117,255) !important;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+    top: 0px;
+    margin: 0px !important;
     background: linear-gradient(58deg, rgba(33,117,255,1) 11%, rgba(131,255,0,1) 100%) !important;
 }
 

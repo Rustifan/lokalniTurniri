@@ -51,7 +51,7 @@ namespace API.Controllers
             var result = await _userManager.CreateAsync(newUser, userDto.Password);
             
             if(!result.Succeeded) return BadRequest("Failed to create new user");
-
+            
 
             await AddRefreshToken(newUser);
             return Ok(CreateUserDto(newUser));
