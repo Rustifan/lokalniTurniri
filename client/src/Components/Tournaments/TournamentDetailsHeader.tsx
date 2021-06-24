@@ -15,14 +15,15 @@ interface Props {
 export default observer(function TournamentDetailsHeader({ tournament }: Props) {
     
     const {tournamentStore} = store;
-    const {isContestor, participate, participateLoading, isTournamentFinnished} = tournamentStore;
+    const {isContestor, participate, participateLoading, 
+            isTournamentFinnished} = tournamentStore;
     const [showMap, setShowMap] = useState(false);
     const mapHeight = "500px";
     const handleShowMap = 
         (event: React.MouseEvent<HTMLButtonElement, MouseEvent>)=>
     {
-            event.currentTarget.blur();
-            setShowMap(value=>!value);
+        event.currentTarget.blur();
+        setShowMap(value=>!value);
     }
     
     const imageSegmanetStyle =
@@ -80,7 +81,7 @@ export default observer(function TournamentDetailsHeader({ tournament }: Props) 
                         <Item.Meta style={sportStyle}>{tournament.sport.toUpperCase()}</Item.Meta>
                         <Item.Extra>
                             {format(tournament.date, "dd.  mm.  yyyy 'u' HH:MM")}
-                            <span style={{position: "absolute", left: "70%", top: "80%" }}>{"BROJ RUNDI: " +tournament.numberOfRounds}</span>
+                            <span style={{position: "absolute", right: "80px", top: "25px" }}>{"BROJ RUNDI: " +tournament.numberOfRounds}</span>
                             
                             <Button 
                                 active={showMap}
