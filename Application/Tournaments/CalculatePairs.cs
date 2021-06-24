@@ -42,6 +42,7 @@ namespace Application.Tournaments
                 var tournament = await _context.Tournaments
                     .Include(x=>x.Games)
                     .Include(x=>x.Contestors)
+                    .Include(x=>x.Location)
                     .FirstOrDefaultAsync(x=>x.Id == request.Id, cancellationToken);
 
                 if(tournament == null) return null;
