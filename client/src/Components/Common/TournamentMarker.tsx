@@ -7,12 +7,19 @@ interface Props
 {
     lat: number;
     lng: number;
-    tournament: Tournament | undefined;
+    tournament?: Tournament | undefined;
 }
 
 export function TournamentMarker({tournament}: Props)
 {
-    if(!tournament) return<></>;
+    if(!tournament) return <img 
+    alt="Map pin"
+    style={{
+        width: "40px",
+        height: "40px",
+        
+    }} 
+    src="/Assets/Images/tournamentCup.png" />;
 
     return(
         <Popup 

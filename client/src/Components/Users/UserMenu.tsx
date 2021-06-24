@@ -24,7 +24,7 @@ export default observer(() => {
                 </Dropdown.Menu>    
             </Dropdown>) :
             (
-                <Dropdown item text="Guest"> 
+                <Dropdown item text="Gost"> 
                 <Dropdown.Menu>
                     
                     <Dropdown.Item as={Button} onClick={()=>userStore.setLoginModalOpen(true)}>
