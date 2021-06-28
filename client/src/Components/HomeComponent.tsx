@@ -3,6 +3,7 @@ import React from "react"
 import { Link } from "react-router-dom";
 import { Button, Container, Divider, Header, Icon } from "semantic-ui-react"
 import { store } from "../Stores/store";
+import GoogleLogin from 'react-google-login';
 
 
 export default observer(function Home()
@@ -54,6 +55,15 @@ export default observer(function Home()
                 <Divider horizontal inverted content="ili"/>
                 <div>
                     <Button as={Link} to="/tournaments" inverted size="huge" content="Uđi kao gost"/>
+                </div>
+                <div>
+                <GoogleLogin
+                    clientId="268319034180-lmiunnlvnhac5ttgtu7u7lpsrg8ganac.apps.googleusercontent.com"
+                    buttonText="Ulogiraj se pomoću Googla"
+                    onSuccess={(res)=>console.log(res)}
+                    onFailure={res=>console.log(res)}
+                    cookiePolicy={'single_host_origin'}
+                    />,
                 </div>
                 </>
             }
