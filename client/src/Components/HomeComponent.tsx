@@ -9,7 +9,8 @@ import GoogleLogin from 'react-google-login';
 export default observer(function Home()
 {
     const {userStore} = store;
-    const {setLoginModalOpen, setRegisterModalOpen, isLogedIn} = userStore;
+    const {setLoginModalOpen, setRegisterModalOpen, isLogedIn,
+        googleLogin, googleLoginError} = userStore;
 
     return(
         <div className="HomeComponent">
@@ -53,17 +54,33 @@ export default observer(function Home()
                             Registriraj se</Button>
                 </div>
                 <Divider horizontal inverted content="ili"/>
+
+                <div>
+                <GoogleLogin
+                    
+                    clientId={process.env.REACT_APP_GOOGLE_ID || ""}
+                    buttonText="Prijavi se se pomoću Googla"
+                    onSuccess={googleLogin}
+                    onFailure={googleLoginError}
+                    cookiePolicy={'single_host_origin'}
+                    render={renderProps=>
+                    (
+                        <Button 
+                            
+                            inverted
+                            onClick={renderProps.onClick}
+                            icon="google"
+                            content="Ulogiraj se pomoću googla"
+                            size="huge"
+                        />
+                    )}
+                />
+                </div>
+                <Divider horizontal inverted content="ili"/>
                 <div>
                     <Button as={Link} to="/tournaments" inverted size="huge" content="Uđi kao gost"/>
                 </div>
                 <div>
-                <GoogleLogin
-                    clientId="268319034180-lmiunnlvnhac5ttgtu7u7lpsrg8ganac.apps.googleusercontent.com"
-                    buttonText="Ulogiraj se pomoću Googla"
-                    onSuccess={(res)=>console.log(res)}
-                    onFailure={res=>console.log(res)}
-                    cookiePolicy={'single_host_origin'}
-                    />,
                 </div>
                 </>
             }

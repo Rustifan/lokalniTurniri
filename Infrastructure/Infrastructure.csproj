@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Cloudinary.Core" Version="1.31.0" />
+    <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.52.0.1869" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
   </ItemGroup>
 

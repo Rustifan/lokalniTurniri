@@ -11,7 +11,7 @@ interface Props
 export default function FlashError({error}: Props)
 {
     return(
-        <Container style={{margin: 40}}>
+        <Container style={{margin: 40, marginTop: 100}}>
             <Message onDismiss={()=>store.errorStore.removeError()} error >
                 <Header textAlign="center" as="h5">Status code: {error.statusCode}</Header>
                 <Header style={{padding:10}} textAlign="center" as="h3">Dogodila se greška :(</Header>

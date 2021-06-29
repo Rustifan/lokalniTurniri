@@ -231,4 +231,37 @@ export class UserStore
         }
     }
 
+    googleLogin = async (googleLoginRes: any)=>
+    {
+        this.loadingUser = true;
+
+        const {tokenId} = googleLoginRes;
+        console.log(tokenId);
+        if(!tokenId) return console.log("something went wrong");
+        try{
+            
+            const user = await agent.Users.googleLogin(tokenId);
+            localStorage.setItem("jwt", user.token);
+            runInAction(()=>
+            {
+                this.user = user;
+            });
+
+        }
+        catch(error)
+        {
+            console.log(error);
+        }
+        finally
+        {
+            runInAction(()=>this.loadingUser = false);
+        }
+
+    }
+
+    googleLoginError = (error: any)=>
+    {
+        console.log(error);
+    }
+
 }

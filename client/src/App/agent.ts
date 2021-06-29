@@ -103,7 +103,8 @@ const Users =
     editUser: (editProfile: UserProfile)=>instance.put<User>("/userProfiles", editProfile)
         .then(value=>value.data),
     changePassword: (changePasswordForm: ChangePasswordForm)=> instance.put("/user/changePassword", changePasswordForm),
-    refreshToken: ()=>instance.get<User>("/user/refreshToken").then(response=>response.data)
+    refreshToken: ()=>instance.get<User>("/user/refreshToken").then(response=>response.data),
+    googleLogin: (tokenId: string)=>instance.post<User>("/user/googleLogin", {tokenId}).then(response=>response.data)
 }
 
 const Tournaments = 

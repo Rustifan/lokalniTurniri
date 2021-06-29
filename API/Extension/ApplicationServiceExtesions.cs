@@ -13,6 +13,7 @@ using Application.Helpers;
 using Infrastructure.ImageUpload;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Infrastructure.LoginServices;
 
 namespace API.Extension
 {
@@ -61,7 +62,7 @@ namespace API.Extension
 
             services.AddSingleton<ISorter, Sorter>();
             services.AddSingleton<IImageUploader, CloudinaryImageUploader>();
-
+            services.AddScoped<IGoogleLoginService, GoogleLoginService>();
             return services;
         }
     }
