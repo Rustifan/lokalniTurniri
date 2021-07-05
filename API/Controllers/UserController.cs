@@ -110,7 +110,8 @@ namespace API.Controllers
 
             var isChangedResult = await _userManager.ChangePasswordAsync(user, changePasswordDto.OldPassword, changePasswordDto.NewPassword);
             if (!isChangedResult.Succeeded) return BadRequest(new UserError("Newšto je pošlo po krivu"));
-
+            
+            
             return Ok();
         }
 
@@ -149,7 +150,7 @@ namespace API.Controllers
 
             var email = result.Email;
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == email);
-
+          
             if (user == null)
             {
                 var newUser = new AppUser
