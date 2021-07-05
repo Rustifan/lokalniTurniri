@@ -33,8 +33,14 @@ namespace API.Extension
                 opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
             })
             .AddEntityFrameworkStores<DataContext>()
-            .AddSignInManager<SignInManager<AppUser>>();
+            .AddSignInManager<SignInManager<AppUser>>()
+            .AddDefaultTokenProviders();
             
+            services.Configure<DataProtectionTokenProviderOptions>(opt=>
+            {
+                opt.TokenLifespan = TimeSpan.FromHours(1);
+            });
+
             string secret = config["JwtTokenSecret"];
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -91,6 +97,7 @@ namespace API.Extension
                 });
             });
 
+            
             services.AddScoped<IAuthorizationHandler, IsTournamentHost>();
             services.AddScoped<IAuthorizationHandler, IsTournamentAdminHandler>();
             services.AddScoped<IAuthorizationHandler, IsGameTournamentAdminHandler>();

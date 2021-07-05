@@ -22,6 +22,8 @@ import HomeComponent from './Components/HomeComponent';
 import PrivateRoute from './App/Core/PrivateRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ForgotPassword from './Components/Forms/ForgotPassword';
+import ResetPassword from './Components/Common/ResetPassword';
 
 function App() {
 
@@ -44,6 +46,7 @@ function App() {
 
       <Login />
       <Register />
+      <ForgotPassword/>
       <ToastContainer position="top-center" />
       <Route exact path="/" component={HomeComponent} />
       <Route path="/(.+)" render={() =>
@@ -62,6 +65,7 @@ function App() {
             <Route exact path="/userProfile/:username" component={UserProfile} />
             <PrivateRoute exact path="/userProfile/:username/edit" component={EditProfile} />
             <PrivateRoute exact path="/messages" component={Messages} />
+            <Route exact path="/resetPassword/:username/:token" component={ResetPassword}/>
             <Route component={NotFoundPage} />
           </Switch>
         </Container>

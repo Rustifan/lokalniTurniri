@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using API.Dtos;
 using API.Errors;
 using Application.Interfaces;
@@ -110,8 +111,8 @@ namespace API.Controllers
 
             var isChangedResult = await _userManager.ChangePasswordAsync(user, changePasswordDto.OldPassword, changePasswordDto.NewPassword);
             if (!isChangedResult.Succeeded) return BadRequest(new UserError("Newšto je pošlo po krivu"));
-            
-            
+
+
             return Ok();
         }
 
@@ -150,7 +151,7 @@ namespace API.Controllers
 
             var email = result.Email;
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == email);
-          
+
             if (user == null)
             {
                 var newUser = new AppUser
@@ -170,8 +171,56 @@ namespace API.Controllers
 
             return Ok(CreateUserDto(user));
         }
-        
-       
+
+        [AllowAnonymous]
+        [HttpPost("forgotPassword")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordObject)
+        {
+            string email = forgotPasswordObject.Email;
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if(user == null) return Ok();
+
+            await _userManager.UpdateSecurityStampAsync(user);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var urlEncodedToken = HttpUtility.UrlEncode(token);
+            
+            var origin = Request.Headers["origin"];
+
+            var resetPasswordClientPath = $"{origin}/resetPassword/{user.UserName}/{urlEncodedToken}";
+            var message = $@"
+                <h1>Promjena lozinke</h1>
+                <div>
+                    Molim vas kliknite na
+                    <a href={resetPasswordClientPath}>link</a> za promjenu vaše lozinke. 
+                </div>
+                ";
+
+            await _emailSender.SendEmailAsync(email, "Promjena lozinke", message);
+            
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("verifyPasswordToken")]
+        public async Task<IActionResult> VerifyPasswordToken(VerifyPasswordTokenDto verifyPasswordTokenDto)
+        {
+            var username = verifyPasswordTokenDto.Username;
+            var token = HttpUtility.UrlDecode(verifyPasswordTokenDto.Token);
+            var user = await _userManager.FindByNameAsync(username);
+            if(user == null) return BadRequest("Token nije valjan ili je istekao");
+            
+            var result = await _userManager.VerifyUserTokenAsync(
+            user, 
+            _userManager.Options.Tokens.PasswordResetTokenProvider,
+            "ResetPassword",
+            token);
+            
+            if(result) return Ok();
+            
+            return BadRequest("Token nije valjan ili je istekao");
+        }
         private UserDto CreateUserDto(AppUser user)
         {
             var token = _tokenService.CreateToken(user);

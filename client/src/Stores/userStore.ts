@@ -12,6 +12,7 @@ export class UserStore
     loadingUser = false;
     loginModalOpen = false;
     registerModalOpen = false;
+    forgotPasswordModalOpen = false;
     changePasswordModalOpen = false;    
     refreshTimer: NodeJS.Timer | null = null;
 
@@ -183,6 +184,11 @@ export class UserStore
 
     }
     
+    setForgotPasswordModalOpen = (open: boolean)=>
+    {
+        this.forgotPasswordModalOpen = open;
+    }
+
     editUser = async (editProfile: UserProfile)=>
     {
         if(!this.user) return console.log("There is no user loged in");

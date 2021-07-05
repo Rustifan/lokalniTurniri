@@ -104,7 +104,9 @@ const Users =
         .then(value=>value.data),
     changePassword: (changePasswordForm: ChangePasswordForm)=> instance.put("/user/changePassword", changePasswordForm),
     refreshToken: ()=>instance.get<User>("/user/refreshToken").then(response=>response.data),
-    googleLogin: (tokenId: string)=>instance.post<User>("/user/googleLogin", {tokenId}).then(response=>response.data)
+    googleLogin: (tokenId: string)=>instance.post<User>("/user/googleLogin", {tokenId}).then(response=>response.data),
+    forgotPassword: (forgotPasswordObj: {email: string})=>instance.post("/user/forgotPassword", forgotPasswordObj),
+    verifyPasswordToken: (passwordTokenObj: {username: string, token: string})=>instance.post("/user/verifyPasswordToken", passwordTokenObj)
 }
 
 const Tournaments = 
