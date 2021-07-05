@@ -14,6 +14,7 @@ using Infrastructure.ImageUpload;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Infrastructure.LoginServices;
+using Infrastructure.EmailService;
 
 namespace API.Extension
 {
@@ -59,7 +60,7 @@ namespace API.Extension
             services.AddTransient<IUserAccessor, UserAccessor>();
             services.AddMediatR(typeof(Application.Tournaments.List).Assembly);
             services.AddAutoMapper(typeof(MappingProfile));           
-
+            services.AddSingleton<IEmailSender, SendGridService>();
             services.AddSingleton<ISorter, Sorter>();
             services.AddSingleton<IImageUploader, CloudinaryImageUploader>();
             services.AddScoped<IGoogleLoginService, GoogleLoginService>();

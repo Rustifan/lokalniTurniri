@@ -102,7 +102,7 @@ export default observer(function DisplayMessage({message}: Props)
                <div className="MessageTime" style={timeStyle}>
                    {formatDistance(message.timeOfSending, new Date(), {locale: hrLocale})}
                    {messageSent && message.read &&
-                   <span style={{color: "#22A7F0", fontSize: "20px", fontWeight: "bold"}}>     &#10004;</span>
+                   <span style={{color: "white", fontSize: "20px", fontWeight: "bold"}}>     &#10004;</span>
                     }
                 </div>
             </div>

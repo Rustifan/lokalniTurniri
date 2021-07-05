@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -28,15 +27,18 @@ namespace API.Controllers
         private readonly ITokenService _tokenService;
         private readonly ILogger<UserController> _logger;
         private readonly IGoogleLoginService _googleLogin;
+        private readonly IEmailSender _emailSender;
         public UserController(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager, ITokenService tokenService,
-            ILogger<UserController> logger, IGoogleLoginService googleLogin)
+            ILogger<UserController> logger, IGoogleLoginService googleLogin,
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
             _logger = logger;
             _googleLogin = googleLogin;
+            _emailSender = emailSender;
         }
 
         [AllowAnonymous]
@@ -167,6 +169,8 @@ namespace API.Controllers
 
             return Ok(CreateUserDto(user));
         }
+        
+       
         private UserDto CreateUserDto(AppUser user)
         {
             var token = _tokenService.CreateToken(user);
