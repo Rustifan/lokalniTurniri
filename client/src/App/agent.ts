@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { history } from "..";
 import { store } from "../Stores/store";
 import { ApiResponseDelay } from "./Core/Constants";
+import { ResetPasswordValues } from "./Interfaces/ResetPasswordValues";
 import { TournamentFormValues, Tournament } from "./Interfaces/Tournament";
 import { ChangePasswordForm, LoginForm, RegisterDto, User } from "./Interfaces/User";
 import { UserProfile } from "./Interfaces/UserProfile";
@@ -106,7 +107,9 @@ const Users =
     refreshToken: ()=>instance.get<User>("/user/refreshToken").then(response=>response.data),
     googleLogin: (tokenId: string)=>instance.post<User>("/user/googleLogin", {tokenId}).then(response=>response.data),
     forgotPassword: (forgotPasswordObj: {email: string})=>instance.post("/user/forgotPassword", forgotPasswordObj),
-    verifyPasswordToken: (passwordTokenObj: {username: string, token: string})=>instance.post("/user/verifyPasswordToken", passwordTokenObj)
+    verifyPasswordToken: (passwordTokenObj: {username: string, token: string})=>instance.post("/user/verifyPasswordToken", passwordTokenObj),
+    resetPassword: (resetPasswordDto: ResetPasswordValues)=>
+        instance.post<User>("/user/resetPassword", resetPasswordDto).then(response=>response.data)
 }
 
 const Tournaments = 

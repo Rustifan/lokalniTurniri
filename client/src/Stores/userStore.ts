@@ -1,7 +1,9 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
+import { toast } from "react-toastify";
 import { history } from "..";
 import { agent } from "../App/agent";
 import { refreshTimerOffset } from "../App/Core/Constants";
+import { ResetPasswordValues } from "../App/Interfaces/ResetPasswordValues";
 import { ChangePasswordForm, LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
 import { UserProfile } from "../App/Interfaces/UserProfile";
 import { store } from "./store";
@@ -58,7 +60,7 @@ export class UserStore
         const expire =new Date(Number.parseInt(jwtObject.exp) * 1000);
         const now = new Date();
         const expireIn = expire.getTime() - now.getTime();
-        
+        this.stopRefreshTimer();
         this.refreshTimer = setTimeout(this.refreshToken,  expireIn - refreshTimerOffset);
     }
 
@@ -74,13 +76,8 @@ export class UserStore
         try
         {
             const user = await agent.Users.register(new RegisterDto(registerForm));
-            localStorage.setItem("jwt", user.token);
-            runInAction(()=>
-            {
-                this.user= user;
-                this.registerModalOpen = false;
-            });
-            this.startRefreshTimer();
+            this.changeLogedInUser(user);
+
         }
         catch(err)
         {
@@ -101,14 +98,9 @@ export class UserStore
         try
         {
             const user = await agent.Users.login(loginForm);
-            localStorage.setItem("jwt", user.token);
-            runInAction(()=>
-            {
-                this.user = user;
-            });
-
+            this.changeLogedInUser(user);
+           
             this.setLoginModalOpen(false);
-            this.startRefreshTimer();
         }
         catch(err)
         {
@@ -247,11 +239,7 @@ export class UserStore
         try{
             
             const user = await agent.Users.googleLogin(tokenId);
-            localStorage.setItem("jwt", user.token);
-            runInAction(()=>
-            {
-                this.user = user;
-            });
+            this.changeLogedInUser(user);
 
         }
         catch(error)
@@ -270,4 +258,31 @@ export class UserStore
         console.log(error);
     }
 
+    resetPassword = async (resetPasswordValues: ResetPasswordValues)=>
+    {
+        try
+        {
+            const user = await agent.Users.resetPassword(resetPasswordValues);
+            this.changeLogedInUser(user);
+            toast.success("Uspješno ste promijenili lozinku i sad ste ulogirani kao "+ user.username);
+            history.push("/tournaments");
+
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        
+
+    }
+
+    changeLogedInUser = (user: User)=>
+    {
+        localStorage.setItem("jwt", user.token);
+        runInAction(()=>
+        {
+                this.user = user;
+        })
+        this.startRefreshTimer();
+    }
 }

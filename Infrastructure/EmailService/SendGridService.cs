@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -30,8 +31,11 @@ namespace Infrastructure.EmailService
 
             msg.SetClickTracking(false, false);
 
-            await client.SendEmailAsync(msg);
-
+            var res = await client.SendEmailAsync(msg);
+            if(!res.IsSuccessStatusCode)
+            {
+                throw(new Exception("Something went wrong sending mail"));
+            }
 
         }
     }

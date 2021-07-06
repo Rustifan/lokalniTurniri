@@ -197,7 +197,14 @@ namespace API.Controllers
                 </div>
                 ";
 
-            await _emailSender.SendEmailAsync(email, "Promjena lozinke", message);
+            try
+            {
+                await _emailSender.SendEmailAsync(email, "Promjena lozinke", message);
+            }
+            catch(Exception exception)
+            {
+                _logger.LogError(exception.Message);
+            }
             
             return Ok();
         }
@@ -220,6 +227,21 @@ namespace API.Controllers
             if(result) return Ok();
             
             return BadRequest("Token nije valjan ili je istekao");
+        }
+
+        [AllowAnonymous]
+        [HttpPost("resetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            var user = await _userManager.FindByNameAsync(resetPasswordDto.Username);
+            if(user is null) return BadRequest("Token je istekao ili nije valjan");
+
+            var token = HttpUtility.UrlDecode(resetPasswordDto.Token);
+
+            var result = await _userManager.ResetPasswordAsync(user, token, resetPasswordDto.Password);
+            if(!result.Succeeded) return BadRequest("Token je istekao ili nije valjan");
+
+            return Ok(CreateUserDto(user));
         }
         private UserDto CreateUserDto(AppUser user)
         {

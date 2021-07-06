@@ -2,6 +2,9 @@ import React, { useState } from "react"
 import { useEffect } from "react";
 import { useParams } from "react-router"
 import { agent } from "../../App/agent";
+import { ErrorStore } from "../../Stores/errorStore";
+import NotFoundPage from "../Errors/NotFound";
+import ResetPasswordForm from "../Forms/ResetPasswordForm";
 import LoadingComponent from "../Loading/LoadingComponent";
 
 interface Params
@@ -37,9 +40,11 @@ export default function ResetPassword()
         :
         (tokenValid ?
 
-        <div>Valja</div>
+        <ResetPasswordForm username={username} token={token}/>
         :
-        <div>Nevalja</div>
+        <NotFoundPage 
+            text="Token nije valjan ili je istekao"
+            status={400}/>
         )
        
     )
