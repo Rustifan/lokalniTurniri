@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { useEffect } from "react";
 import { useParams } from "react-router"
 import { agent } from "../../App/agent";
-import { ErrorStore } from "../../Stores/errorStore";
 import NotFoundPage from "../Errors/NotFound";
 import ResetPasswordForm from "../Forms/ResetPasswordForm";
 import LoadingComponent from "../Loading/LoadingComponent";
@@ -30,7 +29,7 @@ export default function ResetPassword()
             {
                 setValidatingToken(false);
             })
-
+            // eslint-disable-next-line
     }, []);
 
     return (

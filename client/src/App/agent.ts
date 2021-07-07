@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { history } from "..";
 import { store } from "../Stores/store";
 import { ApiResponseDelay } from "./Core/Constants";
+import { ConfirmEmailDto } from "./Interfaces/ConfirmEmailDto";
 import { ResetPasswordValues } from "./Interfaces/ResetPasswordValues";
 import { TournamentFormValues, Tournament } from "./Interfaces/Tournament";
 import { ChangePasswordForm, LoginForm, RegisterDto, User } from "./Interfaces/User";
@@ -95,8 +96,7 @@ const TestErrors =
 
 const Users = 
 {
-    register: (registerDto: RegisterDto)=>instance.post<User>("/user/register", registerDto)
-        .then(value=>value.data),
+    register: (registerDto: RegisterDto)=>instance.post("/user/register", registerDto),
     login: (loginForm: LoginForm)=>instance.post<User>("/user/login", loginForm)
         .then(value=>value.data),
         
@@ -109,7 +109,10 @@ const Users =
     forgotPassword: (forgotPasswordObj: {email: string})=>instance.post("/user/forgotPassword", forgotPasswordObj),
     verifyPasswordToken: (passwordTokenObj: {username: string, token: string})=>instance.post("/user/verifyPasswordToken", passwordTokenObj),
     resetPassword: (resetPasswordDto: ResetPasswordValues)=>
-        instance.post<User>("/user/resetPassword", resetPasswordDto).then(response=>response.data)
+        instance.post<User>("/user/resetPassword", resetPasswordDto).then(response=>response.data),
+    resendConfirmationEmail: (email: string)=>instance.get("/user/resendConfirmationMail?email="+email),
+    confirmEmail: (confirmEmailDto: ConfirmEmailDto)=>
+        instance.post<User>("/user/confirmEmail", confirmEmailDto).then(response=>response.data)
 }
 
 const Tournaments = 

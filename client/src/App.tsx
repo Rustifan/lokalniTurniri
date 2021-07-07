@@ -24,6 +24,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ForgotPassword from './Components/Forms/ForgotPassword';
 import ResetPassword from './Components/Common/ResetPassword';
+import RegistrationSuccess from './Components/Common/RegistrationSuccess';
+import ConfirmEmail from './Components/Users/ConfirmEmail';
 
 function App() {
 
@@ -66,6 +68,8 @@ function App() {
             <PrivateRoute exact path="/userProfile/:username/edit" component={EditProfile} />
             <PrivateRoute exact path="/messages" component={Messages} />
             <Route exact path="/resetPassword/:username/:token" component={ResetPassword}/>
+            <Route exact path="/registrationSuccess/:email" component={RegistrationSuccess}/>
+            <Route exact path="/confirmEmail/:email/:token" component={ConfirmEmail}/>
             <Route component={NotFoundPage} />
           </Switch>
         </Container>

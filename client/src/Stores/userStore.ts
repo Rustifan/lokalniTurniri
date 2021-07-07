@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { history } from "..";
 import { agent } from "../App/agent";
 import { refreshTimerOffset } from "../App/Core/Constants";
+import { ConfirmEmailDto } from "../App/Interfaces/ConfirmEmailDto";
 import { ResetPasswordValues } from "../App/Interfaces/ResetPasswordValues";
 import { ChangePasswordForm, LoginForm, RegisterDto, RegisterForm, User } from "../App/Interfaces/User";
 import { UserProfile } from "../App/Interfaces/UserProfile";
@@ -12,6 +13,7 @@ export class UserStore
 {
     user: User | null = null;
     loadingUser = false;
+    resendingConfirmationMail = false;
     loginModalOpen = false;
     registerModalOpen = false;
     forgotPasswordModalOpen = false;
@@ -75,8 +77,9 @@ export class UserStore
         this.loadingUser = true;
         try
         {
-            const user = await agent.Users.register(new RegisterDto(registerForm));
-            this.changeLogedInUser(user);
+            await agent.Users.register(new RegisterDto(registerForm));
+            this.setRegisterModalOpen(false);
+            history.push("/registrationSuccess/"+registerForm.email);
 
         }
         catch(err)
@@ -284,5 +287,44 @@ export class UserStore
                 this.user = user;
         })
         this.startRefreshTimer();
+    }
+
+    resendConfirmationMail = async (email: string)=>
+    {
+        this.resendingConfirmationMail = true;
+        try
+        {
+            await agent.Users.resendConfirmationEmail(email);
+            
+            toast.success("Email je uspješno poslan");
+        }
+        catch(error)
+        {
+            console.log(error);
+        }
+        finally
+        {
+            runInAction(()=>this.resendingConfirmationMail = false);
+        }
+    }
+
+    confirmEmail = async (confirmEmailDto: ConfirmEmailDto)=>
+    {
+        this.loadingUser = true;
+        try{
+            const user = await agent.Users.confirmEmail(confirmEmailDto);
+            this.changeLogedInUser(user);
+            history.push("/tournaments");
+            toast.success("Uspješno ste potvrdili mail, sad ste ulogirani kao "+user.username);
+        }   
+        catch(error)
+        {
+            console.log(error);
+            
+        }    
+        finally
+        {
+            runInAction(()=>this.loadingUser=false);
+        }
     }
 }

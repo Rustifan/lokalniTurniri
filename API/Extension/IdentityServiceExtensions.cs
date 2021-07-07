@@ -29,7 +29,7 @@ namespace API.Extension
                 opt.Password.RequiredUniqueChars = 0;
                 opt.Password.RequireUppercase = true;
 
-                opt.SignIn.RequireConfirmedEmail = false;
+                opt.SignIn.RequireConfirmedEmail = true;
                 opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
             })
             .AddEntityFrameworkStores<DataContext>()

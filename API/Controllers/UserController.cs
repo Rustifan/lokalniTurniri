@@ -60,11 +60,17 @@ namespace API.Controllers
             var result = await _userManager.CreateAsync(newUser, userDto.Password);
 
             if (!result.Succeeded) return BadRequest("Failed to create new user");
+            
+            var sendEmailResult = await SendConfirmationEmail(newUser);
+
+            if(!sendEmailResult) return Ok("Email nije poslan");
 
 
-            await AddRefreshToken(newUser);
-            return Ok(CreateUserDto(newUser));
+            return Ok();
         }
+
+
+
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginUserDto userDto)
@@ -73,8 +79,11 @@ namespace API.Controllers
             if (user == null) return BadRequest(new UserError("Pogrešan email ili zaporka!"));
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, userDto.Password, false);
+
+
             if (!result.Succeeded) return BadRequest(new UserError("Pogrešan email ili zaporka!"));
 
+            if (!user.EmailConfirmed) return BadRequest(UserError.EmailNotConfirmedError());
 
 
             await AddRefreshToken(user);
@@ -158,7 +167,8 @@ namespace API.Controllers
                 {
                     UserName = result.Username,
                     Email = result.Email,
-                    Avatar = result.Picture
+                    Avatar = result.Picture,
+                    EmailConfirmed = true
                 };
 
                 var sucess = await _userManager.CreateAsync(newUser);
@@ -179,13 +189,13 @@ namespace API.Controllers
             string email = forgotPasswordObject.Email;
 
             var user = await _userManager.FindByEmailAsync(email);
-            if(user == null) return Ok();
+            if (user == null) return Ok();
 
             await _userManager.UpdateSecurityStampAsync(user);
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             var urlEncodedToken = HttpUtility.UrlEncode(token);
-            
+
             var origin = Request.Headers["origin"];
 
             var resetPasswordClientPath = $"{origin}/resetPassword/{user.UserName}/{urlEncodedToken}";
@@ -201,11 +211,11 @@ namespace API.Controllers
             {
                 await _emailSender.SendEmailAsync(email, "Promjena lozinke", message);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger.LogError(exception.Message);
             }
-            
+
             return Ok();
         }
 
@@ -216,16 +226,16 @@ namespace API.Controllers
             var username = verifyPasswordTokenDto.Username;
             var token = HttpUtility.UrlDecode(verifyPasswordTokenDto.Token);
             var user = await _userManager.FindByNameAsync(username);
-            if(user == null) return BadRequest("Token nije valjan ili je istekao");
-            
+            if (user == null) return BadRequest("Token nije valjan ili je istekao");
+
             var result = await _userManager.VerifyUserTokenAsync(
-            user, 
+            user,
             _userManager.Options.Tokens.PasswordResetTokenProvider,
             "ResetPassword",
             token);
-            
-            if(result) return Ok();
-            
+
+            if (result) return Ok();
+
             return BadRequest("Token nije valjan ili je istekao");
         }
 
@@ -234,12 +244,44 @@ namespace API.Controllers
         public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
         {
             var user = await _userManager.FindByNameAsync(resetPasswordDto.Username);
-            if(user is null) return BadRequest("Token je istekao ili nije valjan");
+            if (user is null) return BadRequest("Token je istekao ili nije valjan");
 
             var token = HttpUtility.UrlDecode(resetPasswordDto.Token);
 
             var result = await _userManager.ResetPasswordAsync(user, token, resetPasswordDto.Password);
-            if(!result.Succeeded) return BadRequest("Token je istekao ili nije valjan");
+            if (!result.Succeeded) return BadRequest("Token je istekao ili nije valjan");
+
+            return Ok(CreateUserDto(user));
+        }
+
+        [AllowAnonymous]
+        [HttpGet("resendConfirmationMail")]
+        public async Task<IActionResult> ResendConfirmationEmail([FromQuery] string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if(user is null) return BadRequest("Korisnik ne postoji");
+
+            if(user.EmailConfirmed) return BadRequest("Email je već potvrđen");
+            var sucess = await SendConfirmationEmail(user);
+            if(!sucess) return BadRequest("Nešto je pošlo po krivu");
+            
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("confirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailDto confirmEmailDto)
+        {
+            var user = await _userManager.FindByEmailAsync(confirmEmailDto.Email);
+            if(user == null) return BadRequest("Token nije valjan ili je istekao");
+
+            var token = HttpUtility.UrlDecode(confirmEmailDto.Token);
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            if(!result.Succeeded) return BadRequest("Token nije valjan ili je istekao");
+            
+            await _userManager.UpdateSecurityStampAsync(user);
 
             return Ok(CreateUserDto(user));
         }
@@ -273,7 +315,34 @@ namespace API.Controllers
             };
             Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
         }
+        private async Task<bool> SendConfirmationEmail(AppUser user)
+        {
+            await _userManager.UpdateSecurityStampAsync(user);
+            var origin = Request.Headers["origin"];
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var urlEncodedToken = HttpUtility.UrlEncode(token);
+            var path = $"{origin}/confirmEmail/{user.Email}/{urlEncodedToken}";
+            var subject = "Potvrda email adrese";
+            var message = $@"<h1>Potvrda Email adrese</h1>
+                <div>Molimo vas da kliknete na
+                    <a href={path}>link</a> za potvrdu vaše email adrese
+                </div>  
+            ";
+
+            try
+            {
+                await _emailSender.SendEmailAsync(user.Email, subject, message);
+                return true;
+
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+        }
+
     }
+
 
 }
 
