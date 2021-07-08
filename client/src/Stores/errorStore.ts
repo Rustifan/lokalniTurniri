@@ -7,6 +7,8 @@ export class ErrorStore
 {
     error: Error | null = null;
     loginRegisterError: string | null = null;
+    notConfirmedEmail: string | null = null; 
+
 
     constructor()
     {
@@ -37,5 +39,9 @@ export class ErrorStore
         })
     }
 
+    setNotConfirmedEmail = (email: string | null)=>
+    {
+        this.notConfirmedEmail = email;
+    }
 
 }

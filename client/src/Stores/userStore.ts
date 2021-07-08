@@ -165,6 +165,7 @@ export class UserStore
     setLoginModalOpen = (open: boolean)=>
     {
         store.errorStore.removeLoginRegisterError();
+        store.errorStore.setNotConfirmedEmail(null);
         runInAction(()=>
         {
             this.loginModalOpen = open;

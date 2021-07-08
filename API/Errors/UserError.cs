@@ -4,16 +4,18 @@ namespace API.Errors
     {
         public bool IsUserError { get; } = true;
         public bool EmailNotConfirmed {get; set;} = false;
+        public string Email { get; set; }
         public string Message { get; set; }
         public UserError(string message)
         {
             Message = message;
         }
-        public static UserError EmailNotConfirmedError(string message="Email nije potvrđen")
+        public static UserError EmailNotConfirmedError(string email, string message="Email nije potvrđen")
         {
             var error = new UserError(message)
             {
-                EmailNotConfirmed = true
+                EmailNotConfirmed = true,
+                Email = email
             };
          
             return error;

@@ -38,9 +38,16 @@ instance.interceptors.response.use(async (config)=>
         }
         else if(error.response.data.isUserError)
         {
+            if(error.response.data.emailNotConfirmed)
+            {
+                store.errorStore.setNotConfirmedEmail(error.response.data.email);
+            }
+            
             store.errorStore.setLoginRegisterError(error.response.data.message);
             
         }
+
+            
         else
         {
            store.errorStore.setError({statusCode: 400, head: "Validation Error"});

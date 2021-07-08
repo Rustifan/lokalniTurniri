@@ -80,10 +80,10 @@ namespace API.Controllers
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, userDto.Password, false);
 
+            if (!user.EmailConfirmed) return BadRequest(UserError.EmailNotConfirmedError(userDto.Email));
 
             if (!result.Succeeded) return BadRequest(new UserError("Pogrešan email ili zaporka!"));
 
-            if (!user.EmailConfirmed) return BadRequest(UserError.EmailNotConfirmedError());
 
 
             await AddRefreshToken(user);
@@ -177,6 +177,7 @@ namespace API.Controllers
 
                 return Ok(CreateUserDto(newUser));
             }
+            
             await AddRefreshToken(user);
 
             return Ok(CreateUserDto(user));

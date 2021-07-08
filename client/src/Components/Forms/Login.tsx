@@ -7,6 +7,7 @@ import { store } from "../../Stores/store"
 import * as Yup from "yup"
 import { Button, Header, Message, Modal } from "semantic-ui-react";
 import TextInput from "./TextInput";
+import NotConfirmedEmailError from "../Errors/NotConfirmedEmailError";
 
 export default observer(() => {
 
@@ -68,6 +69,10 @@ export default observer(() => {
                         onDismiss={store.errorStore.removeLoginRegisterError}>
                         {store.errorStore.loginRegisterError}
                     </Message>
+                }
+                {
+                    store.errorStore.notConfirmedEmail &&
+                    <NotConfirmedEmailError email={store.errorStore.notConfirmedEmail}/>
                 }
             </Modal.Content>
         </Modal>
